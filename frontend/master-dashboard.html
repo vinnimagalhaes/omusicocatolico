@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Master - OMúsicoCatólico</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="estilo.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         
@@ -2849,7 +2851,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
                             ${content.url_imagem_completa ? 
-                                `<img src="${content.url_imagem_completa}" alt="" class="w-10 h-10 object-cover rounded mr-3">` : 
+                                `<img src="${content.url_imagem_completa}" alt="Imagem do conteúdo ${content.titulo}" class="w-10 h-10 object-cover rounded mr-3">` : 
                                 `<div class="w-10 h-10 bg-gray-200 rounded mr-3 flex items-center justify-center">
                                     <i class="fas fa-file-alt text-gray-400"></i>
                                 </div>`

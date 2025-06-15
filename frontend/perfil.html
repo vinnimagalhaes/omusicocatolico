@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - OMúsicoCatólico</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="estilo.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+    <title>Meu Perfil - OMúsicoCatólico</title>
     <style>
         body { font-family: 'Inter', sans-serif; }
         
@@ -89,23 +91,23 @@
     <nav class="bg-gray-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex space-x-8 overflow-x-auto py-4">
-                <a href="index.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/inicio" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
                     Início
                 </a>
-                <a href="repertorios.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/repertorios" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-list w-4 h-4 mr-2 text-gray-500"></i>
                     Meus Repertórios
                 </a>
-                <a href="#" onclick="filtrarFavoritas()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/favoritas" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-heart w-4 h-4 mr-2 text-gray-500"></i>
                     Favoritas
                 </a>
-                <a href="#" onclick="filtrarMinhasCifras()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/minhas-cifras" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
                     Minhas Cifras
                 </a>
-                <a href="categorias.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/categorias" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-tags w-4 h-4 mr-2 text-gray-500"></i>
                     Categorias
                 </a>
@@ -249,22 +251,6 @@
             }
         });
 
-        // Funções de navegação (redirecionam para a página principal)
-        function filtrarFavoritas() {
-            window.location.href = 'index.html?filter=favoritas';
-        }
-
-        function filtrarMinhasCifras() {
-            window.location.href = 'index.html?filter=minhas-cifras';
-        }
-
-        function goToHome() {
-            window.location.href = 'index.html';
-        }
-
-        function handleSearch() {
-            window.location.href = 'index.html';
-        }
     </script>
     <script>
         let userData = {};
@@ -323,7 +309,7 @@
             const localizacao = document.getElementById('inputLocalizacao').value.trim();
             
             try {
-                const response = await fetchWithAuth('/api/auth/profile', {
+                const response = await fetchWithAuth(apiUrl('/api/auth/profile'), {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -374,7 +360,7 @@
             }
             
             try {
-                const response = await fetchWithAuth('/api/auth/change-password', {
+                const response = await fetchWithAuth(apiUrl('/api/auth/change-password'), {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

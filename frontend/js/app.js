@@ -180,7 +180,7 @@ async function carregarFavoritos() {
         const token = localStorage.getItem('token');
         if (!token) return; // Se não está logado, não carregar favoritos
         
-        const response = await fetch('/api/favoritos', {
+        const response = await fetch(apiUrl('/api/favoritos'), {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -979,7 +979,7 @@ async function addToRepertorio(id) {
     
     // Buscar repertórios do usuário
     try {
-        const response = await fetch('/api/repertorios', {
+        const response = await fetch(apiUrl('/api/repertorios'), {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('token')}`
             }
@@ -1067,7 +1067,7 @@ function showRepertorioSelectionModal(cifra, repertorios) {
 
 async function adicionarCifraAoRepertorio(cifraId, repertorioId) {
     try {
-        const response = await fetch(`/api/repertorios/${repertorioId}/cifras`, {
+        const response = await fetch(apiUrl(`/api/repertorios/${repertorioId}/cifras`), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -2279,7 +2279,7 @@ async function saveCifra() {
         } else {
             // Criar nova cifra
             console.log('➕ Criando nova cifra');
-            response = await fetch('/api/cifras/manual', {
+            response = await fetch(apiUrl('/api/cifras/manual'), {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -2313,7 +2313,7 @@ async function saveCifra() {
                             body: JSON.stringify(requestData)
                         });
                     } else {
-                        response = await fetch('/api/cifras/manual', {
+                        response = await fetch(apiUrl('/api/cifras/manual'), {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -2949,12 +2949,9 @@ function filtrarFavoritas() {
 }
 
 function filtrarMinhasCifras() {
-    window.location.href = '/minhas-cifras';
+    window.location.href = '/minhas-cifras';  
 }
 
-// ... existing code ...
-
-// Voltar ao início
 function goToHome() {
     window.location.href = '/inicio';
 }
@@ -3004,10 +3001,10 @@ function updateActiveNavItem(activeItem) {
             activeElement = document.querySelector('a[href="index.html"]');
             break;
         case 'favoritas':
-            activeElement = document.querySelector('a[onclick*="filtrarFavoritas"]');
+            activeElement = document.querySelector('a[href*="favoritas"]');
             break;
         case 'minhas-cifras':
-            activeElement = document.querySelector('a[onclick*="filtrarMinhasCifras"]');
+            activeElement = document.querySelector('a[href*="minhas-cifras"]');
             break;
         case 'categorias':
             activeElement = document.querySelector('a[href="categorias.html"]');

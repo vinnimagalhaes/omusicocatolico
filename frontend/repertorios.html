@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meus Repertórios - OMúsicoCatólico</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="estilo.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -167,7 +168,7 @@
     <nav class="bg-gray-50 border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex space-x-8 overflow-x-auto py-4 relative">
-                <a href="index.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/inicio" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
                     Início
                 </a>
@@ -182,26 +183,26 @@
                     <!-- Dropdown Menu -->
                     <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 40; overflow: visible;">
                         <div class="py-2">
-                            <a href="repertorios.html" class="dropdown-item flex items-center px-4 py-2 text-sm text-blue-600 bg-blue-50 font-medium hover:bg-blue-100 transition-colors">
+                            <a href="/repertorios" class="dropdown-item flex items-center px-4 py-2 text-sm text-blue-600 bg-blue-50 font-medium hover:bg-blue-100 transition-colors">
                                 <i class="fas fa-user w-4 h-4 mr-3 text-blue-500"></i>
                                 Meus Repertórios
                             </a>
-                            <a href="repertorios-comunidade.html" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <a href="/repertorios-comunidade" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-users w-4 h-4 mr-3 text-green-500"></i>
                                 Repertórios da Comunidade
                             </a>
                         </div>
                     </div>
                 </div>
-                <a href="#" onclick="filtrarFavoritas()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/favoritas" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-heart w-4 h-4 mr-2 text-gray-500"></i>
                     Favoritas
                 </a>
-                <a href="#" onclick="filtrarMinhasCifras()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/minhas-cifras" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
                     Minhas Cifras
                 </a>
-                <a href="categorias.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                <a href="/categorias" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
                     <i class="fas fa-tags w-4 h-4 mr-2 text-gray-500"></i>
                     Categorias
                 </a>
@@ -619,8 +620,9 @@
     </div>
 
     <!-- Scripts -->
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
+    <script src="js/config.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
     <!-- Biblioteca para gerar PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
@@ -647,23 +649,6 @@
             }
         });
 
-        // Funções de navegação (redirecionam para a página principal)
-        function filtrarFavoritas() {
-            window.location.href = 'index.html?filter=favoritas';
-        }
-
-        // Funções de navegação (redirecionam para a página principal)
-        function filtrarMinhasCifras() {
-            window.location.href = 'index.html?filter=minhas-cifras';
-        }
-
-        function goToHome() {
-            window.location.href = 'index.html';
-        }
-
-        function handleSearch() {
-            window.location.href = 'index.html';
-        }
     </script>
     <script>
         // Variáveis globais
@@ -753,7 +738,7 @@
 
         async function carregarRepertorios() {
             try {
-                const response = await fetchWithAuth('/api/repertorios');
+                const response = await fetchWithAuth(apiUrl('/api/repertorios'));
                 const data = await response.json();
                 
                 repertorios = data.repertorios;
@@ -885,7 +870,7 @@
                     }
                 } else {
                     // Modo de criação
-                    response = await fetchWithAuth('/api/repertorios', {
+                                            response = await fetchWithAuth(apiUrl('/api/repertorios'), {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ tipo, nome, data_evento, descricao, cor, publico })
@@ -1059,7 +1044,7 @@
                 document.getElementById('loadingCifras').classList.remove('hidden');
                 document.getElementById('listaCifrasDisponiveis').classList.add('hidden');
                 
-                const response = await fetch('/api/cifras');
+                const response = await fetchWithAuth(apiUrl('/api/cifras/para-repertorios'));
                 const data = await response.json();
                 
                 cifrasDisponiveis = data.cifras || [];
@@ -1094,9 +1079,12 @@
                     <div class="flex-1">
                         <h4 class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">${cifra.titulo}</h4>
                         <p class="text-sm text-gray-600">${cifra.artista} - Tom: ${cifra.tom}</p>
-                        <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full mt-1">
-                            ${formatCategory(cifra.categoria)}
-                        </span>
+                        <div class="flex gap-2 mt-1">
+                            <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
+                                ${formatCategory(cifra.categoria)}
+                            </span>
+                            ${cifra.minha_cifra ? '<span class="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Minha</span>' : ''}
+                        </div>
                     </div>
                     <button onclick="event.stopPropagation(); adicionarCifraAoRepertorioModal(${cifra.id})" 
                             class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
@@ -1354,7 +1342,7 @@
         // Carregar cifras disponíveis
         async function carregarCifrasParaEstrutura() {
             try {
-                const response = await fetch(apiUrl('/api/cifras'));
+                const response = await fetchWithAuth(apiUrl('/api/cifras/para-repertorios'));
                 const data = await response.json();
                 cifrasCarregadas = data.cifras || [];
                 

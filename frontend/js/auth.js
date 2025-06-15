@@ -55,7 +55,7 @@ if (loginForm) {
             
             // Redirecionar para dashboard
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = '/inicio';
             }, 1000);
         } else {
             showToast(data.message || 'Erro ao fazer login', 'error');
@@ -95,7 +95,7 @@ async function handleGoogleResponse(response) {
             
             // Redirecionar para dashboard
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = '/inicio';
             }, 1000);
         } else {
             showToast(data.message || 'Erro ao fazer login com Google', 'error');

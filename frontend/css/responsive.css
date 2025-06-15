@@ -1,0 +1,389 @@
+/* =================================
+   RESPONSIVE CSS - OMúsicoCatólico
+   ================================= */
+
+/* Reset and Base */
+* {
+    box-sizing: border-box;
+}
+
+/* CSS Variables for Design System */
+:root {
+    /* Colors */
+    --primary-blue: #2563eb;
+    --primary-blue-dark: #1d4ed8;
+    --secondary-green: #059669;
+    --accent-purple: #7c3aed;
+    --accent-red: #dc2626;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --white: #ffffff;
+    
+    /* Typography */
+    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-size-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+    --font-size-sm: clamp(0.875rem, 0.8rem + 0.375vw, 1rem);
+    --font-size-base: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+    --font-size-lg: clamp(1.125rem, 1rem + 0.625vw, 1.25rem);
+    --font-size-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.5rem);
+    --font-size-2xl: clamp(1.5rem, 1.3rem + 1vw, 1.875rem);
+    --font-size-3xl: clamp(1.875rem, 1.6rem + 1.375vw, 2.25rem);
+    --font-size-4xl: clamp(2.25rem, 1.9rem + 1.75vw, 3rem);
+    --font-size-5xl: clamp(3rem, 2.5rem + 2.5vw, 4rem);
+    
+    /* Spacing */
+    --spacing-xs: clamp(0.25rem, 0.2rem + 0.25vw, 0.5rem);
+    --spacing-sm: clamp(0.5rem, 0.4rem + 0.5vw, 0.75rem);
+    --spacing-md: clamp(0.75rem, 0.6rem + 0.75vw, 1rem);
+    --spacing-lg: clamp(1rem, 0.8rem + 1vw, 1.5rem);
+    --spacing-xl: clamp(1.5rem, 1.2rem + 1.5vw, 2rem);
+    --spacing-2xl: clamp(2rem, 1.6rem + 2vw, 3rem);
+    --spacing-3xl: clamp(3rem, 2.4rem + 3vw, 4rem);
+    --spacing-section: clamp(40px, 5vw, 60px);
+    
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Base Typography */
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    color: var(--gray-900);
+}
+
+h1 {
+    font-size: var(--font-size-4xl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-lg);
+}
+
+h2 {
+    font-size: var(--font-size-3xl);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: var(--spacing-md);
+}
+
+h3 {
+    font-size: var(--font-size-2xl);
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: var(--spacing-md);
+}
+
+h4 {
+    font-size: var(--font-size-xl);
+    font-weight: 500;
+    line-height: 1.4;
+    margin-bottom: var(--spacing-sm);
+}
+
+p {
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Sections Spacing */
+section {
+    padding-top: var(--spacing-section);
+    padding-bottom: var(--spacing-section);
+}
+
+/* ========================
+   MOBILE FIRST: 320px+
+   ======================== */
+
+/* Mobile Layout Adjustments */
+.container {
+    width: 100%;
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Navigation - Mobile */
+nav {
+    padding: var(--spacing-sm) 0;
+}
+
+.nav-item {
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* Cards - Mobile */
+.card {
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Buttons - Mobile */
+.btn {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-md);
+    transition: all 0.2s ease;
+}
+
+.btn:hover, .btn:focus {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Grid - Mobile (1 column) */
+.grid {
+    display: grid;
+    gap: var(--spacing-md);
+    grid-template-columns: 1fr;
+}
+
+/* ========================
+   LARGE MOBILE: 481-767px
+   ======================== */
+@media (min-width: 481px) {
+    .container {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    
+    /* Grid - 2 columns for some content */
+    .grid-sm-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Cards get slightly more padding */
+    .card {
+        padding: var(--spacing-lg);
+    }
+}
+
+/* ========================
+   TABLET: 768-1023px
+   ======================== */
+@media (min-width: 768px) {
+    .container {
+        max-width: 768px;
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+    
+    /* Navigation - Tablet */
+    nav {
+        padding: var(--spacing-md) 0;
+    }
+    
+    .nav-item {
+        font-size: var(--font-size-base);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    /* Grid - 2-3 columns */
+    .grid-md-2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .grid-md-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* Buttons - Tablet */
+    .btn {
+        padding: var(--spacing-md) var(--spacing-lg);
+        font-size: var(--font-size-base);
+    }
+    
+    /* Hero sections */
+    .hero {
+        padding: var(--spacing-3xl) 0;
+    }
+}
+
+/* ========================
+   DESKTOP: 1024-1366px
+   ======================== */
+@media (min-width: 1024px) {
+    .container {
+        max-width: 1024px;
+        padding-left: 2.5rem;
+        padding-right: 2.5rem;
+    }
+    
+    /* Grid - 3-4 columns */
+    .grid-lg-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .grid-lg-4 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    /* Layout adjustments */
+    .flex-lg-row {
+        flex-direction: row;
+    }
+    
+    .flex-lg-col {
+        flex-direction: column;
+    }
+    
+    /* Spacing adjustments */
+    section {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+}
+
+/* ========================
+   LARGE DESKTOP: 1367px+
+   ======================== */
+@media (min-width: 1367px) {
+    .container {
+        max-width: 1280px;
+        padding-left: 3rem;
+        padding-right: 3rem;
+    }
+    
+    /* Enhanced spacing for large screens */
+    section {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+    }
+    
+    /* Grid - Up to 6 columns for large screens */
+    .grid-xl-5 {
+        grid-template-columns: repeat(5, 1fr);
+    }
+    
+    .grid-xl-6 {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
+/* ========================
+   ACCESSIBILITY
+   ======================== */
+
+/* Focus states */
+*:focus {
+    outline: 2px solid var(--primary-blue);
+    outline-offset: 2px;
+}
+
+/* Skip link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--primary-blue);
+    color: var(--white);
+    padding: 8px;
+    text-decoration: none;
+    transition: top 0.3s;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --gray-100: #000000;
+        --gray-900: #ffffff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========================
+   UTILITY CLASSES
+   ======================== */
+
+/* Display */
+.d-none { display: none; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+/* Flex utilities */
+.flex-wrap { flex-wrap: wrap; }
+.flex-nowrap { flex-wrap: nowrap; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+.align-center { align-items: center; }
+.align-start { align-items: flex-start; }
+.align-end { align-items: flex-end; }
+
+/* Text utilities */
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-primary { color: var(--primary-blue); }
+.text-secondary { color: var(--secondary-green); }
+.text-muted { color: var(--gray-500); }
+
+/* Background utilities */
+.bg-primary { background-color: var(--primary-blue); }
+.bg-secondary { background-color: var(--secondary-green); }
+.bg-light { background-color: var(--gray-50); }
+.bg-white { background-color: var(--white); }
+
+/* Spacing utilities */
+.m-0 { margin: 0; }
+.mt-0 { margin-top: 0; }
+.mb-0 { margin-bottom: 0; }
+.p-0 { padding: 0; }
+.pt-0 { padding-top: 0; }
+.pb-0 { padding-bottom: 0; }
+
+/* Responsive utilities */
+@media (max-width: 767px) {
+    .d-md-none { display: none; }
+    .d-md-block { display: block; }
+}
+
+@media (min-width: 768px) {
+    .d-md-flex { display: flex; }
+    .d-md-grid { display: grid; }
+} 

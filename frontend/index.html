@@ -3,10 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OMúsicoCatólico</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>OMúsicoCatólico - Cifras Católicas, Repertórios e Ferramentas para Liturgia</title>
+    <meta name="description" content="Encontre cifras para músicas católicas, crie repertórios personalizados e compartilhe com sua comunidade. Ferramentas para músicos católicos: transpositor, afinador e metrônomo.">
+    <meta name="keywords" content="cifras católicas, música católica, repertório missa, letras católicas, acordes, igreja, liturgia, canto católico, hinário">
+    <meta name="author" content="OMúsicoCatólico">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://omusicocatolico.com.br/inicio">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OMúsicoCatólico - Cifras e Repertórios Católicos">
+    <meta property="og:description" content="A maior plataforma de cifras católicas do Brasil. Crie repertórios, encontre acordes e compartilhe música sacra com sua comunidade.">
+    <meta property="og:url" content="https://omusicocatolico.com.br/inicio">
+    <meta property="og:site_name" content="OMúsicoCatólico">
+    <meta property="og:image" content="https://omusicocatolico.com.br/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OMúsicoCatólico - Cifras e Repertórios Católicos">
+    <meta name="twitter:description" content="A maior plataforma de cifras católicas do Brasil. Crie repertórios, encontre acordes e compartilhe música sacra.">
+    <meta name="twitter:image" content="https://omusicocatolico.com.br/images/twitter-card.jpg">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="OMúsicoCatólico">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    
+    <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="estilo.css" rel="stylesheet">
+    <link href="css/responsive.css?v=2" rel="stylesheet">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "OMúsicoCatólico",
+        "description": "Plataforma de cifras católicas, repertórios e ferramentas para músicos da igreja",
+        "url": "https://omusicocatolico.com.br",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://omusicocatolico.com.br/buscar?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "OMúsicoCatólico",
+            "url": "https://omusicocatolico.com.br"
+        }
+    }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
     <style>
@@ -227,7 +294,7 @@
                 <!-- Busca Central -->
                 <div class="flex-1 max-w-md mx-8">
                     <div class="relative">
-                        <input type="text" placeholder="Buscar cifras..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <input type="text" placeholder="Buscar cifras..." aria-label="Campo de busca para cifras católicas" class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <i class="fas fa-search text-gray-400"></i>
                         </div>
@@ -303,7 +370,7 @@
                     </div>
                     
                     <!-- Dropdown Menu -->
-                                            <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 40; overflow: visible;">
+                                            <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 30; overflow: visible;">
                         <div class="py-2">
                             <a href="/repertorios" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-user w-4 h-4 mr-3 text-blue-500"></i>
@@ -541,8 +608,8 @@
         </main>
     </div>
 
-    <script src="js/config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/config.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
 </body>
 </html> 

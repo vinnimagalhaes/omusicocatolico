@@ -1,6 +1,6 @@
 // Configuração da API
-// Se estivermos na mesma porta, usar URLs relativas, senão usar localhost:8000
-const API_BASE_URL = window.location.port === '8000' ? '' : 'http://localhost:8000';
+// Como estamos usando nginx como proxy, sempre usar URLs relativas
+const API_BASE_URL = '';
 
 // Função helper para construir URLs da API
 function apiUrl(endpoint) {
