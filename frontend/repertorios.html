@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Repertórios - OMúsicoCatólico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .repertorio-card:hover { transform: translateY(-2px); }
+        
+        /* Estilos para navegação principal */
+        .nav-item:hover { 
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .transition-opacity {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        .modal-screen {
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .modal-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .repertorio-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dropdown Navigation Styles */
+        .nav-item-dropdown {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Permitir overflow do dropdown */
+        nav .flex {
+            overflow: visible !important;
+        }
+        
+        .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-item-dropdown:hover .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-item-dropdown:hover .nav-item {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            z-index: 40;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        /* Forçar dropdowns invisíveis quando modal está aberto */
+        body.modal-open .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(2px) !important;
+            z-index: -1 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Principal -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo e Título -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-blue-600">OMúsicoCatólico</h1>
+                    </div>
+                </div>
+
+                <!-- Busca Central -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            placeholder="Buscar cifras..."
+                            class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        >
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Ações e User Menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Botão contextual (muda conforme a página) -->
+                    <button id="btnNovoRepertorio" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        <span class="hidden sm:inline">Novo Repertório</span>
+                    </button>
+                    
+                    <!-- User Menu -->
+                    <div class="relative" id="userMenu">
+                        <button onclick="toggleUserMenu()" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </button>
+                        
+                        <!-- Dropdown -->
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div class="py-1">
+                                <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user mr-2"></i>Meu Perfil
+                                </a>
+                                <a href="repertorios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-list mr-2"></i>Meus Repertórios
+                                </a>
+                                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            <i class="fas fa-cog mr-2"></i>Configurações
+                        </a>
+                        <div id="masterLink" class="hidden">
+                            <hr class="my-1">
+                            <a href="master-dashboard.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                <i class="fas fa-crown mr-2"></i>Painel Master
+                            </a>
+                        </div>
+                        <hr class="my-1">
+                        <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                        </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação Principal -->
+    <nav class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto py-4 relative">
+                <a href="index.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
+                    Início
+                </a>
+                <!-- Repertórios Dropdown -->
+                <div class="nav-item-dropdown relative">
+                    <div class="nav-item active flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-white rounded-lg shadow-sm whitespace-nowrap cursor-pointer">
+                        <i class="fas fa-list w-4 h-4 mr-2 text-blue-600"></i>
+                        Repertórios
+                        <i class="fas fa-chevron-down w-3 h-3 ml-2 text-blue-400 transition-transform duration-200"></i>
+                    </div>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 40; overflow: visible;">
+                        <div class="py-2">
+                            <a href="repertorios.html" class="dropdown-item flex items-center px-4 py-2 text-sm text-blue-600 bg-blue-50 font-medium hover:bg-blue-100 transition-colors">
+                                <i class="fas fa-user w-4 h-4 mr-3 text-blue-500"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="repertorios-comunidade.html" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-users w-4 h-4 mr-3 text-green-500"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" onclick="filtrarFavoritas()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-heart w-4 h-4 mr-2 text-gray-500"></i>
+                    Favoritas
+                </a>
+                <a href="#" onclick="filtrarMinhasCifras()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
+                    Minhas Cifras
+                </a>
+                <a href="categorias.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-tags w-4 h-4 mr-2 text-gray-500"></i>
+                    Categorias
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Loading -->
+        <div id="loading" class="text-center py-12">
+            <i class="fas fa-spinner fa-spin text-3xl text-gray-400"></i>
+            <p class="mt-4 text-gray-600">Carregando repertórios...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-12">
+            <i class="fas fa-music text-6xl text-gray-300 mb-4"></i>
+            <h3 class="text-xl font-medium text-gray-900 mb-2">Nenhum repertório encontrado</h3>
+            <p class="text-gray-600 mb-6">Crie seu primeiro repertório para organizar suas cifras!</p>
+            <button id="btnPrimeiroRepertorio" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-plus mr-2"></i>
+                Criar Primeiro Repertório
+            </button>
+        </div>
+
+        <!-- Repertórios Grid -->
+        <div id="repertoriosGrid" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cards de repertórios serão inseridos aqui -->
+        </div>
+    </main>
+
+    <!-- Modal Novo/Editar Repertório -->
+    <div id="modalRepertorio" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 id="modalTitle" class="text-lg font-semibold mb-4">Novo Repertório</h3>
+            
+            <form id="formRepertorio">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Repertório</label>
+                    <select id="tipoRepertorio" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" required>
+                        <option value="">Selecione o tipo...</option>
+                        <option value="missa">🙏 Missa</option>
+                        <option value="adoracao">✨ Adoração</option>
+                        <option value="jovens">👥 Grupo de Jovens/Oração</option>
+                        <option value="outros">📁 Outros</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nome do Repertório</label>
+                    <input type="text" id="nomeRepertorio" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ex: Missa Dominical" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Data do Repertório</label>
+                    <input type="date" id="dataRepertorio" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <p class="text-xs text-gray-500 mt-1">Data da celebração, missa ou evento</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Descrição (opcional)</label>
+                    <textarea id="descricaoRepertorio" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="3" placeholder="Descrição do repertório..."></textarea>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Cor</label>
+                    <div class="flex space-x-2">
+                        <input type="color" id="corRepertorio" value="#3B82F6" class="w-12 h-10 border border-gray-300 rounded-lg cursor-pointer">
+                        <input type="text" id="corTexto" value="#3B82F6" class="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="publicoRepertorio" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">Repertório público (outros usuários podem ver)</span>
+                    </label>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" id="btnCancelarModal" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="btnSalvarRepertorio" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-save mr-2"></i>
+                        Salvar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Modal Detalhes do Repertório (Unificado) -->
+    <div id="modalDetalhes" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <!-- Cabeçalho com Navegação -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-3">
+                    <!-- Botão Voltar (aparece na tela de adicionar cifra) -->
+                    <button id="btnVoltarDetalhes" class="hidden text-gray-600 hover:text-gray-800" onclick="voltarParaDetalhes()">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <div>
+                        <h3 id="detalhesTitulo" class="text-xl font-semibold text-gray-900"></h3>
+                        <p id="detalhesDescricao" class="text-gray-600 mt-1"></p>
+                    </div>
+                </div>
+                <button id="btnFecharDetalhes" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Tela 1: Detalhes do Repertório -->
+            <div id="telaDetalhesRepertorio" class="modal-screen">
+                <!-- Lista de Cifras -->
+                <div id="listaCifrasRepertorio" class="space-y-3">
+                    <!-- Cifras do repertório serão inseridas aqui -->
+                </div>
+                
+                <!-- Estado vazio -->
+                <div id="repertorioVazio" class="hidden text-center py-8">
+                    <i class="fas fa-music text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-600">Este repertório ainda não tem cifras.</p>
+                    <p class="text-sm text-gray-500 mt-1">Clique em "Adicionar Cifra" para começar.</p>
+                </div>
+                
+                <!-- Botões de ação em grade 2x2 -->
+                <div class="mt-6 grid grid-cols-2 gap-3">
+                    <button id="btnEditarRepertorioModal" class="bg-green-600 text-white py-3 px-3 rounded-full hover:bg-green-700 transition-colors text-sm">
+                        <i class="fas fa-edit mb-1 block"></i>Editar
+                    </button>
+                    <button id="btnEstruturaMissaModal" class="hidden bg-purple-600 text-white py-3 px-3 rounded-full hover:bg-purple-700 transition-colors text-sm">
+                        <i class="fas fa-church mb-1 block"></i>Missa
+                    </button>
+                    <button id="btnExportarPdfModal" class="bg-red-600 text-white py-3 px-3 rounded-full hover:bg-red-700 transition-colors text-sm">
+                        <i class="fas fa-file-pdf mb-1 block"></i>PDF
+                    </button>
+                    <button id="btnAdicionarCifraModal" class="bg-blue-600 text-white py-3 px-3 rounded-full hover:bg-blue-700 transition-colors text-sm">
+                        <i class="fas fa-plus mb-1 block"></i>Cifra
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tela 2: Adicionar Cifra -->
+            <div id="telaAdicionarCifra" class="modal-screen hidden">
+                <!-- Busca de cifras -->
+                <div class="mb-6">
+                    <input type="text" id="buscaCifrasInput" placeholder="Buscar cifras por título, artista ou categoria..." 
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+                
+                <!-- Lista de cifras disponíveis -->
+                <div id="listaCifrasDisponiveis" class="space-y-3 max-h-96 overflow-y-auto">
+                    <!-- Cifras disponíveis serão inseridas aqui -->
+                </div>
+                
+                <!-- Loading state -->
+                <div id="loadingCifras" class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl text-gray-400"></i>
+                    <p class="mt-2 text-gray-600">Carregando cifras...</p>
+                </div>
+                
+                <!-- Botões de ação -->
+                <div class="mt-6 flex space-x-3">
+                    <button onclick="voltarParaDetalhes()" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        <i class="fas fa-arrow-left mr-2"></i>Voltar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Estrutura da Missa -->
+    <div id="modalEstruturaMissa" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-5xl mx-4 max-h-[90vh] overflow-y-auto">
+            <!-- Cabeçalho -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-3">
+                    <button id="btnVoltarEdicaoRepertorio" class="text-gray-600 hover:text-gray-800" title="Voltar para editar repertório">
+                        <i class="fas fa-arrow-left text-lg"></i>
+                    </button>
+                    <div>
+                        <h3 id="tituloEstruturaMissa" class="text-xl font-semibold text-gray-900"></h3>
+                        <p class="text-gray-600 mt-1">Selecione as cifras para cada parte da missa</p>
+                    </div>
+                </div>
+                <button id="btnFecharEstruturaMissa" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <!-- Lista das Partes da Missa -->
+            <div id="partesListaMissa" class="space-y-4">
+                
+                <!-- Canto de Entrada -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('entrada')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">🎵 Canto de Entrada</h4>
+                            <p class="text-sm text-gray-600">Acolhida da assembleia</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countEntrada" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasEntrada" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para entrada..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('entrada', this.value)">
+                        </div>
+                        <div id="listaCifrasEntrada" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ato Penitencial -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('penitencial')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">🙇 Ato Penitencial</h4>
+                            <p class="text-sm text-gray-600">Senhor, tende piedade de nós</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countPenitencial" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasPenitencial" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para ato penitencial..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('penitencial', this.value)">
+                        </div>
+                        <div id="listaCifrasPenitencial" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hino de Louvor -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('louvor')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">🎉 Hino de Louvor</h4>
+                            <p class="text-sm text-gray-600">Glória a Deus nas alturas</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countLouvor" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasLouvor" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para hino de louvor..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('louvor', this.value)">
+                        </div>
+                        <div id="listaCifrasLouvor" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aclamação ao Evangelho -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('aclamacao')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">📖 Aclamação ao Evangelho</h4>
+                            <p class="text-sm text-gray-600">Aleluia, aleluia</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countAclamacao" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasAclamacao" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para aclamação..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('aclamacao', this.value)">
+                        </div>
+                        <div id="listaCifrasAclamacao" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ofertório -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('ofertorio')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">🎁 Ofertório</h4>
+                            <p class="text-sm text-gray-600">Apresentação das oferendas</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countOfertorio" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasOfertorio" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para ofertório..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('ofertorio', this.value)">
+                        </div>
+                        <div id="listaCifrasOfertorio" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Santo -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('santo')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">✨ Santo</h4>
+                            <p class="text-sm text-gray-600">Santo, Santo, Santo</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countSanto" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasSanto" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para santo..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('santo', this.value)">
+                        </div>
+                        <div id="listaCifrasSanto" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comunhão -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('comunhao')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">🍞 Comunhão</h4>
+                            <p class="text-sm text-gray-600">Canto durante a comunhão</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countComunhao" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasComunhao" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para comunhão..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('comunhao', this.value)">
+                        </div>
+                        <div id="listaCifrasComunhao" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Canto Final -->
+                <div class="border border-gray-200 rounded-lg">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center cursor-pointer" onclick="toggleParteMissa('final')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">🚪 Canto Final</h4>
+                            <p class="text-sm text-gray-600">Envio da assembleia</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="countFinal" class="text-sm text-blue-600 font-medium">0 cifras</span>
+                            <button type="button" class="text-blue-600 hover:text-blue-700">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="cifrasFinal" class="hidden p-4">
+                        <div class="mb-4">
+                            <input type="text" placeholder="Buscar cifras para canto final..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                   onkeyup="buscarCifrasParaParte('final', this.value)">
+                        </div>
+                        <div id="listaCifrasFinal" class="space-y-2">
+                            <!-- Cifras serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Rodapé com botões -->
+            <div class="mt-6 flex justify-end space-x-3">
+                <button onclick="finalizarEstruturaMissa()" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-check mr-2"></i>Finalizar Repertório
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <!-- Biblioteca para gerar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        // Função para toggle do user menu
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Fechar dropdown quando clicar fora
+        document.addEventListener('click', function(event) {
+            const userMenu = document.getElementById('userMenu');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (userMenu && !userMenu.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+            
+            // Fechar menus de repertórios quando clicar fora
+            if (!event.target.closest('.btn-menu') && !event.target.closest('[id^="menu-"]')) {
+                document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            }
+        });
+
+        // Funções de navegação (redirecionam para a página principal)
+        function filtrarFavoritas() {
+            window.location.href = 'index.html?filter=favoritas';
+        }
+
+        // Funções de navegação (redirecionam para a página principal)
+        function filtrarMinhasCifras() {
+            window.location.href = 'index.html?filter=minhas-cifras';
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        function handleSearch() {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <script>
+        // Variáveis globais
+        let repertorios = [];
+        let repertorioEditando = null;
+
+        // Elementos DOM
+        const loading = document.getElementById('loading');
+        const emptyState = document.getElementById('emptyState');
+        const repertoriosGrid = document.getElementById('repertoriosGrid');
+        const modalRepertorio = document.getElementById('modalRepertorio');
+        const modalDetalhes = document.getElementById('modalDetalhes');
+        const formRepertorio = document.getElementById('formRepertorio');
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar autenticação
+            if (!isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            carregarRepertorios();
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Botões para criar repertório
+            document.getElementById('btnNovoRepertorio').addEventListener('click', abrirModalNovoRepertorio);
+            document.getElementById('btnPrimeiroRepertorio').addEventListener('click', abrirModalNovoRepertorio);
+            
+            // Modal form
+            document.getElementById('btnCancelarModal').addEventListener('click', fecharModalRepertorio);
+            document.getElementById('formRepertorio').addEventListener('submit', salvarRepertorio);
+            
+            // Modal detalhes
+            document.getElementById('btnFecharDetalhes').addEventListener('click', fecharModalDetalhes);
+            
+            // Navegação dentro do modal de detalhes
+            document.getElementById('btnEditarRepertorioModal').addEventListener('click', function() {
+                const repertorioId = modalDetalhes.dataset.repertorioId;
+                if (repertorioId) {
+                    editarRepertorio(repertorioId);
+                }
+            });
+            document.getElementById('btnEstruturaMissaModal').addEventListener('click', function() {
+                const repertorio = window.currentRepertorio;
+                if (repertorio) {
+                    fecharModalDetalhes();
+                    abrirEstruturaMissa(repertorio);
+                }
+            });
+            document.getElementById('btnExportarPdfModal').addEventListener('click', function() {
+                const repertorioId = modalDetalhes.dataset.repertorioId;
+                if (repertorioId) {
+                    exportarRepertorioPDF(repertorioId);
+                }
+            });
+            document.getElementById('btnAdicionarCifraModal').addEventListener('click', abrirTelaAdicionarCifra);
+            document.getElementById('buscaCifrasInput').addEventListener('input', function(e) {
+                buscarCifrasDisponiveis(e.target.value);
+            });
+            
+            // Modal estrutura da missa
+            document.getElementById('btnFecharEstruturaMissa').addEventListener('click', fecharEstruturaMissa);
+            document.getElementById('btnVoltarEdicaoRepertorio').addEventListener('click', voltarParaEdicaoRepertorio);
+            
+            // Color picker sync
+            document.getElementById('corRepertorio').addEventListener('change', function(e) {
+                document.getElementById('corTexto').value = e.target.value;
+            });
+            
+            document.getElementById('corTexto').addEventListener('change', function(e) {
+                document.getElementById('corRepertorio').value = e.target.value;
+            });
+            
+            // Modal de confirmação
+            document.getElementById('btnConfirmarAcao').addEventListener('click', confirmarAcao);
+            
+            // Event listener global para tecla ESC
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    fecharModalAtivo();
+                }
+            });
+        }
+
+        async function carregarRepertorios() {
+            try {
+                const response = await fetchWithAuth('/api/repertorios');
+                const data = await response.json();
+                
+                repertorios = data.repertorios;
+                renderizarRepertorios();
+                
+            } catch (error) {
+                console.error('Erro ao carregar repertórios:', error);
+                showNotification('Erro ao carregar repertórios', 'error');
+            }
+        }
+
+        function renderizarRepertorios() {
+            loading.classList.add('hidden');
+            
+            if (repertorios.length === 0) {
+                emptyState.classList.remove('hidden');
+                repertoriosGrid.classList.add('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            repertoriosGrid.classList.remove('hidden');
+            
+            repertoriosGrid.innerHTML = repertorios.map(rep => `
+                <div class="repertorio-card bg-white rounded-lg shadow-sm border border-gray-200 p-6 transition-transform cursor-pointer" data-id="${rep.id}">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-1">
+                                <div class="w-4 h-4 rounded-full" style="background-color: ${rep.cor}"></div>
+                                <h3 class="font-semibold text-gray-900">${rep.nome}</h3>
+                            </div>
+                            ${rep.data_evento ? `<p class="text-sm text-blue-600 font-medium ml-7"><i class="fas fa-calendar-alt mr-1"></i> ${formatDataEvento(rep.data_evento)}</p>` : ''}
+                        </div>
+                        <div class="flex space-x-2">
+                            ${rep.publico ? '<i class="fas fa-globe text-green-500" title="Público"></i>' : '<i class="fas fa-lock text-gray-400" title="Privado"></i>'}
+                            <div class="relative">
+                                <button class="btn-menu text-gray-400 hover:text-gray-600" data-id="${rep.id}" onclick="toggleMenuRepertorio(${rep.id}, event)">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div id="menu-${rep.id}" class="hidden absolute right-0 top-8 bg-white border border-gray-200 rounded-lg shadow-lg z-10 py-1 min-w-[150px]">
+                                    <button onclick="editarRepertorio(${rep.id})" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                                        <i class="fas fa-edit mr-2"></i>Editar
+                                    </button>
+                                    <button onclick="duplicarRepertorio(${rep.id})" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                                        <i class="fas fa-copy mr-2"></i>Duplicar
+                                    </button>
+                                    <hr class="my-1">
+                                    <button onclick="excluirRepertorio(${rep.id})" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center">
+                                        <i class="fas fa-trash mr-2"></i>Excluir
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${rep.descricao ? `<p class="text-gray-600 text-sm mb-4">${rep.descricao}</p>` : ''}
+                    
+                    <div class="flex items-center justify-between text-sm text-gray-500">
+                        <span><i class="fas fa-music mr-1"></i> ${rep.total_cifras} cifra${rep.total_cifras !== 1 ? 's' : ''}</span>
+                        <span>Criado em ${formatDate(rep.created_at)}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Event listeners para cards
+            document.querySelectorAll('.repertorio-card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.closest('.btn-menu')) {
+                        const id = this.dataset.id;
+                        abrirDetalhesRepertorio(id);
+                    }
+                });
+            });
+        }
+
+        function abrirModalNovoRepertorio() {
+            repertorioEditando = null;
+            document.getElementById('modalTitle').textContent = 'Novo Repertório';
+            document.getElementById('formRepertorio').reset();
+            document.getElementById('tipoRepertorio').value = '';
+            document.getElementById('corRepertorio').value = '#3B82F6';
+            document.getElementById('corTexto').value = '#3B82F6';
+            modalRepertorio.classList.remove('hidden');
+        }
+
+        function fecharModalRepertorio() {
+            modalRepertorio.classList.add('hidden');
+        }
+
+        async function salvarRepertorio(e) {
+            e.preventDefault();
+            
+            const tipo = document.getElementById('tipoRepertorio').value;
+            const nome = document.getElementById('nomeRepertorio').value.trim();
+            const data_evento = document.getElementById('dataRepertorio').value;
+            const descricao = document.getElementById('descricaoRepertorio').value.trim();
+            const cor = document.getElementById('corTexto').value;
+            const publico = document.getElementById('publicoRepertorio').checked;
+            
+            if (!tipo) {
+                showNotification('Tipo de repertório é obrigatório', 'error');
+                return;
+            }
+            
+            if (!nome) {
+                showNotification('Nome do repertório é obrigatório', 'error');
+                return;
+            }
+            
+            try {
+                let response, data;
+                
+                if (repertorioEditando) {
+                    // Modo de edição
+                    response = await fetchWithAuth(`/api/repertorios/${repertorioEditando.id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tipo, nome, data_evento, descricao, cor, publico })
+                    });
+                    
+                    data = await response.json();
+                    
+                    if (data.success) {
+                        showNotification('Repertório atualizado com sucesso!', 'success');
+                        fecharModalRepertorio();
+                        carregarRepertorios();
+                    } else {
+                        showNotification(data.error || 'Erro ao atualizar repertório', 'error');
+                    }
+                } else {
+                    // Modo de criação
+                    response = await fetchWithAuth('/api/repertorios', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tipo, nome, data_evento, descricao, cor, publico })
+                    });
+                    
+                    data = await response.json();
+                    
+                    if (data.success) {
+                        showNotification('Repertório criado com sucesso!', 'success');
+                        fecharModalRepertorio();
+                        
+                        // Se for missa, abrir estrutura específica
+                        if (tipo === 'missa') {
+                            abrirEstruturaMissa(data.repertorio);
+                        } else {
+                            // Para outros tipos, ir direto para seleção de cifras
+                            abrirDetalhesRepertorio(data.repertorio.id);
+                        }
+                        
+                        carregarRepertorios();
+                    } else {
+                        showNotification(data.error || 'Erro ao criar repertório', 'error');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Erro ao salvar repertório:', error);
+                showNotification('Erro ao salvar repertório', 'error');
+            }
+        }
+
+        async function abrirDetalhesRepertorio(id) {
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${id}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    mostrarDetalhesRepertorio(data);
+                } else {
+                    // Mensagem específica para cada tipo de erro
+                    if (response.status === 403) {
+                        showNotification('Você não tem permissão para acessar este repertório', 'error');
+                    } else if (response.status === 401) {
+                        showNotification('Sua sessão expirou. Faça login novamente.', 'error');
+                        setTimeout(() => {
+                            window.location.href = 'login.html';
+                        }, 2000);
+                    } else if (response.status === 404) {
+                        showNotification('Repertório não encontrado', 'error');
+                    } else {
+                        showNotification(data.error || 'Erro ao carregar detalhes do repertório', 'error');
+                    }
+                }
+                
+            } catch (error) {
+                console.error('Erro ao buscar detalhes:', error);
+                showNotification('Erro de conexão. Verifique sua internet.', 'error');
+            }
+        }
+
+        function mostrarDetalhesRepertorio(repertorio) {
+            document.getElementById('detalhesTitulo').textContent = repertorio.nome;
+            
+            let descricaoTexto = repertorio.descricao || '';
+            if (repertorio.data_evento) {
+                descricaoTexto = `📅 ${formatDataEvento(repertorio.data_evento)}` + (descricaoTexto ? ` • ${descricaoTexto}` : '');
+            }
+            document.getElementById('detalhesDescricao').textContent = descricaoTexto;
+            
+            const listaCifras = document.getElementById('listaCifrasRepertorio');
+            const repertorioVazio = document.getElementById('repertorioVazio');
+            
+            if (repertorio.cifras && repertorio.cifras.length > 0) {
+                repertorioVazio.classList.add('hidden');
+                listaCifras.innerHTML = repertorio.cifras.map(cifra => `
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors group" onclick="verCifra(${cifra.id})">
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">${cifra.titulo}</h4>
+                            <p class="text-sm text-gray-600">${cifra.artista} - Tom: ${cifra.tom}</p>
+                            <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full mt-1">
+                                ${formatCategory(cifra.categoria)}
+                            </span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="event.stopPropagation(); removerCifraDoRepertorio(${repertorio.id}, ${cifra.id})" class="text-red-600 hover:text-red-700 text-sm p-2">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                repertorioVazio.classList.remove('hidden');
+                listaCifras.innerHTML = '';
+            }
+            
+            // Armazenar ID do repertório atual e dados completos
+            modalDetalhes.dataset.repertorioId = repertorio.id;
+            window.currentRepertorio = repertorio; // Armazenar dados para edição
+            
+            // Mostrar/esconder botão de estrutura da missa baseado no tipo
+            const btnEstruturaMissa = document.getElementById('btnEstruturaMissaModal');
+            const btnExportarPdf = document.getElementById('btnExportarPdfModal');
+            const isMissa = repertorio.nome.toLowerCase().includes('missa');
+            
+            if (isMissa) {
+                btnEstruturaMissa.classList.remove('hidden');
+                // Manter PDF na posição normal
+                btnExportarPdf.classList.remove('col-span-2');
+            } else {
+                btnEstruturaMissa.classList.add('hidden');
+                // PDF ocupa 2 colunas quando não há botão de missa
+                btnExportarPdf.classList.add('col-span-2');
+            }
+            
+            // Garantir que estamos na tela de detalhes
+            mostrarTelaDetalhes();
+            
+            modalDetalhes.classList.remove('hidden');
+        }
+
+        function fecharModalDetalhes() {
+            modalDetalhes.classList.add('hidden');
+            // Limpar dados
+            modalDetalhes.dataset.repertorioId = '';
+            // Voltar para tela de detalhes
+            mostrarTelaDetalhes();
+        }
+
+        // Variáveis globais para navegação do modal
+        let cifrasDisponiveis = [];
+        let cifrasFiltradas = [];
+
+        // Funções de navegação entre telas do modal
+        function mostrarTelaDetalhes() {
+            document.getElementById('telaDetalhesRepertorio').classList.remove('hidden');
+            document.getElementById('telaAdicionarCifra').classList.add('hidden');
+            document.getElementById('btnVoltarDetalhes').classList.add('hidden');
+            
+            // Atualizar título
+            const titulo = document.getElementById('detalhesTitulo');
+            titulo.textContent = titulo.textContent.replace(' - Adicionar Cifra', '');
+        }
+
+        function mostrarTelaAdicionarCifra() {
+            document.getElementById('telaDetalhesRepertorio').classList.add('hidden');
+            document.getElementById('telaAdicionarCifra').classList.remove('hidden');
+            document.getElementById('btnVoltarDetalhes').classList.remove('hidden');
+            
+            // Atualizar título
+            const titulo = document.getElementById('detalhesTitulo');
+            if (!titulo.textContent.includes(' - Adicionar Cifra')) {
+                titulo.textContent += ' - Adicionar Cifra';
+            }
+        }
+
+        async function abrirTelaAdicionarCifra() {
+            mostrarTelaAdicionarCifra();
+            
+            // Carregar cifras disponíveis se ainda não foram carregadas
+            if (cifrasDisponiveis.length === 0) {
+                await carregarCifrasDisponiveis();
+            }
+        }
+
+        function voltarParaDetalhes() {
+            mostrarTelaDetalhes();
+        }
+
+        async function carregarCifrasDisponiveis() {
+            try {
+                document.getElementById('loadingCifras').classList.remove('hidden');
+                document.getElementById('listaCifrasDisponiveis').classList.add('hidden');
+                
+                const response = await fetch('/api/cifras');
+                const data = await response.json();
+                
+                cifrasDisponiveis = data.cifras || [];
+                cifrasFiltradas = [...cifrasDisponiveis];
+                
+                renderizarCifrasDisponiveis();
+                
+            } catch (error) {
+                console.error('Erro ao carregar cifras:', error);
+                showNotification('Erro ao carregar cifras', 'error');
+            } finally {
+                document.getElementById('loadingCifras').classList.add('hidden');
+                document.getElementById('listaCifrasDisponiveis').classList.remove('hidden');
+            }
+        }
+
+        function renderizarCifrasDisponiveis() {
+            const container = document.getElementById('listaCifrasDisponiveis');
+            
+            if (cifrasFiltradas.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-music text-4xl text-gray-300 mb-3"></i>
+                        <p class="text-gray-600">Nenhuma cifra encontrada</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = cifrasFiltradas.map(cifra => `
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group" onclick="verCifra(${cifra.id})">
+                    <div class="flex-1">
+                        <h4 class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">${cifra.titulo}</h4>
+                        <p class="text-sm text-gray-600">${cifra.artista} - Tom: ${cifra.tom}</p>
+                        <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full mt-1">
+                            ${formatCategory(cifra.categoria)}
+                        </span>
+                    </div>
+                    <button onclick="event.stopPropagation(); adicionarCifraAoRepertorioModal(${cifra.id})" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Adicionar
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function adicionarCifraAoRepertorioModal(cifraId) {
+            const repertorioId = modalDetalhes.dataset.repertorioId;
+            
+            if (!repertorioId) {
+                showNotification('Erro: Repertório não identificado', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${repertorioId}/cifras`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cifra_id: cifraId })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Remover a cifra da lista de disponíveis
+                    removerCifraDaListaDisponivel(cifraId);
+                    
+                    // Recarregar lista de repertórios em background
+                    carregarRepertorios();
+                } else {
+                    showNotification(data.error || 'Erro ao adicionar cifra', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao adicionar cifra:', error);
+                showNotification('Erro ao adicionar cifra ao repertório', 'error');
+            }
+        }
+
+        function removerCifraDoRepertorio(repertorioId, cifraId) {
+            abrirModalConfirmacao(
+                'Remover cifra',
+                'Tem certeza que deseja remover esta cifra do repertório?',
+                () => executarRemocaoCifra(repertorioId, cifraId)
+            );
+        }
+        
+        async function executarRemocaoCifra(repertorioId, cifraId) {
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${repertorioId}/cifras/${cifraId}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Cifra removida do repertório!', 'success');
+                    
+                    // Recarregar detalhes do repertório
+                    abrirDetalhesRepertorio(repertorioId);
+                    
+                    // Recarregar lista de repertórios
+                    carregarRepertorios();
+                } else {
+                    showNotification(data.error || 'Erro ao remover cifra', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao remover cifra:', error);
+                showNotification('Erro ao remover cifra do repertório', 'error');
+            }
+        }
+
+        function verCifra(cifraId) {
+            // Buscar a cifra pelo ID nas cifras do repertório ou nas cifras disponíveis
+            let cifra = null;
+            
+            // Primeiro, procurar nas cifras do repertório atual
+            if (window.currentRepertorio && window.currentRepertorio.cifras) {
+                cifra = window.currentRepertorio.cifras.find(c => c.id === cifraId);
+            }
+            
+            // Se não encontrou, procurar nas cifras disponíveis
+            if (!cifra && cifrasDisponiveis) {
+                cifra = cifrasDisponiveis.find(c => c.id === cifraId);
+            }
+            
+            // Se ainda não encontrou, fazer uma busca na API
+            if (!cifra) {
+                buscarCifraPorId(cifraId);
+                return;
+            }
+            
+            // Criar modal para exibir a cifra
+            showCifraModalRepertorio(cifra);
+        }
+        
+        async function buscarCifraPorId(cifraId) {
+            try {
+                const response = await fetchWithAuth(`/api/cifras/${cifraId}`);
+                const data = await response.json();
+                
+                if (response.ok && data.cifra) {
+                    showCifraModalRepertorio(data.cifra);
+                } else {
+                    showNotification('Cifra não encontrada', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao buscar cifra:', error);
+                showNotification('Erro ao carregar cifra', 'error');
+            }
+        }
+        
+        function showCifraModalRepertorio(cifra) {
+            // Criar modal dinamicamente com altura fixa
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+            modal.innerHTML = `
+                <div class="bg-white rounded-lg max-w-4xl w-full h-[600px] flex flex-col overflow-hidden">
+                    <!-- Header fixo -->
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-4 md:p-6 border-b flex-shrink-0">
+                        <div class="mb-3 md:mb-0">
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-900">${cifra.titulo}</h3>
+                            <p class="text-gray-600 text-sm md:text-base">${cifra.artista}</p>
+                        </div>
+                        <button onclick="fecharCifraModal()" class="text-gray-400 hover:text-gray-600 self-end md:self-auto">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Conteúdo scrollável com altura fixa -->
+                    <div class="flex-1 overflow-y-auto" style="height: calc(600px - 140px);">
+                        <div class="p-4 md:p-6">
+                            <div class="space-y-4">
+                                <div class="flex flex-wrap items-center gap-2 md:gap-4 mb-6">
+                                    <span class="tom-tag px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">Tom: ${cifra.tom}</span>
+                                    <span class="category-tag px-2 py-1 bg-green-100 text-green-800 rounded text-sm">${formatCategory(cifra.categoria)}</span>
+                                    <span class="text-sm text-gray-500"><i class="fas fa-eye mr-1"></i>${cifra.views || 0}</span>
+                                </div>
+                                <pre style="font-family: 'Roboto Mono', 'Courier New', monospace; white-space: pre; font-size: 14px; line-height: 1.4; margin: 0; overflow-x: auto;">${cifra.letra}</pre>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer fixo -->
+                    <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center p-4 md:p-6 border-t bg-gray-50 space-y-3 md:space-y-0 flex-shrink-0">
+                        <div class="flex space-x-2 justify-center md:justify-start">
+                            <button class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm">
+                                <i class="fas fa-arrow-up mr-1"></i> Subir Tom
+                            </button>
+                            <button class="bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700 text-sm">
+                                <i class="fas fa-arrow-down mr-1"></i> Baixar Tom
+                            </button>
+                        </div>
+                        <div class="flex space-x-2 justify-center md:justify-end">
+                            <button onclick="abrirTelaMissa(${cifra.id})" class="bg-blue-600 text-white px-3 md:px-4 py-2 rounded hover:bg-blue-700 text-sm flex-1 md:flex-initial">
+                                <i class="fas fa-eye mr-1"></i> Tela da Missa
+                            </button>
+                            <button class="bg-red-600 text-white px-3 md:px-4 py-2 rounded hover:bg-red-700 text-sm flex-1 md:flex-initial">
+                                <i class="fas fa-heart mr-1"></i> Favoritar
+                            </button>
+                            <button class="bg-green-600 text-white px-3 md:px-4 py-2 rounded hover:bg-green-700 text-sm flex-1 md:flex-initial">
+                                <i class="fas fa-share mr-1"></i> Compartilhar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Fechar modal clicando fora
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    fecharCifraModal();
+                }
+            });
+        }
+        
+        function fecharCifraModal() {
+            const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function abrirTelaMissa(cifraId) {
+            window.open(`/?tela-missa=${cifraId}`, '_blank');
+        }
+
+        // Busca de cifras no modal
+        function buscarCifrasDisponiveis(termo) {
+            if (!termo || termo.trim() === '') {
+                cifrasFiltradas = [...cifrasDisponiveis];
+            } else {
+                const termoBusca = termo.toLowerCase();
+                cifrasFiltradas = cifrasDisponiveis.filter(cifra => 
+                    cifra.titulo.toLowerCase().includes(termoBusca) ||
+                    cifra.artista.toLowerCase().includes(termoBusca) ||
+                    cifra.categoria.toLowerCase().includes(termoBusca)
+                );
+            }
+            
+            renderizarCifrasDisponiveis();
+        }
+
+        // FUNÇÕES DA ESTRUTURA DA MISSA
+        
+        // Variáveis globais para estrutura da missa
+        let repertorioMissaAtual = null;
+        let cifrasCarregadas = [];
+        let partesAtivas = new Set();
+
+        // Abrir modal da estrutura da missa
+        function abrirEstruturaMissa(repertorio) {
+            repertorioMissaAtual = repertorio;
+            document.getElementById('tituloEstruturaMissa').textContent = repertorio.nome;
+            document.getElementById('modalEstruturaMissa').classList.remove('hidden');
+            
+            // Carregar cifras disponíveis
+            carregarCifrasParaEstrutura();
+        }
+
+        // Fechar modal da estrutura da missa
+        function fecharEstruturaMissa() {
+            document.getElementById('modalEstruturaMissa').classList.add('hidden');
+            repertorioMissaAtual = null;
+            partesAtivas.clear();
+        }
+
+        // Toggle da parte da missa (expandir/recolher)
+        function toggleParteMissa(parte) {
+            const cifrasDiv = document.getElementById(`cifras${parte.charAt(0).toUpperCase() + parte.slice(1)}`);
+            const isExpanded = !cifrasDiv.classList.contains('hidden');
+            
+            if (isExpanded) {
+                cifrasDiv.classList.add('hidden');
+                partesAtivas.delete(parte);
+            } else {
+                cifrasDiv.classList.remove('hidden');
+                partesAtivas.add(parte);
+                
+                // Se ainda não carregou as cifras para esta parte, carregar
+                if (!cifrasCarregadas.length) {
+                    carregarCifrasParaEstrutura();
+                } else {
+                    renderizarCifrasParaParte(parte, cifrasCarregadas);
+                }
+            }
+        }
+
+        // Carregar cifras disponíveis
+        async function carregarCifrasParaEstrutura() {
+            try {
+                const response = await fetch(apiUrl('/api/cifras'));
+                const data = await response.json();
+                cifrasCarregadas = data.cifras || [];
+                
+                // Renderizar para todas as partes ativas
+                partesAtivas.forEach(parte => {
+                    renderizarCifrasParaParte(parte, cifrasCarregadas);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar cifras:', error);
+                showNotification('Erro ao carregar cifras', 'error');
+            }
+        }
+
+        // Renderizar cifras para uma parte específica
+        function renderizarCifrasParaParte(parte, cifras) {
+            const container = document.getElementById(`listaCifras${parte.charAt(0).toUpperCase() + parte.slice(1)}`);
+            
+            if (!cifras.length) {
+                container.innerHTML = `
+                    <div class="text-center py-4">
+                        <p class="text-gray-600">Nenhuma cifra encontrada</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = cifras.map(cifra => `
+                <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group" onclick="visualizarCifra(${cifra.id})">
+                    <div class="flex-1">
+                        <h5 class="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">${cifra.titulo}</h5>
+                        <p class="text-sm text-gray-600">${cifra.artista}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="event.stopPropagation(); adicionarCifraAParte('${parte}', ${cifra.id})" 
+                                class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition-colors"
+                                title="Adicionar à ${parte}">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Buscar cifras para uma parte específica
+        function buscarCifrasParaParte(parte, termo) {
+            if (!termo || termo.trim() === '') {
+                renderizarCifrasParaParte(parte, cifrasCarregadas);
+                return;
+            }
+            
+            const termoBusca = termo.toLowerCase();
+            const cifrasFiltradas = cifrasCarregadas.filter(cifra => 
+                cifra.titulo.toLowerCase().includes(termoBusca) ||
+                cifra.artista.toLowerCase().includes(termoBusca) ||
+                (cifra.categoria && cifra.categoria.toLowerCase().includes(termoBusca))
+            );
+            
+            renderizarCifrasParaParte(parte, cifrasFiltradas);
+        }
+
+        // Adicionar cifra a uma parte específica da missa
+        async function adicionarCifraAParte(parte, cifraId) {
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${repertorioMissaAtual.id}/cifras`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        cifra_id: cifraId,
+                        parte_missa: parte 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Atualizar contador
+                    atualizarContadorParte(parte);
+                    
+                    // Adicionar cifra visualmente na lista da parte
+                    adicionarCifraVisualmenteParte(parte, cifraId);
+                    
+                    // Remover cifra da lista de disponíveis da parte
+                    removerCifraDaListaParte(parte, cifraId);
+                } else {
+                    showNotification(data.error || 'Erro ao adicionar cifra', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao adicionar cifra:', error);
+                showNotification('Erro ao adicionar cifra', 'error');
+            }
+        }
+
+        // Atualizar contador de cifras por parte
+        function atualizarContadorParte(parte) {
+            const countElement = document.getElementById(`count${parte.charAt(0).toUpperCase() + parte.slice(1)}`);
+            const currentCount = parseInt(countElement.textContent) || 0;
+            countElement.textContent = `${currentCount + 1} cifra${currentCount + 1 > 1 ? 's' : ''}`;
+        }
+        
+        // Adicionar cifra visualmente na lista da parte
+        function adicionarCifraVisualmenteParte(parte, cifraId) {
+            // Encontrar a cifra nas cifras carregadas
+            const cifra = cifrasCarregadas.find(c => c.id === cifraId);
+            if (!cifra) return;
+            
+            // Container da lista de cifras da parte
+            const parteCapitalized = parte.charAt(0).toUpperCase() + parte.slice(1);
+            const listaCifrasId = `listaCifrasAdicionadas${parteCapitalized}`;
+            let listaCifras = document.getElementById(listaCifrasId);
+            
+            // Se não existe o container de cifras adicionadas, criar
+            if (!listaCifras) {
+                const cifrasDiv = document.getElementById(`cifras${parteCapitalized}`);
+                const novaLista = document.createElement('div');
+                novaLista.id = listaCifrasId;
+                novaLista.className = 'mt-4 space-y-2';
+                
+                // Adicionar título se for a primeira cifra
+                const titulo = document.createElement('h5');
+                titulo.className = 'text-sm font-medium text-gray-700 mb-2';
+                titulo.textContent = 'Cifras adicionadas:';
+                novaLista.appendChild(titulo);
+                
+                cifrasDiv.appendChild(novaLista);
+                listaCifras = novaLista;
+            }
+            
+            // Criar elemento da cifra adicionada
+            const cifraElement = document.createElement('div');
+            cifraElement.className = 'flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100 cursor-pointer transition-colors group';
+            cifraElement.onclick = () => visualizarCifra(cifra.id);
+            cifraElement.innerHTML = `
+                <div class="flex-1">
+                    <h6 class="font-medium text-green-900 group-hover:text-green-700 transition-colors">${cifra.titulo}</h6>
+                    <p class="text-sm text-green-700">${cifra.artista}</p>
+                    <span class="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full mt-1">
+                        Adicionada
+                    </span>
+                </div>
+            `;
+            
+            listaCifras.appendChild(cifraElement);
+        }
+        
+        // Remover cifra da lista de disponíveis de uma parte após adicionar
+        function removerCifraDaListaParte(parte, cifraId) {
+            // Remover das cifras carregadas
+            cifrasCarregadas = cifrasCarregadas.filter(c => c.id !== cifraId);
+            
+            // Re-renderizar a lista da parte
+            renderizarCifrasParaParte(parte, cifrasCarregadas);
+        }
+        
+        // Remover cifra da lista de disponíveis após adicionar
+        function removerCifraDaListaDisponivel(cifraId) {
+            // Remover das arrays de cifras
+            cifrasDisponiveis = cifrasDisponiveis.filter(c => c.id !== cifraId);
+            cifrasFiltradas = cifrasFiltradas.filter(c => c.id !== cifraId);
+            
+            // Re-renderizar a lista atualizada
+            renderizarCifrasDisponiveis();
+        }
+
+        // Visualizar cifra (abrir modal ou nova aba)
+        function visualizarCifra(cifraId) {
+            window.open(`/?cifra=${cifraId}`, '_blank');
+        }
+
+        // Finalizar estrutura da missa
+        function finalizarEstruturaMissa() {
+            showNotification('Repertório de missa criado com sucesso!', 'success');
+            fecharEstruturaMissa();
+            carregarRepertorios();
+        }
+
+        // Voltar para edição do repertório (da estrutura da missa)
+        function voltarParaEdicaoRepertorio() {
+            if (repertorioMissaAtual) {
+                editarRepertorio(repertorioMissaAtual.id);
+                fecharEstruturaMissa();
+            }
+        }
+
+        // FUNÇÕES DE GERENCIAMENTO DE REPERTÓRIOS
+
+        // Toggle do menu de ações do repertório
+        function toggleMenuRepertorio(id, event) {
+            event.stopPropagation();
+            
+            // Fechar todos os outros menus
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                if (menu.id !== `menu-${id}`) {
+                    menu.classList.add('hidden');
+                }
+            });
+            
+            // Toggle do menu atual
+            const menu = document.getElementById(`menu-${id}`);
+            menu.classList.toggle('hidden');
+        }
+
+        // Editar repertório
+        async function editarRepertorio(id) {
+            // Fechar todos os menus abertos
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+            
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${id}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Fechar modal de detalhes se estiver aberto
+                    const modalDetalhes = document.getElementById('modalDetalhes');
+                    if (!modalDetalhes.classList.contains('hidden')) {
+                        modalDetalhes.classList.add('hidden');
+                    }
+                    
+                    // Preencher o formulário com os dados existentes
+                    repertorioEditando = data;
+                    document.getElementById('modalTitle').textContent = 'Editar Repertório';
+                    
+                    // Detectar tipo do repertório (se não existe campo tipo no banco)
+                    let tipo = data.tipo || 'outros';
+                    if (!data.tipo) {
+                        const nome = data.nome.toLowerCase();
+                        if (nome.includes('missa')) {
+                            tipo = 'missa';
+                        } else if (nome.includes('adoração') || nome.includes('adoracao')) {
+                            tipo = 'adoracao';
+                        } else if (nome.includes('jovens') || nome.includes('oração') || nome.includes('oracao')) {
+                            tipo = 'jovens';
+                        }
+                    }
+                    
+                    document.getElementById('tipoRepertorio').value = tipo;
+                    document.getElementById('nomeRepertorio').value = data.nome;
+                    document.getElementById('dataRepertorio').value = data.data_evento || '';
+                    document.getElementById('descricaoRepertorio').value = data.descricao || '';
+                    document.getElementById('corRepertorio').value = data.cor || '#3B82F6';
+                    document.getElementById('corTexto').value = data.cor || '#3B82F6';
+                    document.getElementById('publicoRepertorio').checked = data.publico || false;
+                    
+                    modalRepertorio.classList.remove('hidden');
+                } else {
+                    showNotification(data.error || 'Erro ao carregar repertório', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar repertório:', error);
+                showNotification('Erro ao carregar repertório para edição', 'error');
+            }
+        }
+
+        // Duplicar repertório
+        async function duplicarRepertorio(id) {
+            // Fechar todos os menus abertos
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+            
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${id}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Fechar modal de detalhes se estiver aberto
+                    const modalDetalhes = document.getElementById('modalDetalhes');
+                    if (!modalDetalhes.classList.contains('hidden')) {
+                        modalDetalhes.classList.add('hidden');
+                    }
+                    
+                    // Preencher o formulário com os dados existentes mas como novo
+                    repertorioEditando = null;
+                    document.getElementById('modalTitle').textContent = 'Duplicar Repertório';
+                    document.getElementById('tipoRepertorio').value = data.tipo || 'outros';
+                    document.getElementById('nomeRepertorio').value = `${data.nome} (Cópia)`;
+                    document.getElementById('dataRepertorio').value = '';
+                    document.getElementById('descricaoRepertorio').value = data.descricao || '';
+                    document.getElementById('corRepertorio').value = data.cor || '#3B82F6';
+                    document.getElementById('corTexto').value = data.cor || '#3B82F6';
+                    document.getElementById('publicoRepertorio').checked = false;
+                    
+                    modalRepertorio.classList.remove('hidden');
+                } else {
+                    showNotification(data.error || 'Erro ao carregar repertório', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar repertório:', error);
+                showNotification('Erro ao duplicar repertório', 'error');
+            }
+        }
+
+        // Excluir repertório
+        function excluirRepertorio(id) {
+            // Fechar todos os menus abertos
+            document.querySelectorAll('[id^="menu-"]').forEach(menu => {
+                menu.classList.add('hidden');
+            });
+            
+            abrirModalConfirmacao(
+                'Excluir repertório',
+                'Tem certeza que deseja excluir este repertório? Esta ação não pode ser desfeita.',
+                () => executarExclusaoRepertorio(id)
+            );
+        }
+        
+        async function executarExclusaoRepertorio(id) {
+            try {
+                const response = await fetchWithAuth(`/api/repertorios/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('Repertório excluído com sucesso!', 'success');
+                    carregarRepertorios();
+                } else {
+                    showNotification(data.error || 'Erro ao excluir repertório', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao excluir repertório:', error);
+                showNotification('Erro ao excluir repertório', 'error');
+            }
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'Data não informada';
+            
+            try {
+                const date = new Date(dateString);
+                if (isNaN(date.getTime())) return 'Data inválida';
+                
+                return date.toLocaleDateString('pt-BR', { 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric' 
+                });
+            } catch (error) {
+                return 'Data inválida';
+            }
+        }
+
+        function formatDataEvento(dateString) {
+            const date = new Date(dateString + 'T00:00:00'); // Evitar problemas de timezone
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            // Normalizar para comparação (apenas data, sem horário)
+            const eventDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const tomorrowDate = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+            
+            if (eventDate.getTime() === todayDate.getTime()) {
+                return 'Hoje';
+            } else if (eventDate.getTime() === tomorrowDate.getTime()) {
+                return 'Amanhã';
+            } else {
+                const options = { 
+                    weekday: 'long', 
+                    day: '2-digit', 
+                    month: '2-digit', 
+                    year: 'numeric' 
+                };
+                return date.toLocaleDateString('pt-BR', options);
+            }
+        }
+
+        function formatCategory(categoria) {
+            const names = {
+                entrada: 'Entrada',
+                comunhao: 'Comunhão',
+                final: 'Final',
+                adoracao: 'Adoração',
+                mariana: 'Mariana',
+                ofertorio: 'Ofertório'
+            };
+            return names[categoria] || categoria;
+        }
+
+        function showNotification(message, type = 'info') {
+            // Implementar sistema de notificações
+            console.log(`${type.toUpperCase()}: ${message}`);
+            alert(message); // Temporário
+        }
+        
+        // FUNÇÕES DO MODAL DE CONFIRMAÇÃO
+        let acaoConfirmacao = null;
+        
+        function abrirModalConfirmacao(titulo, mensagem, callback) {
+            document.getElementById('tituloConfirmacao').textContent = titulo;
+            document.getElementById('mensagemConfirmacao').textContent = mensagem;
+            acaoConfirmacao = callback;
+            document.getElementById('modalConfirmacao').classList.remove('hidden');
+        }
+        
+        function fecharModalConfirmacao() {
+            document.getElementById('modalConfirmacao').classList.add('hidden');
+            acaoConfirmacao = null;
+        }
+        
+        function confirmarAcao() {
+            if (acaoConfirmacao) {
+                acaoConfirmacao();
+            }
+            fecharModalConfirmacao();
+        }
+        
+        // Função para fechar o modal ativo quando ESC é pressionado
+        function fecharModalAtivo() {
+            // Verificar modais em ordem de prioridade (mais específicos primeiro)
+            
+            // Modal de confirmação (mais prioritário)
+            const modalConfirmacao = document.getElementById('modalConfirmacao');
+            if (modalConfirmacao && !modalConfirmacao.classList.contains('hidden')) {
+                fecharModalConfirmacao();
+                return;
+            }
+            
+            // Modal de estrutura da missa
+            const modalEstruturaMissa = document.getElementById('modalEstruturaMissa');
+            if (modalEstruturaMissa && !modalEstruturaMissa.classList.contains('hidden')) {
+                fecharEstruturaMissa();
+                return;
+            }
+            
+            // Modal de detalhes do repertório
+            const modalDetalhes = document.getElementById('modalDetalhes');
+            if (modalDetalhes && !modalDetalhes.classList.contains('hidden')) {
+                fecharModalDetalhes();
+                return;
+            }
+            
+            // Modal de criar/editar repertório
+            const modalRepertorio = document.getElementById('modalRepertorio');
+            if (modalRepertorio && !modalRepertorio.classList.contains('hidden')) {
+                fecharModalRepertorio();
+                return;
+            }
+        }
+
+        // Função para exportar repertório como PDF
+        async function exportarRepertorioPDF(repertorioId) {
+            try {
+                showNotification('Gerando PDF...', 'info');
+                
+                // Buscar dados completos do repertório
+                const response = await fetchWithAuth(`/api/repertorios/${repertorioId}`);
+                const repertorio = await response.json();
+                
+                if (!response.ok) {
+                    showNotification('Erro ao carregar dados do repertório', 'error');
+                    return;
+                }
+                
+                if (!repertorio.cifras || repertorio.cifras.length === 0) {
+                    showNotification('Este repertório não possui cifras para exportar', 'error');
+                    return;
+                }
+                
+                // Criar conteúdo HTML para o PDF
+                const htmlContent = gerarHtmlParaPDF(repertorio);
+                
+                // Configurações do PDF
+                const options = {
+                    margin: [15, 15, 15, 15],
+                    filename: `${repertorio.nome.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'portrait',
+                        putOnlyUsedFonts: true,
+                        floatPrecision: 16
+                    },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
+                
+                // Gerar PDF
+                await html2pdf().set(options).from(htmlContent).save();
+                
+                showNotification('PDF gerado com sucesso!', 'success');
+                
+            } catch (error) {
+                console.error('Erro ao gerar PDF:', error);
+                showNotification('Erro ao gerar PDF', 'error');
+            }
+        }
+
+        // Função para gerar HTML das cifras no estilo "tela da missa"
+        function gerarHtmlParaPDF(repertorio) {
+            const dataEvento = repertorio.data_evento ? formatDataEvento(repertorio.data_evento) : '';
+            
+            let html = `
+                <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; line-height: 1.4;">
+                    <!-- Capa do Repertório -->
+                    <div style="page-break-after: always; text-align: center; padding: 50px 20px;">
+                        <h1 style="font-size: 32px; margin-bottom: 20px; color: ${repertorio.cor || '#3B82F6'};">${repertorio.nome}</h1>
+                        ${dataEvento ? `<h2 style="font-size: 20px; margin-bottom: 30px; color: #666;">${dataEvento}</h2>` : ''}
+                        ${repertorio.descricao ? `<p style="font-size: 16px; margin-bottom: 40px; color: #777;">${repertorio.descricao}</p>` : ''}
+                        <div style="border-top: 2px solid ${repertorio.cor || '#3B82F6'}; margin: 40px auto; width: 200px;"></div>
+                        <p style="font-size: 14px; color: #999; margin-top: 40px;">
+                            ${repertorio.cifras.length} cifra${repertorio.cifras.length !== 1 ? 's' : ''} • 
+                            Gerado em ${new Date().toLocaleDateString('pt-BR')}
+                        </p>
+                    </div>
+            `;
+            
+            // Adicionar cada cifra em uma página
+            repertorio.cifras.forEach((cifra, index) => {
+                const letraFormatada = formatarLetraParaPDF(cifra.letra);
+                
+                html += `
+                    <div style="page-break-before: always; padding: 20px;">
+                        <!-- Cabeçalho da cifra -->
+                        <div style="border-bottom: 2px solid ${repertorio.cor || '#3B82F6'}; padding-bottom: 15px; margin-bottom: 25px;">
+                            <h2 style="font-size: 24px; margin: 0 0 5px 0; color: ${repertorio.cor || '#3B82F6'};">${cifra.titulo}</h2>
+                            <p style="font-size: 16px; margin: 0; color: #666;">
+                                <strong>${cifra.artista}</strong>
+                                ${cifra.compositor && cifra.compositor !== cifra.artista ? ` • Comp.: ${cifra.compositor}` : ''}
+                            </p>
+                            <div style="margin-top: 8px; display: flex; align-items: center; font-size: 14px; color: #777;">
+                                <span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px; margin-right: 10px;">
+                                    Tom: <strong>${cifra.tom}</strong>
+                                </span>
+                                ${cifra.capo ? `<span style="background: #f3f4f6; padding: 4px 8px; border-radius: 4px; margin-right: 10px;">Capo: ${cifra.capo}</span>` : ''}
+                                <span style="background: #e0f2fe; padding: 4px 8px; border-radius: 4px; color: #0277bd;">
+                                    ${formatCategory(cifra.categoria)}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Letra da cifra -->
+                        <div style="font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.6; white-space: pre; color: #333;">
+                            ${letraFormatada}
+                        </div>
+                        
+                        <!-- Rodapé da página -->
+                        <div style="position: fixed; bottom: 20px; right: 20px; font-size: 10px; color: #999;">
+                            ${index + 1} / ${repertorio.cifras.length}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            return html;
+        }
+
+        // Função para formatar a letra com destaque para acordes
+        function formatarLetraParaPDF(letra) {
+            if (!letra) return '';
+            
+            // Destacar acordes (texto entre [ ])
+            return letra
+                .replace(/\[([^\]]+)\]/g, '<span style="color: #d32f2f; font-weight: bold; background: #ffebee; padding: 1px 3px; border-radius: 3px;">$1</span>')
+                .replace(/\n/g, '<br>');
+        }
+    </script>
+
+    <!-- Modal de Confirmação -->
+    <div id="modalConfirmacao" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden" onclick="fecharModalConfirmacao()">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all" onclick="event.stopPropagation()">
+            <div class="flex items-center mb-4">
+                <div class="flex-shrink-0">
+                    <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-lg font-medium text-gray-900" id="tituloConfirmacao">Confirmar ação</h3>
+                </div>
+            </div>
+            <div class="mb-6">
+                <p class="text-sm text-gray-600" id="mensagemConfirmacao">Tem certeza que deseja continuar?</p>
+            </div>
+            <div class="flex justify-end space-x-3">
+                <button type="button" 
+                        onclick="fecharModalConfirmacao()" 
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Cancelar
+                </button>
+                <button type="button" 
+                        id="btnConfirmarAcao"
+                        class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500">
+                    Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Área oculta para renderização do PDF -->
+    <div id="pdfContent" style="display: none;"></div>
+</body>
+</html> 

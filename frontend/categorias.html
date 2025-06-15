@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifras por Categoria - OMúsicoCatólico</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-item:hover { 
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dropdown Navigation Styles */
+        .nav-item-dropdown {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        nav .flex {
+            overflow: visible !important;
+        }
+        
+        .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-item-dropdown:hover .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-item-dropdown:hover .nav-item {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            z-index: 40;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        .category-tag { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 500; }
+        .tom-tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: #e5f3ff; color: #1d4ed8; }
+
+        /* Forçar dropdowns invisíveis quando modal está aberto */
+        body.modal-open .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(2px) !important;
+            z-index: -1 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Principal -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo e Título -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-blue-600 cursor-pointer hover:text-blue-700 transition-colors" onclick="goToHome()">OMúsicoCatólico</h1>
+                    </div>
+                </div>
+
+                <!-- Busca Central -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Buscar cifras..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" onkeyup="handleSearch(event)">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ações e User Menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Login/User Menu -->
+                    <div class="relative" id="userMenu">
+                        <div id="notLoggedIn" class="flex items-center space-x-2">
+                            <button onclick="quickLogin()" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                                Login Teste
+                            </button>
+                            <a href="login.html" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                                Login
+                            </a>
+                        </div>
+                        
+                        <div id="loggedIn" class="hidden">
+                            <button onclick="toggleUserMenu()" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </button>
+                            
+                            <!-- Dropdown -->
+                            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                <div class="py-1">
+                                    <div class="px-4 py-2 text-sm text-gray-900 border-b">
+                                        <span id="userName">Usuário</span>
+                                    </div>
+                                                        <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-user mr-2"></i>Meu Perfil
+                    </a>
+                    <a href="/repertorios" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                        <i class="fas fa-list mr-2"></i>Meus Repertórios
+                    </a>
+                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-cog mr-2"></i>Configurações
+                                    </a>
+                                    <div id="masterLink" class="hidden">
+                                        <hr class="my-1">
+                                        <a href="master-dashboard.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                            <i class="fas fa-crown mr-2"></i>Painel Master
+                                        </a>
+                                    </div>
+                                    <hr class="my-1">
+                                    <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação Principal -->
+    <nav class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto py-4 relative">
+                <a href="/inicio" class="nav-item flex items-center px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
+                    Início
+                </a>
+                <!-- Repertórios Dropdown -->
+                <div class="nav-item-dropdown relative">
+                    <div class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap cursor-pointer">
+                        <i class="fas fa-list w-4 h-4 mr-2 text-gray-500"></i>
+                        Repertórios
+                        <i class="fas fa-chevron-down w-3 h-3 ml-2 text-gray-400 transition-transform duration-200"></i>
+                    </div>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 40; overflow: visible;">
+                        <div class="py-2">
+                            <a href="/repertorios" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-user w-4 h-4 mr-3 text-blue-500"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-users w-4 h-4 mr-3 text-green-500"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="/favoritas" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-heart w-4 h-4 mr-2 text-gray-500"></i>
+                    Favoritas
+                </a>
+                <a href="/minhas-cifras" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
+                    Minhas Cifras
+                </a>
+                <a href="/categorias" class="nav-item flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-white rounded-lg shadow-sm whitespace-nowrap">
+                    <i class="fas fa-tags w-4 h-4 mr-2 text-blue-500"></i>
+                    Categorias
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Breadcrumb -->
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                <li class="inline-flex items-center">
+                    <a href="/inicio" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-home mr-2"></i>
+                        Início
+                    </a>
+                </li>
+                <li>
+                    <div class="flex items-center">
+                        <i class="fas fa-chevron-right text-gray-400 mr-2"></i>
+                        <span class="text-sm font-medium text-gray-500">Categorias</span>
+                    </div>
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Title -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Cifras por Categoria</h1>
+            <p class="text-gray-600">Encontre cifras organizadas por momentos da missa e tempo litúrgico</p>
+        </div>
+
+        <!-- Filtros -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-filter text-blue-600 mr-2"></i>
+                Filtros
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Parte da Missa -->
+                <div>
+                    <label for="parteMissa" class="block text-sm font-medium text-gray-700 mb-2">
+                        Parte da Missa
+                    </label>
+                    <select id="parteMissa" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Todas as partes</option>
+                        <option value="entrada">Entrada</option>
+                        <option value="ato-penitencial">Ato Penitencial</option>
+                        <option value="gloria">Glória</option>
+                        <option value="salmo">Salmo Responsorial</option>
+                        <option value="aleluia">Aleluia/Aclamação</option>
+                        <option value="ofertorio">Ofertório</option>
+                        <option value="santo">Santo</option>
+                        <option value="pai-nosso">Pai Nosso</option>
+                        <option value="cordeiro">Cordeiro de Deus</option>
+                        <option value="comunhao">Comunhão</option>
+                        <option value="final">Final</option>
+                        <option value="adoracao">Adoração</option>
+                        <option value="mariana">Marianas</option>
+                    </select>
+                </div>
+
+                <!-- Tempo Litúrgico -->
+                <div>
+                    <label for="tempoLiturgico" class="block text-sm font-medium text-gray-700 mb-2">
+                        Tempo Litúrgico
+                    </label>
+                    <select id="tempoLiturgico" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="">Todos os tempos</option>
+                        <option value="advento">Advento</option>
+                        <option value="natal">Natal</option>
+                        <option value="tempo-comum">Tempo Comum</option>
+                        <option value="quaresma">Quaresma</option>
+                        <option value="pascoa">Páscoa</option>
+                        <option value="festas">Festas e Solenidades</option>
+                        <option value="santos">Santos</option>
+                        <option value="maria">Nossa Senhora</option>
+                        <option value="finados">Finados</option>
+                        <option value="casamento">Casamento</option>
+                        <option value="batismo">Batismo</option>
+                        <option value="primeira-comunhao">Primeira Comunhão</option>
+                        <option value="crisma">Crisma</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="flex items-center justify-between mt-6">
+                <button onclick="limparFiltros()" class="text-gray-600 hover:text-gray-700 font-medium flex items-center">
+                    <i class="fas fa-times mr-2"></i>
+                    Limpar Filtros
+                </button>
+                <button onclick="aplicarFiltros()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                    <i class="fas fa-search mr-2"></i>
+                    Aplicar Filtros
+                </button>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-lg font-semibold text-gray-900" id="tituloResultados">Todas as Cifras</h2>
+                <div class="text-sm text-gray-600" id="contadorResultados">
+                    <!-- Será preenchido via JavaScript -->
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="text-center py-12">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p class="text-gray-600">Carregando cifras...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="hidden text-center py-12">
+                <div class="bg-gray-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-search text-gray-400 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Nenhuma cifra encontrada</h3>
+                <p class="text-gray-600 mb-6">Tente ajustar os filtros ou limpar para ver todas as cifras</p>
+                <button onclick="limparFiltros()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    Ver Todas as Cifras
+                </button>
+            </div>
+
+            <!-- Results Grid -->
+            <div id="resultsGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cifras serão preenchidas via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais (reutilizar do app.js) -->
+    <div id="modals"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/categorias.js"></script>
+</body>
+</html> 

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repertórios da Comunidade - OMúsicoCatólico</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Estilos para navegação principal */
+        .nav-item:hover { 
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dropdown Navigation Styles */
+        .nav-item-dropdown {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Permitir overflow do dropdown */
+        nav .flex {
+            overflow: visible !important;
+        }
+        
+        .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-item-dropdown:hover .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-item-dropdown:hover .nav-item {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            z-index: 40;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        .repertorio-card {
+            transition: all 0.3s ease;
+        }
+
+        .repertorio-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .repertorio-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Forçar dropdowns invisíveis quando modal está aberto */
+        body.modal-open .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(2px) !important;
+            z-index: -1 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header Principal -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo e Título -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="index.html" class="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">OMúsicoCatólico</a>
+                    </div>
+                </div>
+
+                <!-- Busca Central -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            placeholder="Buscar repertórios da comunidade..."
+                            class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                            id="searchInput"
+                        >
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative" id="userMenu">
+                        <div id="notLoggedIn" class="flex items-center space-x-2">
+                            <a href="login.html" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                                Login
+                            </a>
+                        </div>
+                        
+                        <div id="loggedIn" class="hidden">
+                            <button onclick="toggleUserMenu()" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </button>
+                            
+                            <!-- Dropdown -->
+                            <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                <div class="py-1">
+                                    <div class="px-4 py-2 text-sm text-gray-900 border-b">
+                                        <span id="userName">Usuário</span>
+                                    </div>
+                                    <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-user mr-2"></i>Meu Perfil
+                                    </a>
+                                    <a href="repertorios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-list mr-2"></i>Meus Repertórios
+                                    </a>
+                                    <div id="masterLink" class="hidden">
+                                        <hr class="my-1">
+                                        <a href="master-dashboard.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                            <i class="fas fa-crown mr-2"></i>Painel Master
+                                        </a>
+                                    </div>
+                                    <hr class="my-1">
+                                    <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação Principal -->
+    <nav class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto py-4 relative">
+                <a href="index.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
+                    Início
+                </a>
+                <!-- Repertórios Dropdown -->
+                <div class="nav-item-dropdown relative">
+                    <div class="nav-item flex items-center px-3 py-2 text-sm font-medium text-blue-600 bg-white rounded-lg shadow-sm whitespace-nowrap cursor-pointer">
+                        <i class="fas fa-list w-4 h-4 mr-2 text-blue-600"></i>
+                        Repertórios
+                        <i class="fas fa-chevron-down w-3 h-3 ml-2 text-blue-400 transition-transform duration-200"></i>
+                    </div>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 40; overflow: visible;">
+                        <div class="py-2">
+                            <a href="repertorios.html" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-user w-4 h-4 mr-3 text-blue-500"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="repertorios-comunidade.html" class="dropdown-item flex items-center px-4 py-2 text-sm text-green-600 bg-green-50 font-medium hover:bg-green-100 transition-colors">
+                                <i class="fas fa-users w-4 h-4 mr-3 text-green-500"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" onclick="filtrarFavoritas()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-heart w-4 h-4 mr-2 text-gray-500"></i>
+                    Favoritas
+                </a>
+                <a href="#" onclick="filtrarMinhasCifras()" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
+                    Minhas Cifras
+                </a>
+                <a href="categorias.html" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-tags w-4 h-4 mr-2 text-gray-500"></i>
+                    Categorias
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header da página -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-users text-green-600 mr-3"></i>
+                            Repertórios da Comunidade
+                        </h1>
+                        <p class="text-gray-600 mt-2">Descubra e explore repertórios compartilhados pela comunidade católica</p>
+                    </div>
+                    
+                    <!-- Filtros -->
+                    <div class="flex items-center space-x-4">
+                        <select id="sortFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="recent">Mais Recentes</option>
+                            <option value="popular">Mais Populares</option>
+                            <option value="name">Nome A-Z</option>
+                            <option value="cifras">Mais Cifras</option>
+                        </select>
+                        
+                        <button onclick="refreshRepertoires()" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatísticas rápidas -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <i class="fas fa-users text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total de Repertórios</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalRepertoires">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <i class="fas fa-music text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Cifras Compartilhadas</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalCifras">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <i class="fas fa-eye text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Visualizações</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalViews">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg">
+                            <i class="fas fa-star text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Mais Popular</p>
+                            <p class="text-sm font-bold text-gray-900" id="mostPopular">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Repertórios -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Todos os Repertórios</h2>
+                        <span class="text-sm text-gray-500" id="repertoiresCount">Carregando...</span>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="loadingState" class="space-y-4">
+                        <div class="loading-shimmer h-20 rounded-lg"></div>
+                        <div class="loading-shimmer h-20 rounded-lg"></div>
+                        <div class="loading-shimmer h-20 rounded-lg"></div>
+                    </div>
+                    
+                    <!-- Repertórios Grid -->
+                    <div id="repertoriesGrid" class="hidden space-y-4">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden text-center py-12">
+                        <i class="fas fa-folder-open text-gray-300 text-5xl mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum repertório encontrado</h3>
+                        <p class="text-gray-500">Ainda não há repertórios públicos na comunidade.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let allRepertoires = [];
+        let filteredRepertoires = [];
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            loadCommunityRepertoires();
+            setupEventListeners();
+            checkMasterAccess();
+        });
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Busca
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            
+            // Filtro de ordenação
+            document.getElementById('sortFilter').addEventListener('change', handleSort);
+        }
+
+        // Carregar repertórios da comunidade
+        async function loadCommunityRepertoires() {
+            try {
+                showLoading();
+                
+                const response = await fetch(apiUrl('/api/repertorios/publicos'));
+                const data = await response.json();
+                
+                if (data.success) {
+                    allRepertoires = data.repertorios || [];
+                    filteredRepertoires = [...allRepertoires];
+                    updateStatistics();
+                    renderRepertoires();
+                } else {
+                    showError('Erro ao carregar repertórios: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar repertórios da comunidade:', error);
+                showError('Erro ao conectar com o servidor');
+            }
+        }
+
+        // Mostrar estado de carregamento
+        function showLoading() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('repertoriesGrid').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+        }
+
+        // Renderizar repertórios
+        function renderRepertoires() {
+            const grid = document.getElementById('repertoriesGrid');
+            const loading = document.getElementById('loadingState');
+            const empty = document.getElementById('emptyState');
+            
+            loading.classList.add('hidden');
+            
+            if (filteredRepertoires.length === 0) {
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            grid.classList.remove('hidden');
+            
+            grid.innerHTML = filteredRepertoires.map(repertorio => `
+                <div class="repertorio-card bg-white border border-gray-200 rounded-lg p-6 hover:border-green-300 transition-all cursor-pointer" onclick="viewRepertoire(${repertorio.id})">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <h3 class="text-lg font-semibold text-gray-900">${repertorio.nome}</h3>
+                                <span class="repertorio-tag bg-green-100 text-green-700">Público</span>
+                            </div>
+                            
+                            <p class="text-gray-600 mb-4 line-clamp-2">${repertorio.descricao || 'Repertório compartilhado pela comunidade'}</p>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span><i class="fas fa-music mr-1"></i>${repertorio.cifra_count || 0} cifras</span>
+                                    <span><i class="fas fa-user mr-1"></i>${repertorio.usuario?.nome || 'Anônimo'}</span>
+                                    <span><i class="fas fa-calendar mr-1"></i>${formatDate(repertorio.createdAt)}</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="event.stopPropagation(); copyRepertoire(${repertorio.id})" class="p-2 text-gray-400 hover:text-blue-600 rounded-lg transition-colors" title="Copiar para meus repertórios">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); shareRepertoire(${repertorio.id})" class="p-2 text-gray-400 hover:text-green-600 rounded-lg transition-colors" title="Compartilhar">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Atualizar contador
+            document.getElementById('repertoiresCount').textContent = `${filteredRepertoires.length} repertório(s) encontrado(s)`;
+        }
+
+        // Atualizar estatísticas
+        function updateStatistics() {
+            const totalRepertoires = allRepertoires.length;
+            const totalCifras = allRepertoires.reduce((sum, rep) => sum + (rep.cifra_count || 0), 0);
+            const totalViews = allRepertoires.reduce((sum, rep) => sum + (rep.views || 0), 0);
+            const mostPopular = allRepertoires.length > 0 ? 
+                allRepertoires.reduce((prev, current) => (prev.cifra_count > current.cifra_count) ? prev : current).nome : 
+                'Nenhum';
+            
+            document.getElementById('totalRepertoires').textContent = totalRepertoires;
+            document.getElementById('totalCifras').textContent = totalCifras;
+            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+            document.getElementById('mostPopular').textContent = mostPopular;
+        }
+
+        // Buscar repertórios
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredRepertoires = [...allRepertoires];
+            } else {
+                filteredRepertoires = allRepertoires.filter(repertorio => 
+                    repertorio.nome.toLowerCase().includes(searchTerm) ||
+                    (repertorio.descricao && repertorio.descricao.toLowerCase().includes(searchTerm)) ||
+                    (repertorio.usuario && repertorio.usuario.nome.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            renderRepertoires();
+        }
+
+        // Ordenar repertórios
+        function handleSort() {
+            const sortType = document.getElementById('sortFilter').value;
+            
+            switch (sortType) {
+                case 'recent':
+                    filteredRepertoires.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'popular':
+                    filteredRepertoires.sort((a, b) => (b.cifra_count || 0) - (a.cifra_count || 0));
+                    break;
+                case 'name':
+                    filteredRepertoires.sort((a, b) => a.nome.localeCompare(b.nome));
+                    break;
+                case 'cifras':
+                    filteredRepertoires.sort((a, b) => (b.cifra_count || 0) - (a.cifra_count || 0));
+                    break;
+            }
+            
+            renderRepertoires();
+        }
+
+        // Atualizar repertórios
+        function refreshRepertoires() {
+            loadCommunityRepertoires();
+            showToast('Repertórios atualizados!', 'success');
+        }
+
+        // Visualizar repertório
+        function viewRepertoire(id) {
+            window.location.href = `repertorio.html?id=${id}&community=true`;
+        }
+
+        // Copiar repertório
+        async function copyRepertoire(id) {
+            // TODO: Implementar cópia de repertório
+            showToast('Funcionalidade de cópia será implementada em breve!', 'info');
+        }
+
+        // Compartilhar repertório
+        function shareRepertoire(id) {
+            const url = `${window.location.origin}/repertorio.html?id=${id}&community=true`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copiado para a área de transferência!', 'success');
+            });
+        }
+
+        // Formatar data
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR');
+        }
+
+        // Mostrar erro
+        function showError(message) {
+            showToast(message, 'error');
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+
+        // Toast notification (implementação básica)
+        function showToast(message, type = 'info') {
+            // Implementação básica do toast
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            // Criar elemento toast
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-600 text-white' :
+                type === 'error' ? 'bg-red-600 text-white' :
+                'bg-blue-600 text-white'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Auth UI (implementação básica)
+        function updateAuthUI() {
+            const token = localStorage.getItem('authToken');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            
+            if (token) {
+                notLoggedIn.classList.add('hidden');
+                loggedIn.classList.remove('hidden');
+            } else {
+                notLoggedIn.classList.remove('hidden');
+                loggedIn.classList.add('hidden');
+            }
+        }
+
+        // User menu
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+
+        // Filtros de navegação
+        function filtrarFavoritas() {
+            window.location.href = 'index.html?filter=favoritas';
+        }
+
+        // Funções de navegação (redirecionam para a página principal)
+        function filtrarMinhasCifras() {
+            window.location.href = 'index.html?filter=minhas-cifras';
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        function handleSearch() {
+            window.location.href = 'index.html';
+        }
+
+        // Verificar se usuário é master e mostrar link do painel
+        function checkMasterAccess() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const masterEmails = [
+                        'master@omusicacatolico.com',
+        'admin@omusicacatolico.com',
+        'vinicius@omusicacatolico.com'
+            ];
+            
+            if (user.email && masterEmails.includes(user.email)) {
+                const masterLink = document.getElementById('masterLink');
+                if (masterLink) {
+                    masterLink.classList.remove('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

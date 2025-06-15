@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Favoritas - OMúsicoCatólico</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Navigation Styles */
+        .nav-item:hover { 
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Dropdown Navigation Styles */
+        .nav-item-dropdown {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Permitir overflow do dropdown */
+        nav .flex {
+            overflow: visible !important;
+        }
+        
+        .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-item-dropdown:hover .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-item-dropdown:hover .nav-item {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            z-index: 40;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+    
+        /* Forçar dropdowns invisíveis quando modal está aberto */
+        body.modal-open .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(2px) !important;
+            z-index: -1 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo e Navegação -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="/inicio" class="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">OMúsicoCatólico</a>
+                    </div>
+                </div>
+
+                <!-- Busca -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Buscar cifras..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="text-gray-700 hover:text-blue-600 font-medium">Entrar</a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="relative">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium" id="userInitials">U</div>
+                            <div class="relative" id="userMenu">
+                                <button onclick="toggleUserMenu()" class="flex items-center space-x-1 text-gray-700 hover:text-blue-600">
+                                    <span id="userName">Usuário</span>
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                
+                                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                                    <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-user mr-2"></i>Meu Perfil
+                                    </a>
+                                    <hr class="my-1">
+                                    <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação Principal -->
+    <nav class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto py-4 relative">
+                <a href="/inicio" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
+                    Início
+                </a>
+                <!-- Repertórios Dropdown -->
+                <div class="nav-item-dropdown relative">
+                    <div class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap cursor-pointer">
+                        <i class="fas fa-list w-4 h-4 mr-2 text-gray-500"></i>
+                        Repertórios
+                        <i class="fas fa-chevron-down w-3 h-3 ml-2 text-gray-400 transition-transform duration-200"></i>
+                    </div>
+                    
+                    <!-- Dropdown Menu -->
+                    <div class="dropdown-menu absolute top-full left-0 mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transform translate-y-2 transition-all duration-200" style="z-index: 40; overflow: visible;">
+                        <div class="py-2">
+                            <a href="/repertorios" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-user w-4 h-4 mr-3 text-blue-500"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="dropdown-item flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                                <i class="fas fa-users w-4 h-4 mr-3 text-green-500"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <a href="/favoritas" class="nav-item flex items-center px-3 py-2 text-sm text-blue-600 bg-white rounded-lg shadow-sm whitespace-nowrap">
+                    <i class="fas fa-heart w-4 h-4 mr-2 text-blue-600"></i>
+                    Favoritas
+                </a>
+                <a href="/minhas-cifras" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
+                    Minhas Cifras
+                </a>
+                <a href="/categorias" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-tags w-4 h-4 mr-2 text-gray-500"></i>
+                    Categorias
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Minhas Favoritas</h1>
+            <p class="text-gray-600 mt-2">Cifras que você marcou como favoritas</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Carregando suas favoritas...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-heart text-red-600 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Nenhuma cifra favorita ainda</h3>
+            <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                Explore nossas cifras e clique no coração para adicioná-las aos seus favoritos.
+            </p>
+                            <a href="/inicio" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-search mr-2"></i>
+                Explorar Cifras
+            </a>
+        </div>
+
+        <!-- Cifras Grid -->
+        <div id="cifrasGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cifras serão preenchidas via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Modais -->
+    <div id="modals"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Variáveis específicas da página
+        let favoritasCifras = [];
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            carregarFavoritas();
+        });
+
+        // Carregar cifras favoritas
+        async function carregarFavoritas() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetchWithAuth('/api/cifras/favoritas');
+                const data = await response.json();
+                
+                favoritasCifras = data.cifras || [];
+                renderFavoritas();
+                
+            } catch (error) {
+                console.error('Erro ao carregar favoritas:', error);
+                showEmptyState();
+                showToast('Erro ao carregar suas favoritas', 'error');
+            }
+        }
+
+        // Renderizar cifras favoritas
+        function renderFavoritas() {
+            const loadingState = document.getElementById('loadingState');
+            const emptyState = document.getElementById('emptyState');
+            const cifrasGrid = document.getElementById('cifrasGrid');
+            
+            loadingState.classList.add('hidden');
+            
+            if (favoritasCifras.length === 0) {
+                emptyState.classList.remove('hidden');
+                cifrasGrid.classList.add('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            cifrasGrid.classList.remove('hidden');
+            
+            cifrasGrid.innerHTML = favoritasCifras.map(cifra => createCifraCard(cifra)).join('');
+            setupCardEventListeners();
+        }
+
+        // Mostrar estado vazio
+        function showEmptyState() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('cifrasGrid').classList.add('hidden');
+        }
+
+        // Funções de navegação
+        function filtrarFavoritas() {
+            // Já estamos na página, não faz nada
+            return;
+        }
+
+        function filtrarMinhasCifras() {
+            window.location.href = 'minhas-cifras.html';
+        }
+    </script>
+</body>
+</html> 
