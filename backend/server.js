@@ -13,7 +13,7 @@ const favoritosRoutes = require('./routes/favoritos');
 const repertoriosRoutes = require('./routes/repertorios');
 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());

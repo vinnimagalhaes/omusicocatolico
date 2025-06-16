@@ -5,12 +5,10 @@ module.exports = {
     instances: 'max',
     exec_mode: 'cluster',
     env: {
-      NODE_ENV: 'development',
-      PORT: 8000
+      NODE_ENV: 'development'
     },
     env_production: {
-      NODE_ENV: 'production',
-      PORT: 3000
+      NODE_ENV: 'production'
     },
     error_file: './logs/err.log',
     out_file: './logs/out.log',
