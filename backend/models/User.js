@@ -61,19 +61,7 @@ const User = sequelize.define('User', {
             unique: true,
             fields: ['email']
         }
-    ],
-    hooks: {
-        beforeCreate: async (user) => {
-            if (user.senha) {
-                user.senha = await bcrypt.hash(user.senha, 10);
-            }
-        },
-        beforeUpdate: async (user) => {
-            if (user.changed('senha')) {
-                user.senha = await bcrypt.hash(user.senha, 10);
-            }
-        }
-    }
+    ]
 });
 
 // Método para verificar senha

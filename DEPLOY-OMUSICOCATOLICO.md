@@ -104,7 +104,7 @@ Após o deploy, seu site estará disponível em:
 ### 🔐 Credenciais de Acesso
 
 **Painel Master:**
-- **Email**: master@omusicacatolico.com
+- **Email**: @omusicacatolico.com
 - **Senha**: master123
 
 **⚠️ IMPORTANTE**: Altere a senha após o primeiro login!

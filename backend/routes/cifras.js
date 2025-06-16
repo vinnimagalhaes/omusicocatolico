@@ -65,9 +65,8 @@ router.get('/', async (req, res) => {
         if (search) {
             const searchTerm = search.toLowerCase();
             where[Op.or] = [
-                { titulo: { [Op.iLike]: `%${searchTerm}%` } },
-                { artista: { [Op.iLike]: `%${searchTerm}%` } },
-                { tags: { [Op.contains]: [searchTerm] } }
+                { titulo: { [Op.like]: `%${searchTerm}%` } },
+                { artista: { [Op.like]: `%${searchTerm}%` } }
             ];
         }
         
@@ -111,7 +110,80 @@ router.get('/', async (req, res) => {
     }
 });
 
-// 2. LISTAR CIFRAS DO USUÁRIO (deve vir antes de /:id)
+// 2. LISTAR CIFRAS PARA REPERTÓRIOS (públicas + do usuário)
+router.get('/para-repertorios', authenticateToken, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { categoria, search, limit = 50, offset = 0, ordem = 'views' } = req.query;
+        
+        // Construir filtros - cifras públicas OU do próprio usuário
+        const where = { 
+            ativo: true,
+            [Op.or]: [
+                { status_analise: 'aprovada' }, // Cifras públicas
+                { user_id: userId } // Cifras do próprio usuário (qualquer status)
+            ]
+        };
+        
+        if (categoria && categoria !== 'todas') {
+            where.categoria = categoria;
+        }
+        
+        if (search) {
+            const searchTerm = search.toLowerCase();
+            where[Op.and] = [
+                ...(where[Op.and] || []),
+                {
+                    [Op.or]: [
+                        { titulo: { [Op.like]: `%${searchTerm}%` } },
+                        { artista: { [Op.like]: `%${searchTerm}%` } }
+                    ]
+                }
+            ];
+        }
+        
+        // Ordenação
+        let order = [['views', 'DESC']];
+        if (ordem === 'titulo') order = [['titulo', 'ASC']];
+        if (ordem === 'artista') order = [['artista', 'ASC']];
+        if (ordem === 'recente') order = [['created_at', 'DESC']];
+        
+        // Buscar cifras
+        const { count, rows: cifras } = await Cifra.findAndCountAll({
+            where,
+            order,
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            include: [
+                {
+                    model: User,
+                    as: 'usuario',
+                    attributes: ['id', 'nome']
+                }
+            ]
+        });
+        
+        // Formatar resultado e marcar cifras do próprio usuário
+        const cifrasFormatadas = cifras.map(cifra => ({
+            ...cifra.toJSON(),
+            views: cifra.getViewsFormatadas(),
+            minha_cifra: cifra.user_id === userId
+        }));
+        
+        res.json({
+            cifras: cifrasFormatadas,
+            total: count,
+            offset: parseInt(offset),
+            limit: parseInt(limit)
+        });
+        
+    } catch (error) {
+        console.error('Erro ao listar cifras para repertórios:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// 3. LISTAR CIFRAS DO USUÁRIO (deve vir antes de /:id)
 router.get('/minhas', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -155,7 +227,7 @@ router.get('/minhas', authenticateToken, async (req, res) => {
     }
 });
 
-// 3. LISTAR FAVORITOS DO USUÁRIO
+// 4. LISTAR FAVORITOS DO USUÁRIO
 router.get('/user/favoritos', authenticateToken, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -227,10 +299,9 @@ router.get('/search', async (req, res) => {
             where: {
                 ativo: true,
                 [Op.or]: [
-                    { titulo: { [Op.iLike]: `%${searchTerm}%` } },
-                    { artista: { [Op.iLike]: `%${searchTerm}%` } },
-                    { letra: { [Op.iLike]: `%${searchTerm}%` } },
-                    { tags: { [Op.contains]: [searchTerm] } }
+                    { titulo: { [Op.like]: `%${searchTerm}%` } },
+                    { artista: { [Op.like]: `%${searchTerm}%` } },
+                    { letra: { [Op.like]: `%${searchTerm}%` } }
                 ]
             },
             include: [

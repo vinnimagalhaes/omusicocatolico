@@ -497,9 +497,9 @@ router.get('/cifras', authenticateMaster, async (req, res) => {
         if (search) {
             const searchTerm = search.toLowerCase();
             where[Op.or] = [
-                { titulo: { [Op.iLike]: `%${searchTerm}%` } },
-                { artista: { [Op.iLike]: `%${searchTerm}%` } },
-                { letra: { [Op.iLike]: `%${searchTerm}%` } }
+                { titulo: { [Op.like]: `%${searchTerm}%` } },
+                { artista: { [Op.like]: `%${searchTerm}%` } },
+                { letra: { [Op.like]: `%${searchTerm}%` } }
             ];
         }
         
