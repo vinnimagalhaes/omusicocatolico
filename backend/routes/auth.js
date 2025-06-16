@@ -4,13 +4,24 @@ const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const { User } = require('../models');
 const { JWT_SECRET } = require('../middleware/auth');
-const router = express.Router();
+const rateLimit = require('express-rate-limit');
+
+// Limite: 10 tentativas de login a cada 15min por IP
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { success: false, message: 'Muitas tentativas de login. Tente novamente mais tarde.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // Configurar Google OAuth
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+const router = express.Router();
+
 // Login com email/senha
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
     try {
         const { email, password, senha } = req.body;
         const userPassword = password || senha; // Aceitar tanto 'password' quanto 'senha'
@@ -64,6 +75,14 @@ router.post('/login', async (req, res) => {
         );
 
         console.log('✅ [LOGIN] Login bem-sucedido para:', email);
+
+        // Definir cookie httpOnly
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000 // 24h
+        });
 
         res.json({
             success: true,
@@ -134,6 +153,14 @@ router.post('/google', async (req, res) => {
             JWT_SECRET,
             { expiresIn: '24h' }
         );
+
+        // NOVO_EDIT_google_cookie
+        res.cookie('access_token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 24 * 60 * 60 * 1000
+        });
 
         res.json({
             success: true,
@@ -222,7 +249,12 @@ router.post('/register', async (req, res) => {
 // Verificar token
 router.get('/verify', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
+        // PRIMEIRO: tentar obter do cookie
+        let token = req.cookies?.access_token;
+        // fallback para header
+        if (!token) {
+            token = req.headers.authorization?.split(' ')[1];
+        }
         
         if (!token) {
             return res.status(401).json({
@@ -231,7 +263,7 @@ router.get('/verify', async (req, res) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || JWT_SECRET);
         const user = await User.findByPk(decoded.id);
         
         if (!user) {
@@ -266,7 +298,10 @@ router.get('/verify', async (req, res) => {
 // Atualizar perfil do usuário
 router.put('/profile', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
+        let token = req.cookies?.access_token;
+        if (!token) {
+            token = req.headers.authorization?.split(' ')[1];
+        }
         
         if (!token) {
             return res.status(401).json({
@@ -275,7 +310,7 @@ router.put('/profile', async (req, res) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || JWT_SECRET);
         const user = await User.findByPk(decoded.id);
         
         if (!user) {
@@ -320,7 +355,10 @@ router.put('/profile', async (req, res) => {
 // Alterar senha
 router.put('/change-password', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(' ')[1];
+        let token = req.cookies?.access_token;
+        if (!token) {
+            token = req.headers.authorization?.split(' ')[1];
+        }
         
         if (!token) {
             return res.status(401).json({
@@ -329,7 +367,7 @@ router.put('/change-password', async (req, res) => {
             });
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || JWT_SECRET);
         const user = await User.findByPk(decoded.id);
         
         if (!user) {
@@ -374,6 +412,16 @@ router.put('/change-password', async (req, res) => {
             message: 'Erro interno do servidor'
         });
     }
+});
+
+// NOVA ROTA: Logout
+router.post('/logout', (req, res) => {
+    res.clearCookie('access_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+    });
+    res.json({ success: true, message: 'Logout realizado com sucesso' });
 });
 
 module.exports = router; 

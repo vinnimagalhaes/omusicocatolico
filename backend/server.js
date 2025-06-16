@@ -12,11 +12,34 @@ const cifrasRoutes = require('./routes/cifras');
 const favoritosRoutes = require('./routes/favoritos');
 const repertoriosRoutes = require('./routes/repertorios');
 
+// PRIMEIRO_EDIT: add security/rate-limit/cookie imports
+const helmet = require('helmet');
+const cookieParser = require('cookie-parser');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors());
+// SEGUNDO_EDIT: apply helmet, cookie-parser and configure CORS with credentials
+app.use(helmet());
+app.use(cookieParser());
+
+// Rate limit básico: 100 requisições por 15 min por IP
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(generalLimiter);
+
+// CORS: permitir front configurado e credenciais de cookie
+app.use(cors({
+  origin: process.env.FRONTEND_URL || true,
+  credentials: true,
+}));
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../frontend')));
 

@@ -30,41 +30,64 @@ function togglePassword() {
 // Login com email/senha
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
-    loginForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    
-    try {
-        const response = await fetch(apiUrl('/api/auth/login'), {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
+    // Verificar se já existe um listener (prevenir duplicação)
+    if (!loginForm.hasAttribute('data-listener-added')) {
+        console.log('🔧 [FRONTEND] Adicionando event listener de login');
+        loginForm.setAttribute('data-listener-added', 'true');
         
-        const data = await response.json();
-        
-        if (response.ok) {
-            showToast('Login realizado com sucesso!', 'success');
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            // Redirecionar para dashboard
-            setTimeout(() => {
-                window.location.href = '/inicio';
-            }, 1000);
-        } else {
-            showToast(data.message || 'Erro ao fazer login', 'error');
-        }
-    } catch (error) {
-        console.error('Erro no login:', error);
-        showToast('Erro interno. Tente novamente.', 'error');
+            // Prevenir múltiplas submissões
+            if (this.hasAttribute('data-submitting')) {
+                console.log('⚠️ [FRONTEND] Tentativa de submissão dupla bloqueada');
+                return;
+            }
+            
+            this.setAttribute('data-submitting', 'true');
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            console.log('🚀 [FRONTEND] Iniciando processo de login para:', email);
+            
+            try {
+                const response = await fetch(apiUrl('/auth/login'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                console.log('📡 [FRONTEND] Resposta recebida, status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ [FRONTEND] Login bem-sucedido');
+                showToast('Login realizado com sucesso!', 'success');
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirecionar para dashboard
+                setTimeout(() => {
+                    window.location.href = '/inicio';
+                }, 1000);
+            } catch (error) {
+                console.error('❌ [FRONTEND] Erro no login:', error);
+                showToast('Erro interno. Tente novamente.', 'error');
+            } finally {
+                // Remover flag de submissão
+                this.removeAttribute('data-submitting');
+            }
+        });
+    } else {
+        console.log('⚠️ [FRONTEND] Event listener de login já existe, não adicionando duplicado');
     }
-    });
 }
 
 // Login com Google
@@ -167,9 +190,15 @@ function checkAuth() {
 
 // Logout
 function logout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    window.location.href = 'login.html';
+    fetch(apiUrl('/auth/logout'), {
+        method: 'POST',
+        credentials: 'include',
+    }).finally(() => {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+    });
 }
 
 // Verificar se está autenticado
@@ -185,35 +214,19 @@ function getAuthToken() {
 
 // Fetch com autenticação
 async function fetchWithAuth(url, options = {}) {
-    const token = getAuthToken();
-    
-    if (!token) {
-        throw new Error('Token de autenticação não encontrado');
-    }
-    
-    const headers = {
-        'Authorization': `Bearer ${token}`,
-        ...options.headers
-    };
-    
-    // Se a URL não começa com http, assumir que é um endpoint da API
+    // Não precisa mais de token, cookies httpOnly são enviados automaticamente
     const fullUrl = url.startsWith('http') ? url : apiUrl(url);
-    
     try {
         const response = await fetch(fullUrl, {
             ...options,
-            headers
+            credentials: 'include',
         });
-        
-        // Se o token estiver inválido/expirado, limpar localStorage
         if (response.status === 401) {
-            console.log('Token expirado, limpando localStorage...');
             localStorage.removeItem('token');
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
             throw new Error('Sessão expirada. Faça login novamente.');
         }
-        
         return response;
     } catch (error) {
         console.error('Erro na requisição autenticada:', error);

@@ -1,5 +1,5 @@
 // Service Worker para OMúsicoCatólico PWA
-const CACHE_NAME = 'omusicocatolico-v1.0.0';
+const CACHE_NAME = 'omusicocatolico-v1';
 const STATIC_CACHE = 'omusicocatolico-static-v1.0.0';
 const DYNAMIC_CACHE = 'omusicocatolico-dynamic-v1.0.0';
 
@@ -33,13 +33,13 @@ const PAGES_TO_CACHE = [
 
 // Instalação do Service Worker
 self.addEventListener('install', event => {
-  console.log('[SW] Instalando Service Worker...');
+  console.log('[SW] Service Worker instalando...');
   
   event.waitUntil(
     Promise.all([
       // Cache de recursos estáticos
       caches.open(STATIC_CACHE).then(cache => {
-        console.log('[SW] Cacheando recursos estáticos...');
+        console.log('[SW] Cache aberto');
         return cache.addAll(STATIC_ASSETS);
       }),
       // Cache de páginas principais
@@ -56,7 +56,7 @@ self.addEventListener('install', event => {
 
 // Ativação do Service Worker
 self.addEventListener('activate', event => {
-  console.log('[SW] Ativando Service Worker...');
+  console.log('[SW] Service Worker ativado');
   
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -78,109 +78,48 @@ self.addEventListener('activate', event => {
 
 // Interceptação de requisições
 self.addEventListener('fetch', event => {
-  const { request } = event;
-  const url = new URL(request.url);
-  
-  // Ignora requisições não-HTTP
-  if (!request.url.startsWith('http')) return;
-  
-  // Estratégia Cache First para recursos estáticos
-  if (isStaticAsset(request.url)) {
-    event.respondWith(cacheFirst(request));
+  // Não interceptar requisições da API
+  if (event.request.url.includes('/api/')) {
     return;
   }
-  
-  // Estratégia Network First para páginas
-  if (isPageRequest(request)) {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-  
-  // Estratégia Network First para API
-  if (isApiRequest(request.url)) {
-    event.respondWith(networkFirstWithFallback(request));
-    return;
-  }
-  
-  // Estratégia padrão: Network First
-  event.respondWith(networkFirst(request));
+
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => {
+        // Cache hit - return response
+        if (response) {
+          console.log('[SW] Retornando do cache:', event.request.url);
+          return response;
+        }
+
+        // Clone the request
+        const fetchRequest = event.request.clone();
+
+        return fetch(fetchRequest).then(
+          response => {
+            // Check if we received a valid response
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // Clone the response
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                console.log('[SW] Adicionando ao cache:', event.request.url);
+                cache.put(event.request, responseToCache);
+              });
+
+            return response;
+          }
+        ).catch(() => {
+          console.log('[SW] Rede indisponível, buscando no cache...');
+          return caches.match(event.request);
+        });
+      })
+  );
 });
-
-// Estratégia Cache First
-async function cacheFirst(request) {
-  try {
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    const networkResponse = await fetch(request);
-    
-    // Cache apenas respostas válidas
-    if (networkResponse.status === 200) {
-      const cache = await caches.open(STATIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    console.log('[SW] Erro em Cache First:', error);
-    return new Response('Recurso não disponível offline', { status: 503 });
-  }
-}
-
-// Estratégia Network First
-async function networkFirst(request) {
-  try {
-    const networkResponse = await fetch(request);
-    
-    // Cache páginas válidas
-    if (networkResponse.status === 200 && isPageRequest(request)) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    console.log('[SW] Rede indisponível, buscando no cache...');
-    
-    const cachedResponse = await caches.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    // Página offline personalizada
-    if (isPageRequest(request)) {
-      return createOfflinePage();
-    }
-    
-    return new Response('Conteúdo não disponível offline', { status: 503 });
-  }
-}
-
-// Estratégia Network First com fallback para API
-async function networkFirstWithFallback(request) {
-  try {
-    const networkResponse = await fetch(request);
-    return networkResponse;
-  } catch (error) {
-    console.log('[SW] API indisponível:', error);
-    
-    // Retorna dados mockados para algumas APIs críticas
-    if (request.url.includes('/api/cifras')) {
-      return new Response(JSON.stringify({
-        success: false,
-        message: 'Dados não disponíveis offline',
-        offline: true,
-        cifras: []
-      }), {
-        headers: { 'Content-Type': 'application/json' }
-      });
-    }
-    
-    return new Response('API não disponível offline', { status: 503 });
-  }
-}
 
 // Verifica se é um recurso estático
 function isStaticAsset(url) {
