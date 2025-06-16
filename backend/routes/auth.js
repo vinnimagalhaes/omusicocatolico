@@ -15,8 +15,11 @@ router.post('/login', async (req, res) => {
         const { email, password, senha } = req.body;
         const userPassword = password || senha; // Aceitar tanto 'password' quanto 'senha'
 
+        console.log('🔍 [LOGIN] Iniciando processo de login para:', email);
+
         // Validar dados
         if (!email || !userPassword) {
+            console.log('❌ [LOGIN] Dados incompletos - email ou senha faltando');
             return res.status(400).json({
                 success: false,
                 message: 'Email e senha são obrigatórios'
@@ -24,22 +27,30 @@ router.post('/login', async (req, res) => {
         }
 
         // Buscar usuário no banco
+        console.log('🔍 [LOGIN] Buscando usuário no banco de dados...');
         const user = await User.findOne({ where: { email } });
         if (!user) {
+            console.log('❌ [LOGIN] Usuário não encontrado:', email);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciais inválidas'
             });
         }
 
-        // Verificar senha
-        const validPassword = await bcrypt.compare(userPassword, user.senha);
+        console.log('✅ [LOGIN] Usuário encontrado, verificando senha...');
+        
+        // Verificar senha usando o método do modelo
+        const validPassword = await user.verificarSenha(userPassword);
+        
         if (!validPassword) {
+            console.log('❌ [LOGIN] Senha inválida para usuário:', email);
             return res.status(401).json({
                 success: false,
                 message: 'Credenciais inválidas'
             });
         }
+
+        console.log('✅ [LOGIN] Senha válida, gerando token JWT...');
 
         // Gerar token JWT
         const token = jwt.sign(
@@ -52,6 +63,8 @@ router.post('/login', async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        console.log('✅ [LOGIN] Login bem-sucedido para:', email);
+
         res.json({
             success: true,
             token,
@@ -63,7 +76,7 @@ router.post('/login', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro no login:', error);
+        console.error('❌ [LOGIN] Erro no login:', error);
         res.status(500).json({
             success: false,
             message: 'Erro interno do servidor'
@@ -336,7 +349,7 @@ router.put('/change-password', async (req, res) => {
         }
 
         // Verificar senha atual
-        const validPassword = await bcrypt.compare(currentPassword, user.senha);
+        const validPassword = await user.verificarSenha(currentPassword);
         if (!validPassword) {
             return res.status(401).json({
                 success: false,

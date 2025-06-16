@@ -27,14 +27,17 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Rotas da API
-app.use('/api/auth', authRoutes);
-app.use('/api/cifras', cifrasRoutes);
-app.use('/api/favoritos', favoritosRoutes);
-app.use('/api/repertorios', repertoriosRoutes);
-app.use('/api/banners', require('./routes/banners'));
-app.use('/api/carrosseis', require('./routes/carrosseis'));
-app.use('/api/master', require('./routes/master'));
+// Unificar rotas da API sob um único prefixo /api
+const apiRouter = express.Router();
+apiRouter.use('/auth', authRoutes);
+apiRouter.use('/cifras', cifrasRoutes);
+apiRouter.use('/favoritos', favoritosRoutes);
+apiRouter.use('/repertorios', repertoriosRoutes);
+apiRouter.use('/banners', require('./routes/banners'));
+apiRouter.use('/carrosseis', require('./routes/carrosseis'));
+apiRouter.use('/master', require('./routes/master'));
+
+app.use('/api', apiRouter);
 
 // Rotas para páginas com URLs limpas
 app.get('/', (req, res) => {
