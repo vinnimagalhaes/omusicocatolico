@@ -6,9 +6,11 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
+    "start-server": "bash start-server.sh",
     "init-db": "node scripts/init-db.js",
     "build": "echo 'Build process for production'",
-    "test": "echo 'Tests not implemented yet'"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sync:force": "node -e 'require(\"./backend/models\").sincronizarBanco(true).then(() => process.exit())'"
   },
   "keywords": [
     "cifras",
