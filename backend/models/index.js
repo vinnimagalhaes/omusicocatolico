@@ -1,4 +1,5 @@
 const sequelize = require('../database/config');
+const bcrypt = require('bcryptjs');
 
 // Importar modelos
 const User = require('./User');
@@ -159,13 +160,16 @@ const sincronizarBanco = async (force = false) => {
 // Função para adicionar dados iniciais
 const adicionarDadosIniciais = async () => {
     try {
+        // Hash da senha padrão
+        const hashedPassword = await bcrypt.hash('admin123', 10);
+
         // Criar usuário admin padrão
         const adminUser = await User.findOrCreate({
             where: { email: 'admin@omusicacatolico.com' },
             defaults: {
                 nome: 'Administrador',
                 email: 'admin@omusicacatolico.com',
-                senha: 'admin123',
+                senha: hashedPassword, // Usar senha com hash
                 role: 'admin'
             }
         });
