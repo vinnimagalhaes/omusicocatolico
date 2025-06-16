@@ -72,6 +72,14 @@ app.get('/perfil', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/perfil.html'));
 });
 
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/login.html'));
+});
+
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/register.html'));
+});
+
 // Middleware de tratamento de erros
 app.use((err, req, res, next) => {
     console.error(err.stack);
