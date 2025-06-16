@@ -56,6 +56,27 @@
     <!-- Tailwind CSS mantido temporariamente para compatibilidade -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Critical CSS Inline -->
+    <style>
+        /* Critical CSS - Above the fold styles */
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Inter',sans-serif;line-height:1.5;-webkit-text-size-adjust:100%}
+        body{background-color:#f8fafc;color:#1f2937;font-size:16px}
+        .header-critical{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+        .loading-critical{display:flex;align-items:center;justify-content:center;min-height:200px}
+        .spinner-critical{width:2rem;height:2rem;border:2px solid #e5e7eb;border-top:2px solid #3b82f6;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        img{max-width:100%;height:auto;loading:lazy}
+        @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+    </style>
+    
+    <!-- Performance & SEO Scripts -->
+    <script src="/js/performance.js" defer></script>
+    <script src="/js/seo.js" defer></script>
+    
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
