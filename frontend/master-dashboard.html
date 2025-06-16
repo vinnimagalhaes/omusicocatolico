@@ -139,7 +139,7 @@
                     
                     <hr class="my-4 border-gray-600">
                     
-                    <a href="index.html" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200 text-green-400">
+                    <a href="/inicio" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200 text-green-400">
                         <i class="fas fa-home mr-3"></i>
                         Voltar ao Site
                     </a>
@@ -1475,7 +1475,7 @@
                 if (error.message === 'Acesso negado') {
                     showToast('Acesso negado. Você não tem privilégios de master.', 'error');
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = '/inicio';
                     }, 2000);
                 }
             }
@@ -2139,7 +2139,7 @@
         function logout() {
             localStorage.removeItem('authToken');
             localStorage.removeItem('user');
-            window.location.href = 'index.html';
+            window.location.href = '/inicio';
         }
 
         // Placeholder functions
