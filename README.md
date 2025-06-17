@@ -91,7 +91,7 @@ npm run dev
 - Node.js 18+
 - PM2, Nginx, Certbot
 
-### Deploy Automatizado
+### Deploy Automático
 ```bash
 # 1. Clone o projeto no servidor
 git clone [URL_DO_REPOSITORIO] /var/www/omusicacatolico
@@ -107,6 +107,14 @@ nano .env  # Configure para produção
 
 ### Deploy Manual
 Siga o guia completo em [DEPLOY.md](DEPLOY.md)
+
+## 🚀 Deploy Automático Configurado
+
+✅ GitHub Actions configurado para deploy automático na branch main
+
+---
+
+*Última atualização: Deploy automático configurado com sucesso!*
 
 ## 📁 Estrutura do Projeto
 
