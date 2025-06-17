@@ -336,6 +336,18 @@
         // Variáveis específicas da página
         let minhasCifras = [];
 
+        // 🚨 LISTENER PARA SERVICE WORKER DE EMERGÊNCIA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'FORCE_RELOAD') {
+                    console.log('🚨 [EMERGÊNCIA] Service Worker solicitou reload:', event.data.message);
+                    setTimeout(() => {
+                        window.location.reload(true);
+                    }, 1000);
+                }
+            });
+        }
+
         // Inicializar página
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[MINHAS CIFRAS] Página carregada, iniciando...');
