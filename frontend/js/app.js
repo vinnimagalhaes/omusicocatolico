@@ -3100,16 +3100,35 @@ function updateAuthUI() {
     
     const notLoggedIn = document.getElementById('notLoggedIn');
     const loggedIn = document.getElementById('loggedIn');
-    const userName = document.getElementById('userName');
+    
+    // Elementos mobile
+    const notLoggedInMobile = document.getElementById('notLoggedInMobile');
+    const loggedInMobile = document.getElementById('loggedInMobile');
     
     if (token && user) {
         // Usuário logado
         if (notLoggedIn) notLoggedIn.classList.add('hidden');
         if (loggedIn) loggedIn.classList.remove('hidden');
+        if (notLoggedInMobile) notLoggedInMobile.classList.add('hidden');
+        if (loggedInMobile) loggedInMobile.classList.remove('hidden');
         
         try {
             const userData = JSON.parse(user);
-            if (userName) userName.textContent = userData.nome || 'Usuário';
+            const nomeUsuario = userData.nome || 'Usuário';
+            const iniciaisUsuario = nomeUsuario.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+            
+            // Atualizar TODOS os elementos de nome (desktop e mobile)
+            const userNameElements = document.querySelectorAll('#userName, #userNameDropdown, #userNameMobile');
+            userNameElements.forEach(el => {
+                if (el) el.textContent = nomeUsuario;
+            });
+            
+            // Atualizar TODOS os elementos de iniciais (desktop e mobile)
+            const userInitialsElements = document.querySelectorAll('#userInitials, #userInitialsMobile');
+            userInitialsElements.forEach(el => {
+                if (el) el.textContent = iniciaisUsuario;
+            });
+            
         } catch (e) {
             console.error('Erro ao parsear dados do usuário:', e);
         }
@@ -3117,6 +3136,8 @@ function updateAuthUI() {
         // Usuário não logado
         if (notLoggedIn) notLoggedIn.classList.remove('hidden');
         if (loggedIn) loggedIn.classList.add('hidden');
+        if (notLoggedInMobile) notLoggedInMobile.classList.remove('hidden');
+        if (loggedInMobile) loggedInMobile.classList.add('hidden');
     }
 }
 
@@ -3564,7 +3585,8 @@ function openUrlImportModal(prefilledUrl = '') {
     closeModal(); // Fechar modal anterior
     
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Fundo semi-transparente manual
     modal.innerHTML = `
         <div class="bg-white rounded-lg max-w-lg w-full">
             <div class="flex justify-between items-center p-6 border-b">
@@ -3572,7 +3594,7 @@ function openUrlImportModal(prefilledUrl = '') {
                     <i class="fas fa-link text-green-600 mr-2"></i>
                     Importar Cifra por Link
                 </h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <button id="close-modal-btn" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -3596,10 +3618,10 @@ function openUrlImportModal(prefilledUrl = '') {
                     <div id="url-validation-feedback-simple" class="mb-4"></div>
                     
                     <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                        <button type="button" id="cancel-modal-btn" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                             Cancelar
                         </button>
-                        <button type="button" onclick="checkUrlSupportSimple()" id="check-url-btn-simple" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        <button type="button" id="check-url-btn-simple" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                             <i class="fas fa-search mr-2"></i>Verificar URL
                         </button>
                         <button type="submit" id="import-url-btn-simple" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700" style="display: none;">
@@ -3615,6 +3637,13 @@ function openUrlImportModal(prefilledUrl = '') {
     
     // Configurar event listeners
     setupSimpleModalEventListeners();
+    
+    // Fechar modal clicando fora
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
 }
 
 // Event listeners para o modal simples
@@ -3623,56 +3652,70 @@ function setupSimpleModalEventListeners() {
     const urlInput = document.getElementById('cifra-url-simple');
     const checkBtn = document.getElementById('check-url-btn-simple');
     const importBtn = document.getElementById('import-url-btn-simple');
+    const closeBtn = document.getElementById('close-modal-btn');
+    const cancelBtn = document.getElementById('cancel-modal-btn');
+    
+    // Botões de fechar modal
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeModal);
+    }
     
     // Verificar URL
-    window.checkUrlSupportSimple = async function() {
-        const url = urlInput.value.trim();
-        
-        if (!url) {
-            showValidationFeedbackSimple('Por favor, insira uma URL.', 'error');
-            return;
-        }
-        
-        checkBtn.disabled = true;
-        checkBtn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Verificando...';
-        
-        try {
-            const result = await checkUrlSupport(url);
-            handleUrlCheckResultSimple(result);
-        } catch (error) {
-            console.error('Erro ao verificar URL:', error);
-            showValidationFeedbackSimple(`Erro: ${error.message}`, 'error');
-        }
-        
-        checkBtn.disabled = false;
-        checkBtn.innerHTML = '<i class="fas fa-search mr-2"></i>Verificar URL';
-    };
+    if (checkBtn) {
+        checkBtn.addEventListener('click', async function() {
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showValidationFeedbackSimple('Por favor, insira uma URL.', 'error');
+                return;
+            }
+            
+            checkBtn.disabled = true;
+            checkBtn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Verificando...';
+            
+            try {
+                const result = await checkUrlSupport(url);
+                handleUrlCheckResultSimple(result);
+            } catch (error) {
+                console.error('Erro ao verificar URL:', error);
+                showValidationFeedbackSimple(`Erro: ${error.message}`, 'error');
+            }
+            
+            checkBtn.disabled = false;
+            checkBtn.innerHTML = '<i class="fas fa-search mr-2"></i>Verificar URL';
+        });
+    }
     
     // Importar cifra
-    form.onsubmit = async function(e) {
-        e.preventDefault();
-        
-        const url = urlInput.value.trim();
-        
-        if (!url) {
-            showValidationFeedbackSimple('Por favor, insira uma URL.', 'error');
-            return;
-        }
-        
-        importBtn.disabled = true;
-        importBtn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Importando...';
-        
-        try {
-            const result = await importCifraFromUrlModal(url);
-            handleImportResultSimple(result);
-        } catch (error) {
-            console.error('Erro na importação:', error);
-            showValidationFeedbackSimple(`Erro na importação: ${error.message}`, 'error');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            importBtn.disabled = false;
-            importBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Importar Cifra';
-        }
-    };
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showValidationFeedbackSimple('Por favor, insira uma URL.', 'error');
+                return;
+            }
+            
+            importBtn.disabled = true;
+            importBtn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Importando...';
+            
+            try {
+                const result = await importCifraFromUrlModal(url);
+                handleImportResultSimple(result);
+            } catch (error) {
+                console.error('Erro na importação:', error);
+                showValidationFeedbackSimple(`Erro na importação: ${error.message}`, 'error');
+                
+                importBtn.disabled = false;
+                importBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Importar Cifra';
+            }
+        });
+    }
 }
 
 // Funções auxiliares para o modal simples
