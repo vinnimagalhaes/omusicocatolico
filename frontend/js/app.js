@@ -1510,6 +1510,7 @@ function showToast(message, type = 'info') {
 
 // 1. Editor de Cifra Manual
 async function openCifraEditor() {
+    console.log('🎵 [DEBUG] openCifraEditor() foi chamada!');
     // Limpar variável de edição (estamos criando nova cifra)
     window.currentEditingCifraId = null;
     
@@ -1805,6 +1806,7 @@ async function openCifraEditorWithData(cifraData) {
 
 // 2. Upload de Arquivo
 function openCifraUploader() {
+    console.log('📁 [DEBUG] openCifraUploader() foi chamada!');
     closeModal();
     
     const modal = document.createElement('div');
@@ -3641,6 +3643,7 @@ function showValidationFeedback(message, type) {
 
 // Abrir modal de importação por URL (nova função)
 function openUrlImportModal(prefilledUrl = '') {
+    console.log('🔗 [DEBUG] openUrlImportModal() foi chamada!');
     closeModal(); // Fechar modal anterior
     
     const modal = document.createElement('div');
