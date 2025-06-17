@@ -24,13 +24,20 @@ jobs:
         echo "👤 Author: ${{ github.actor }}"
         echo "📝 Message: ${{ github.event.head_commit.message }}"
         
+    - name: 🔍 Debug secrets
+      run: |
+        echo "HOST is set: ${{ secrets.HOST != '' }}"
+        echo "USERNAME is set: ${{ secrets.USERNAME != '' }}"
+        echo "SSH_KEY is set: ${{ secrets.SSH_KEY != '' }}"
+        
     - name: 🚀 Deploy to server
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v1.1.0
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: 22
+        debug: true
         script: |
           echo "🎵 Iniciando deploy do OMúsicoCatólico..."
           echo "📅 $(date '+%Y-%m-%d %H:%M:%S')"
