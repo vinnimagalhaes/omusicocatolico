@@ -76,6 +76,56 @@
                         </a>
                     </li>
                 </ul>
+
+                <!-- User Menu -->
+                <div class="nav-user-menu">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="nav-login-btn">
+                            <i class="fas fa-sign-in-alt nav-icon"></i>
+                            Entrar
+                        </a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="nav-user-dropdown">
+                        <button onclick="toggleUserMenu()" class="nav-user-btn">
+                            <div class="nav-user-avatar" id="userInitials">U</div>
+                            <span id="userName" class="nav-user-name">Usuário</span>
+                            <i class="fas fa-chevron-down nav-user-icon"></i>
+                        </button>
+                        
+                        <div id="userDropdown" class="nav-user-dropdown-menu">
+                            <div class="nav-user-dropdown-header">
+                                <span id="userNameDropdown">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-user-dropdown-item">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-user-dropdown-item">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-user-dropdown-item">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLink" class="hidden">
+                                <hr class="nav-user-divider">
+                                <a href="master-dashboard.html" class="nav-user-dropdown-item nav-user-dropdown-item-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <hr class="nav-user-divider">
+                            <button onclick="logout()" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Mobile Navigation -->
@@ -144,6 +194,45 @@
                             <i class="fas fa-tags nav-icon"></i>
                             Categorias
                         </a>
+                    </li>
+
+                    <!-- Mobile User Menu -->
+                    <li class="nav-mobile-item nav-mobile-user">
+                        <div id="notLoggedInMobile" class="hidden">
+                            <a href="login.html" class="nav-mobile-link">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                Entrar
+                            </a>
+                        </div>
+                        
+                        <div id="loggedInMobile" class="nav-mobile-user-info">
+                            <div class="nav-mobile-user-header">
+                                <div class="nav-user-avatar" id="userInitialsMobile">U</div>
+                                <span id="userNameMobile">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-mobile-link">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-mobile-link">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-mobile-link">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLinkMobile" class="hidden">
+                                <a href="master-dashboard.html" class="nav-mobile-link nav-mobile-link-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <button onclick="logout()" class="nav-mobile-link nav-mobile-link-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
                     </li>
                 </ul>
             </div>
@@ -458,5 +547,11 @@
             window.location.href = '/login';
         }
     </script>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Scripts -->
+    <script src="js/auth.js"></script>
 </body>
 </html> 
