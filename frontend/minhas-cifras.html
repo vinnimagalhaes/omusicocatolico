@@ -158,10 +158,16 @@
                 <h1 class="text-3xl font-bold text-gray-900">Minhas Cifras</h1>
                 <p class="text-gray-600 mt-2">Gerencie suas cifras enviadas para a comunidade</p>
             </div>
-            <button onclick="showAddCifraModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
-                <i class="fas fa-plus"></i>
-                Enviar Cifra
-            </button>
+            <div class="flex gap-2">
+                <!-- Botão de debug temporário -->
+                <button onclick="forcarNovoLogin()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
+                    🔄 Renovar Sessão
+                </button>
+                <button onclick="showAddCifraModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
+                    <i class="fas fa-plus"></i>
+                    Enviar Cifra
+                </button>
+            </div>
         </div>
 
         <!-- Loading State -->
@@ -217,6 +223,15 @@
         </div>
     </main>
 
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+    
+    <!-- Auth UI Elements (hidden, used by updateAuthUI) -->
+    <div id="notLoggedIn" class="hidden"></div>
+    <div id="loggedIn" class="hidden">
+        <span id="userName"></span>
+    </div>
+
     <!-- Modais -->
     <div id="modals"></div>
 
@@ -229,7 +244,23 @@
 
         // Inicializar página
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('[MINHAS CIFRAS] Página carregada, iniciando...');
+            
+            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+            const user = localStorage.getItem('user');
+            
+            console.log('[MINHAS CIFRAS] Token atual:', token ? `${token.substring(0, 30)}...` : 'Ausente');
+            console.log('[MINHAS CIFRAS] User atual:', user ? JSON.parse(user) : 'Ausente');
+            
+            // Verificar se token está expirado
+            if (token && typeof isTokenExpired === 'function') {
+                console.log('[MINHAS CIFRAS] Token expirado?', isTokenExpired(token));
+            }
+            
             updateAuthUI();
+            
+            console.log('[MINHAS CIFRAS] Após updateAuthUI - iniciando carregamento...');
+            
             carregarMinhasCifras();
         });
 
@@ -238,24 +269,84 @@
             try {
                 const user = JSON.parse(localStorage.getItem('user'));
                 if (!user) {
-                    window.location.href = 'login.html';
+                    console.log('Usuário não encontrado no localStorage, redirecionando para login');
+                    window.location.href = '/login';
                     return;
                 }
 
                 console.log('Carregando cifras do usuário:', user.id); // Debug
+                
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                console.log('Token disponível:', !!token); // Debug
+                
+                // Verificar se token está expirado antes de fazer a requisição
+                if (!token) {
+                    console.log('Token não encontrado, redirecionando para login');
+                    localStorage.clear();
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Verificar expiração do token manualmente
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const currentTime = Date.now() / 1000;
+                    
+                    console.log('Token exp:', new Date(payload.exp * 1000));
+                    console.log('Current time:', new Date());
+                    
+                    if (payload.exp < currentTime) {
+                        console.log('Token expirado, limpando localStorage e redirecionando');
+                        localStorage.clear();
+                        alert('Sua sessão expirou. Você será redirecionado para o login.');
+                        window.location.href = '/login';
+                        return;
+                    }
+                } catch (tokenError) {
+                    console.error('Erro ao verificar token:', tokenError);
+                    console.log('Token inválido, limpando localStorage e redirecionando');
+                    localStorage.clear();
+                    window.location.href = '/login';
+                    return;
+                }
 
                 const response = await fetchWithAuth(apiUrl('/api/cifras/minhas'));
+                
+                console.log('Response status:', response.status); // Debug
+                console.log('Response ok:', response.ok); // Debug
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
                 const data = await response.json();
                 
+                console.log('Dados recebidos da API:', data); // Debug
                 console.log('Cifras carregadas:', data.cifras); // Debug
                 
                 minhasCifras = data.cifras || [];
                 renderMinhasCifras();
                 
             } catch (error) {
-                console.error('Erro ao carregar cifras:', error);
+                console.error('Erro detalhado ao carregar cifras:', error);
+                
+                if (error.message.includes('Token de autenticação não encontrado')) {
+                    console.log('Token não encontrado, redirecionando para login');
+                    localStorage.clear();
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                if (error.message.includes('Sessão expirada') || error.message.includes('Token expirado')) {
+                    console.log('Sessão/Token expirado, redirecionando para login');
+                    localStorage.clear();
+                    alert('Sua sessão expirou. Você será redirecionado para o login.');
+                    window.location.href = '/login';
+                    return;
+                }
+                
                 showEmptyState();
-                showToast('Erro ao carregar suas cifras', 'error');
+                showToast(`Erro ao carregar suas cifras: ${error.message}`, 'error');
             }
         }
 
@@ -357,6 +448,14 @@
                 month: '2-digit',
                 year: 'numeric'
             });
+        }
+
+        // Função de debug para forçar novo login
+        function forcarNovoLogin() {
+            console.log('[DEBUG] Forçando novo login...');
+            localStorage.clear();
+            alert('Sessão limpa. Você será redirecionado para o login.');
+            window.location.href = '/login';
         }
     </script>
 </body>

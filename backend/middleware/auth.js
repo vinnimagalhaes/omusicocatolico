@@ -8,7 +8,12 @@ function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
+    console.log(`[AUTH] Requisição para: ${req.method} ${req.originalUrl}`); // Debug
+    console.log(`[AUTH] Authorization header presente: ${!!authHeader}`); // Debug
+    console.log(`[AUTH] Token extraído: ${!!token}`); // Debug
+
     if (!token) {
+        console.log('[AUTH] Token não fornecido'); // Debug
         return res.status(401).json({ 
             success: false, 
             message: 'Token de acesso requerido' 
@@ -17,12 +22,13 @@ function authenticateToken(req, res, next) {
 
     jwt.verify(token, JWT_SECRET, (err, user) => {
         if (err) {
-            console.error('Erro na verificação do token:', err.message);
+            console.error('[AUTH] Erro na verificação do token:', err.message);
             return res.status(403).json({ 
                 success: false, 
                 message: 'Token inválido' 
             });
         }
+        console.log(`[AUTH] Token válido para usuário ID: ${user.id}`); // Debug
         req.user = user;
         next();
     });

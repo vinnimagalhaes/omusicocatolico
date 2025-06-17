@@ -184,7 +184,7 @@ function checkAuth() {
     
     if (!token || !user) {
         // Usuário não logado, redirecionar para login
-        window.location.href = 'login.html';
+        window.location.href = '/login';
     }
 }
 
@@ -197,7 +197,7 @@ function logout() {
         localStorage.removeItem('authToken');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = 'login.html';
+        window.location.href = '/login';
     });
 }
 
@@ -212,24 +212,101 @@ function getAuthToken() {
     return localStorage.getItem('token') || localStorage.getItem('authToken');
 }
 
+// Função para decodificar JWT e verificar expiração
+function isTokenExpired(token) {
+    if (!token) return true;
+    
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Date.now() / 1000;
+        
+        console.log('[TOKEN CHECK] Token exp:', payload.exp);
+        console.log('[TOKEN CHECK] Current time:', currentTime);
+        console.log('[TOKEN CHECK] Token expired:', payload.exp < currentTime);
+        
+        return payload.exp < currentTime;
+    } catch (error) {
+        console.error('[TOKEN CHECK] Erro ao decodificar token:', error);
+        return true;
+    }
+}
+
+// Função para tentar renovar token automaticamente
+async function tryRenewToken() {
+    try {
+        console.log('[TOKEN RENEWAL] Tentando renovar token...');
+        
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || !user.email) {
+            console.log('[TOKEN RENEWAL] Usuário não encontrado para renovação');
+            return false;
+        }
+        
+        // Se temos um refresh token ou podemos tentar um login silencioso
+        // Por agora, vamos apenas limpar e redirecionar
+        console.log('[TOKEN RENEWAL] Token expirado, redirecionando para login');
+        localStorage.clear();
+        window.location.href = '/login';
+        return false;
+        
+    } catch (error) {
+        console.error('[TOKEN RENEWAL] Erro ao renovar token:', error);
+        return false;
+    }
+}
+
 // Fetch com autenticação
 async function fetchWithAuth(url, options = {}) {
-    // Não precisa mais de token, cookies httpOnly são enviados automaticamente
+    const token = getAuthToken();
+    if (!token) {
+        console.error('[FETCH_AUTH] Token não encontrado no localStorage');
+        throw new Error('Token de autenticação não encontrado');
+    }
+
+    // Verificar se token está expirado antes de fazer a requisição
+    if (isTokenExpired(token)) {
+        console.warn('[FETCH_AUTH] Token expirado, tentando renovar...');
+        const renewed = await tryRenewToken();
+        if (!renewed) {
+            throw new Error('Token expirado e não foi possível renovar');
+        }
+    }
+
+    console.log('[FETCH_AUTH] Token encontrado:', token.substring(0, 20) + '...');
+    console.log('[FETCH_AUTH] URL da requisição:', url);
+
     const fullUrl = url.startsWith('http') ? url : apiUrl(url);
+    
     try {
         const response = await fetch(fullUrl, {
             ...options,
+            headers: {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
             credentials: 'include',
         });
+        
+        console.log('[FETCH_AUTH] Response status:', response.status);
+        console.log('[FETCH_AUTH] Response headers:', [...response.headers.entries()]);
+        
         if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('user');
-            throw new Error('Sessão expirada. Faça login novamente.');
+            console.error('[FETCH_AUTH] Token rejeitado pelo servidor (401)');
+            
+            // Tentar renovar token uma vez
+            const renewed = await tryRenewToken();
+            if (!renewed) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('user');
+                throw new Error('Sessão expirada. Faça login novamente.');
+            }
         }
+        
         return response;
     } catch (error) {
-        console.error('Erro na requisição autenticada:', error);
+        console.error('[FETCH_AUTH] Erro na requisição autenticada:', error);
         throw error;
     }
 }

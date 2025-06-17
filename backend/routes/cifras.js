@@ -189,6 +189,9 @@ router.get('/minhas', authenticateToken, async (req, res) => {
         const userId = req.user.id;
         const { limit = 50, offset = 0 } = req.query;
         
+        console.log(`[MINHAS CIFRAS] Usuário ID: ${userId} solicitando cifras`); // Debug
+        console.log(`[MINHAS CIFRAS] Limit: ${limit}, Offset: ${offset}`); // Debug
+        
         const { count, rows: cifras } = await Cifra.findAndCountAll({
             where: { 
                 user_id: userId,
@@ -207,12 +210,14 @@ router.get('/minhas', authenticateToken, async (req, res) => {
             ]
         });
         
+        console.log(`[MINHAS CIFRAS] Encontradas ${count} cifras para o usuário ${userId}`); // Debug
+        
         const cifrasFormatadas = cifras.map(cifra => ({
             ...cifra.toJSON(),
             views: cifra.getViewsFormatadas()
         }));
 
-        console.log('Cifras formatadas:', cifrasFormatadas); // Debug
+        console.log(`[MINHAS CIFRAS] Retornando ${cifrasFormatadas.length} cifras formatadas`); // Debug
         
         res.json({
             cifras: cifrasFormatadas,
@@ -222,7 +227,7 @@ router.get('/minhas', authenticateToken, async (req, res) => {
         });
         
     } catch (error) {
-        console.error('Erro ao buscar cifras do usuário:', error);
+        console.error('[MINHAS CIFRAS] Erro ao buscar cifras do usuário:', error);
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });

@@ -3120,19 +3120,20 @@ function updateAuthUI() {
     }
 }
 
-// Função logout atualizada
-function logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    updateAuthUI();
-    showToast('Logout realizado com sucesso!', 'success');
-}
+// Função logout removida - usando a do auth.js para evitar conflitos
+// function logout() {
+//     localStorage.removeItem('token');
+//     localStorage.removeItem('authToken');
+//     localStorage.removeItem('user');
+//     updateAuthUI();
+//     showToast('Logout realizado com sucesso!', 'success');
+// }
 
 // Verificar autenticação na inicialização
-document.addEventListener('DOMContentLoaded', function() {
-    updateAuthUI();
-});
+// Comentado para evitar conflitos com páginas específicas
+// document.addEventListener('DOMContentLoaded', function() {
+//     updateAuthUI();
+// });
 
 // Função para usar o backend (OCR com preservação de layout)
 async function processFileWithBackend(file) {
