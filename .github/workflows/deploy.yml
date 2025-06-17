@@ -1,0 +1,65 @@
+name: 🎵 Deploy OMúsicoCatólico
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+      - 'docs/**'
+  workflow_dispatch:  # Permite deploy manual via interface do GitHub
+
+jobs:
+  deploy:
+    name: 🚀 Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔍 Show commit info
+      run: |
+        echo "🔄 Deploying commit: ${{ github.sha }}"
+        echo "👤 Author: ${{ github.actor }}"
+        echo "📝 Message: ${{ github.event.head_commit.message }}"
+        
+    - name: 🚀 Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: 22
+        script: |
+          echo "🎵 Iniciando deploy do OMúsicoCatólico..."
+          echo "📅 $(date '+%Y-%m-%d %H:%M:%S')"
+          echo "🔄 Commit: ${{ github.sha }}"
+          echo ""
+          
+          cd /var/www/omusicacatolico
+          
+          # Verificar se está no diretório correto
+          if [ ! -f "deploy.sh" ]; then
+            echo "❌ Erro: deploy.sh não encontrado!"
+            exit 1
+          fi
+          
+          # Executar deploy
+          ./deploy.sh
+          
+          echo ""
+          echo "✅ Deploy concluído com sucesso!"
+          echo "🎵 OMúsicoCatólico está no ar!"
+          
+    - name: ✅ Notify success
+      if: success()
+      run: |
+        echo "🎉 Deploy realizado com sucesso!"
+        echo "🌐 Site: https://omusicocatolico.com.br"
+        
+    - name: ❌ Notify failure
+      if: failure()
+      run: |
+        echo "💥 Falha no deploy!"
+        echo "📋 Verifique os logs acima para mais detalhes" 
