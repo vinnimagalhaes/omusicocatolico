@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Performance & SEO Scripts -->
+    <script src="/js/performance.js" defer></script>
+    <script src="/js/seo.js" defer></script>
+    <title>Minhas Cifras - OMúsicoCatólico</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo e Navegação -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <a href="/inicio" class="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">OMúsicoCatólico</a>
+                    </div>
+                </div>
+
+                <!-- Busca -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input type="text" placeholder="Buscar cifras..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Menu -->
+                <div class="flex items-center space-x-4">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="text-gray-700 hover:text-blue-600 font-medium">Entrar</a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="relative">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium" id="userInitials">U</div>
+                            <div class="relative" id="userMenu">
+                                <button onclick="toggleUserMenu()" class="flex items-center space-x-1 text-gray-700 hover:text-blue-600">
+                                    <span id="userName">Usuário</span>
+                                    <i class="fas fa-chevron-down text-xs"></i>
+                                </button>
+                                
+                                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                                    <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-user mr-2"></i>Meu Perfil
+                                    </a>
+                                    <hr class="my-1">
+                                    <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação Principal -->
+    <nav class="main-navigation">
+        <div class="nav-container">
+            <!-- Desktop Navigation -->
+            <div class="nav-desktop">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/inicio" class="nav-link">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item nav-dropdown">
+                        <div class="nav-link nav-dropdown-toggle">
+                            <i class="fas fa-list nav-icon"></i>
+                            Repertórios
+                            <i class="fas fa-chevron-down nav-dropdown-icon"></i>
+                        </div>
+                        <div class="nav-dropdown-menu">
+                            <a href="/repertorios" class="nav-dropdown-item">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="nav-dropdown-item">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/favoritas" class="nav-link">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/minhas-cifras" class="nav-link active">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/categorias" class="nav-link">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div class="nav-mobile">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                <button class="nav-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars nav-toggle-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="nav-mobile-menu">
+            <div class="nav-mobile-content">
+                <div class="nav-mobile-header">
+                    <span class="nav-brand">OMúsicoCatólico</span>
+                    <button class="nav-mobile-close" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <ul class="nav-mobile-list">
+                    <li class="nav-mobile-item">
+                        <a href="/inicio" class="nav-mobile-link">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-dropdown">
+                        <button class="nav-mobile-dropdown-toggle">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-list nav-icon"></i>
+                                Repertórios
+                            </div>
+                            <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
+                        </button>
+                        <div class="nav-mobile-dropdown-menu">
+                            <a href="/repertorios" class="nav-mobile-dropdown-item">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/favoritas" class="nav-mobile-link">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/minhas-cifras" class="nav-mobile-link active">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/categorias" class="nav-mobile-link">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Minhas Cifras</h1>
+                <p class="text-gray-600 mt-2">Gerencie suas cifras enviadas para a comunidade</p>
+            </div>
+            <button onclick="showAddCifraModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
+                <i class="fas fa-plus"></i>
+                Enviar Cifra
+            </button>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Carregando suas cifras...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-music text-blue-600 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Suas cifras aparecerão aqui!</h3>
+            <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                Compartilhe suas cifras favoritas com a comunidade. Você pode enviar cifras de 3 formas diferentes.
+            </p>
+            
+            <!-- Opções de Envio -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                <!-- Escrever Cifra -->
+                <button onclick="openCifraEditor()" class="p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-edit text-blue-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 group-hover:text-blue-900">Escrever Cifra</h4>
+                    <p class="text-sm text-gray-600 mt-1">Digite manualmente</p>
+                </button>
+                
+                <!-- Link da Cifra -->
+                <button onclick="openUrlImportModal()" class="p-6 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-green-200 transition-colors">
+                        <i class="fas fa-link text-green-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 group-hover:text-green-900">Link da Cifra</h4>
+                    <p class="text-sm text-gray-600 mt-1">Importar de sites</p>
+                </button>
+                
+                <!-- Upload de Arquivo -->
+                <button onclick="openCifraUploader()" class="p-6 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-200 transition-colors">
+                        <i class="fas fa-cloud-upload-alt text-purple-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 group-hover:text-purple-900">Upload de Arquivo</h4>
+                    <p class="text-sm text-gray-600 mt-1">PNG, PDF ou JPEG</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cifras Grid -->
+        <div id="cifrasGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cifras serão preenchidas via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Modais -->
+    <div id="modals"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Variáveis específicas da página
+        let minhasCifras = [];
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            carregarMinhasCifras();
+        });
+
+        // Carregar cifras do usuário
+        async function carregarMinhasCifras() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                console.log('Carregando cifras do usuário:', user.id); // Debug
+
+                const response = await fetchWithAuth(apiUrl('/api/cifras/minhas'));
+                const data = await response.json();
+                
+                console.log('Cifras carregadas:', data.cifras); // Debug
+                
+                minhasCifras = data.cifras || [];
+                renderMinhasCifras();
+                
+            } catch (error) {
+                console.error('Erro ao carregar cifras:', error);
+                showEmptyState();
+                showToast('Erro ao carregar suas cifras', 'error');
+            }
+        }
+
+        // Renderizar cifras
+        function renderMinhasCifras() {
+            console.log('Renderizando cifras:', minhasCifras); // Debug
+            
+            const container = document.getElementById('cifrasGrid');
+            
+            if (!minhasCifras || minhasCifras.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            container.innerHTML = minhasCifras.map(cifra => createCifraCard(cifra)).join('');
+            hideEmptyState();
+        }
+
+        // Criar card de cifra específico para "Minhas Cifras"
+        function createCifraCard(cifra) {
+            const statusTexto = {
+                'privada': 'Privada',
+                'pendente': 'Aguardando Análise',
+                'aprovada': 'Aprovada - Pública',
+                'rejeitada': 'Rejeitada'
+            };
+            
+            const statusCor = {
+                'privada': 'bg-gray-100 text-gray-800',
+                'pendente': 'bg-yellow-100 text-yellow-800',
+                'aprovada': 'bg-green-100 text-green-800',
+                'rejeitada': 'bg-red-100 text-red-800'
+            };
+            
+            return `
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" onclick="viewMinhaCifra(${cifra.id})">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">${cifra.titulo}</h3>
+                                <p class="text-gray-600 text-sm">${cifra.artista}</p>
+                            </div>
+                            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full ${statusCor[cifra.status_analise] || statusCor['privada']}">
+                                ${statusTexto[cifra.status_analise] || statusTexto['privada']}
+                            </span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4"><i class="fas fa-eye mr-1"></i>${cifra.views || 0} visualizações</span>
+                            <span><i class="fas fa-clock mr-1"></i>${formatDate(cifra.created_at)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Visualizar cifra específica de "Minhas Cifras"
+        function viewMinhaCifra(cifraId) {
+            const cifra = minhasCifras.find(c => c.id === cifraId);
+            if (cifra) {
+                console.log('Cifra encontrada:', cifra); // Debug
+                showMinhaCifraModal(cifra);
+            }
+        }
+
+        // Configurar event listeners dos cards
+        function setupCardEventListeners() {
+            // Os event listeners são configurados via onclick no HTML dos cards
+        }
+
+        // Mostrar estado vazio
+        function showEmptyState() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('cifrasGrid').classList.add('hidden');
+        }
+        
+        // Esconder estado vazio
+        function hideEmptyState() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('cifrasGrid').classList.remove('hidden');
+        }
+
+        // Funções de navegação
+        function filtrarFavoritas() {
+            window.location.href = '/favoritas';
+        }
+
+        function filtrarMinhasCifras() {
+            // Já estamos na página, não faz nada
+            return;
+        }
+
+        // Formatar data
+        function formatDate(dateString) {
+            if (!dateString) return 'Data não disponível';
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+    </script>
+</body>
+</html> 
