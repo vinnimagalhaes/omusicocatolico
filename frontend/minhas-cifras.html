@@ -96,7 +96,7 @@
 
                     <!-- Logged In -->
                     <div id="loggedIn" class="nav-user-dropdown">
-                        <button onclick="toggleUserMenu()" class="nav-user-btn">
+                        <button id="toggleUserMenuBtn" class="nav-user-btn">
                             <div class="nav-user-avatar" id="userInitials">U</div>
                             <span id="userName" class="nav-user-name">Usuário</span>
                             <i class="fas fa-chevron-down nav-user-icon"></i>
@@ -126,7 +126,7 @@
                                 </a>
                             </div>
                             <hr class="nav-user-divider">
-                            <button onclick="logout()" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                            <button id="logoutBtn" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
                                 <i class="fas fa-sign-out-alt nav-icon"></i>
                                 Sair
                             </button>
@@ -235,7 +235,7 @@
                                     Painel Master
                                 </a>
                             </div>
-                            <button onclick="logout()" class="nav-mobile-link nav-mobile-link-logout">
+                            <button id="logoutBtnMobile" class="nav-mobile-link nav-mobile-link-logout">
                                 <i class="fas fa-sign-out-alt nav-icon"></i>
                                 Sair
                             </button>
@@ -367,6 +367,22 @@
             const btnRenovarSessao = document.getElementById('btnRenovarSessao');
             if (btnRenovarSessao) {
                 btnRenovarSessao.addEventListener('click', forcarNovoLogin);
+            }
+
+            // Navegação - Toggle User Menu
+            const toggleUserMenuBtn = document.getElementById('toggleUserMenuBtn');
+            if (toggleUserMenuBtn) {
+                toggleUserMenuBtn.addEventListener('click', toggleUserMenu);
+            }
+
+            // Navegação - Logout buttons
+            const logoutBtn = document.getElementById('logoutBtn');
+            const logoutBtnMobile = document.getElementById('logoutBtnMobile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+            if (logoutBtnMobile) {
+                logoutBtnMobile.addEventListener('click', logout);
             }
 
             // Botão Enviar Cifra
