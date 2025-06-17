@@ -217,14 +217,29 @@ function isTokenExpired(token) {
     if (!token) return true;
     
     try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const currentTime = Date.now() / 1000;
+        // Verificar se o token tem 3 partes (header.payload.signature)
+        const parts = token.split('.');
+        if (parts.length !== 3) {
+            console.error('[TOKEN CHECK] Token inválido - formato incorreto');
+            return true;
+        }
         
-        console.log('[TOKEN CHECK] Token exp:', payload.exp);
-        console.log('[TOKEN CHECK] Current time:', currentTime);
-        console.log('[TOKEN CHECK] Token expired:', payload.exp < currentTime);
+        const payload = JSON.parse(atob(parts[1]));
         
-        return payload.exp < currentTime;
+        // Verificar se o payload tem o campo exp
+        if (!payload.exp) {
+            console.warn('[TOKEN CHECK] Token sem campo de expiração');
+            return false; // Se não tem exp, assumir que é válido
+        }
+        
+        const currentTime = Math.floor(Date.now() / 1000);
+        const buffer = 30; // 30 segundos de buffer
+        
+        console.log('[TOKEN CHECK] Token exp:', new Date(payload.exp * 1000).toLocaleString());
+        console.log('[TOKEN CHECK] Current time:', new Date().toLocaleString());
+        console.log('[TOKEN CHECK] Token expired:', payload.exp < (currentTime + buffer));
+        
+        return payload.exp < (currentTime + buffer);
     } catch (error) {
         console.error('[TOKEN CHECK] Erro ao decodificar token:', error);
         return true;
@@ -263,14 +278,14 @@ async function fetchWithAuth(url, options = {}) {
         throw new Error('Token de autenticação não encontrado');
     }
 
-    // Verificar se token está expirado antes de fazer a requisição
-    if (isTokenExpired(token)) {
-        console.warn('[FETCH_AUTH] Token expirado, tentando renovar...');
-        const renewed = await tryRenewToken();
-        if (!renewed) {
-            throw new Error('Token expirado e não foi possível renovar');
-        }
-    }
+    // Temporariamente desabilitado - deixar o servidor validar
+    // if (isTokenExpired(token)) {
+    //     console.warn('[FETCH_AUTH] Token expirado, tentando renovar...');
+    //     const renewed = await tryRenewToken();
+    //     if (!renewed) {
+    //         throw new Error('Token expirado e não foi possível renovar');
+    //     }
+    // }
 
     console.log('[FETCH_AUTH] Token encontrado:', token.substring(0, 20) + '...');
     console.log('[FETCH_AUTH] URL da requisição:', url);

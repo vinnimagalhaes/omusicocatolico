@@ -287,28 +287,28 @@
                     return;
                 }
 
-                // Verificar expiração do token manualmente
-                try {
-                    const payload = JSON.parse(atob(token.split('.')[1]));
-                    const currentTime = Date.now() / 1000;
-                    
-                    console.log('Token exp:', new Date(payload.exp * 1000));
-                    console.log('Current time:', new Date());
-                    
-                    if (payload.exp < currentTime) {
-                        console.log('Token expirado, limpando localStorage e redirecionando');
-                        localStorage.clear();
-                        alert('Sua sessão expirou. Você será redirecionado para o login.');
-                        window.location.href = '/login';
-                        return;
-                    }
-                } catch (tokenError) {
-                    console.error('Erro ao verificar token:', tokenError);
-                    console.log('Token inválido, limpando localStorage e redirecionando');
-                    localStorage.clear();
-                    window.location.href = '/login';
-                    return;
-                }
+                // Temporariamente desabilitado - deixar o servidor validar
+                // try {
+                //     const payload = JSON.parse(atob(token.split('.')[1]));
+                //     const currentTime = Date.now() / 1000;
+                //     
+                //     console.log('Token exp:', new Date(payload.exp * 1000));
+                //     console.log('Current time:', new Date());
+                //     
+                //     if (payload.exp < currentTime) {
+                //         console.log('Token expirado, limpando localStorage e redirecionando');
+                //         localStorage.clear();
+                //         alert('Sua sessão expirou. Você será redirecionado para o login.');
+                //         window.location.href = '/login';
+                //         return;
+                //     }
+                // } catch (tokenError) {
+                //     console.error('Erro ao verificar token:', tokenError);
+                //     console.log('Token inválido, limpando localStorage e redirecionando');
+                //     localStorage.clear();
+                //     window.location.href = '/login';
+                //     return;
+                // }
 
                 const response = await fetchWithAuth(apiUrl('/api/cifras/minhas'));
                 
