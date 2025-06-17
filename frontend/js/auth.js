@@ -1,18 +1,18 @@
 // Autenticação e gerenciamento de sessão - OMúsicoCatólico
 // Última atualização: 17/06/2025 12:36 - Testando deploy automático
 
-// Configuração Google OAuth
-const GOOGLE_CLIENT_ID = 'your_google_client_id_here'; // Substitua pelo seu Client ID real
+// Configuração Google OAuth - TEMPORARIAMENTE REMOVIDO PARA CORRIGIR ERRO DE SINTAXE
+// const GOOGLE_CLIENT_ID = 'your_google_client_id_here'; // Substitua pelo seu Client ID real
 
-// Inicializar Google Sign-In
-window.onload = function() {
-    if (typeof google !== 'undefined' && google.accounts) {
-        google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: handleGoogleResponse
-        });
-    }
-};
+// Inicializar Google Sign-In - TEMPORARIAMENTE DESABILITADO
+// window.onload = function() {
+//     if (typeof google !== 'undefined' && google.accounts) {
+//         google.accounts.id.initialize({
+//             client_id: GOOGLE_CLIENT_ID,
+//             callback: handleGoogleResponse
+//         });
+//     }
+// };
 
 // Toggle password visibility
 function togglePassword() {
