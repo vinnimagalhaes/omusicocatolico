@@ -44,7 +44,7 @@ jobs:
           echo "🔄 Commit: ${{ github.sha }}"
           echo ""
           
-          cd /var/www/omusicacatolico
+          cd /var/www/omusicocatolico
           
           # Verificar se está no diretório correto
           if [ ! -f "deploy.sh" ]; then
