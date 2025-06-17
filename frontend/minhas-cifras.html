@@ -352,25 +352,33 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[MINHAS CIFRAS] Página carregada, iniciando...');
             
-            const token = localStorage.getItem('token') || localStorage.getItem('authToken');
-            const user = localStorage.getItem('user');
-            
-            console.log('[MINHAS CIFRAS] Token atual:', token ? `${token.substring(0, 30)}...` : 'Ausente');
-            console.log('[MINHAS CIFRAS] User atual:', user ? JSON.parse(user) : 'Ausente');
-            
-            // Verificar se token está expirado
-            if (token && typeof isTokenExpired === 'function') {
-                console.log('[MINHAS CIFRAS] Token expirado?', isTokenExpired(token));
-            }
-            
-            updateAuthUI();
-            
-            console.log('[MINHAS CIFRAS] Após updateAuthUI - iniciando carregamento...');
-            
-            // Configurar event listeners
-            setupEventListeners();
-            
-            carregarMinhasCifras();
+            // AGUARDAR SCRIPTS CARREGAREM - FIX PARA RACE CONDITION
+            setTimeout(function() {
+                console.log('[MINHAS CIFRAS] Timeout executado - verificando funções...');
+                console.log('[MINHAS CIFRAS] openCifraEditor existe?', typeof openCifraEditor);
+                console.log('[MINHAS CIFRAS] openUrlImportModal existe?', typeof openUrlImportModal);
+                console.log('[MINHAS CIFRAS] openCifraUploader existe?', typeof openCifraUploader);
+                
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                const user = localStorage.getItem('user');
+                
+                console.log('[MINHAS CIFRAS] Token atual:', token ? `${token.substring(0, 30)}...` : 'Ausente');
+                console.log('[MINHAS CIFRAS] User atual:', user ? JSON.parse(user) : 'Ausente');
+                
+                // Verificar se token está expirado
+                if (token && typeof isTokenExpired === 'function') {
+                    console.log('[MINHAS CIFRAS] Token expirado?', isTokenExpired(token));
+                }
+                
+                updateAuthUI();
+                
+                console.log('[MINHAS CIFRAS] Após updateAuthUI - iniciando carregamento...');
+                
+                // Configurar event listeners
+                setupEventListeners();
+                
+                carregarMinhasCifras();
+            }, 100); // 100ms de delay para garantir que scripts carregaram
         });
 
         // Configurar todos os event listeners
