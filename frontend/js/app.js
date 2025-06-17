@@ -3649,6 +3649,11 @@ function openUrlImportModal(prefilledUrl = '') {
     const modal = document.createElement('div');
     modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
     modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Fundo semi-transparente manual
+    modal.id = 'url-import-modal-debug'; // ID para debug
+    
+    console.log('🔗 [DEBUG] Modal criado:', modal);
+    console.log('🔗 [DEBUG] Modal className:', modal.className);
+    console.log('🔗 [DEBUG] Modal style:', modal.style.cssText);
     modal.innerHTML = `
         <div class="bg-white rounded-lg max-w-lg w-full">
             <div class="flex justify-between items-center p-6 border-b">
@@ -3696,6 +3701,11 @@ function openUrlImportModal(prefilledUrl = '') {
     `;
     
     document.body.appendChild(modal);
+    
+    console.log('🔗 [DEBUG] Modal adicionado ao DOM!');
+    console.log('🔗 [DEBUG] Modal no DOM?', document.getElementById('url-import-modal-debug'));
+    console.log('🔗 [DEBUG] Body children count:', document.body.children.length);
+    console.log('🔗 [DEBUG] Modal computed style:', window.getComputedStyle(modal));
     
     // Configurar event listeners
     setupSimpleModalEventListeners();
