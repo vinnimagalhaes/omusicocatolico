@@ -324,9 +324,7 @@
     
     <!-- Auth UI Elements (hidden, used by updateAuthUI) -->
     <div id="notLoggedIn" class="hidden"></div>
-    <div id="loggedIn" class="hidden">
-        <span id="userName"></span>
-    </div>
+    <div id="loggedIn" class="hidden"></div>
 
     <!-- Modais -->
     <div id="modals"></div>
@@ -375,7 +373,7 @@
             const btnEnviarCifra = document.getElementById('btnEnviarCifra');
             if (btnEnviarCifra) {
                 btnEnviarCifra.addEventListener('click', function() {
-                    window.location.href = '/';
+                    showAddCifraModal();
                 });
             }
 
@@ -383,7 +381,7 @@
             const btnEscreverCifra = document.getElementById('btnEscreverCifra');
             if (btnEscreverCifra) {
                 btnEscreverCifra.addEventListener('click', function() {
-                    window.location.href = '/';
+                    openCifraEditor();
                 });
             }
 
@@ -391,7 +389,7 @@
             const btnLinkCifra = document.getElementById('btnLinkCifra');
             if (btnLinkCifra) {
                 btnLinkCifra.addEventListener('click', function() {
-                    window.location.href = '/';
+                    openUrlImportModal();
                 });
             }
 
@@ -399,7 +397,7 @@
             const btnUploadCifra = document.getElementById('btnUploadCifra');
             if (btnUploadCifra) {
                 btnUploadCifra.addEventListener('click', function() {
-                    window.location.href = '/';
+                    openCifraUploader();
                 });
             }
         }
