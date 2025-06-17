@@ -22,13 +22,29 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 // SEGUNDO_EDIT: apply helmet, cookie-parser and configure CORS with credentials
-app.use(helmet());
+// CSP unificado para compatibilidade com NGINX
+app.use(helmet({
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+            fontSrc: ["'self'", "https:", "data:"],
+            imgSrc: ["'self'", "https:", "data:"],
+            connectSrc: ["'self'", "https:"],
+            frameSrc: ["'self'"],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: []
+        }
+    },
+    crossOriginEmbedderPolicy: false // Desabilitar para compatibilidade
+}));
 app.use(cookieParser());
 
-// Rate limit básico: 100 requisições por 15 min por IP
+// Rate limit básico: 500 requisições por 15 min por IP (NGINX já protege)
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -105,7 +121,9 @@ app.get('/register', (req, res) => {
 
 // Middleware de tratamento de erros
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error(`❌ ERRO [${new Date().toISOString()}]:`, err.stack);
+    console.error(`📍 URL: ${req.method} ${req.originalUrl}`);
+    console.error(`🔍 Headers: ${JSON.stringify(req.headers, null, 2)}`);
     res.status(500).json({ error: 'Algo deu errado!' });
 });
 
