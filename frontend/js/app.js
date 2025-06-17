@@ -1519,7 +1519,8 @@ async function openCifraEditor() {
     const categorias = await loadCategorias();
     
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Fundo semi-transparente manual
     modal.innerHTML = `
         <div class="bg-white rounded-lg max-w-4xl w-full max-h-[95vh] overflow-hidden">
             <div class="flex justify-between items-center p-6 border-b">
@@ -1527,7 +1528,7 @@ async function openCifraEditor() {
                     <i class="fas fa-edit text-blue-600 mr-2"></i>
                     Editor de Cifra
                 </h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <button id="close-editor-modal-btn" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -1589,10 +1590,10 @@ async function openCifraEditor() {
                 <div class="flex-1 flex flex-col">
                     <div class="p-4 border-b border-gray-200">
                         <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="insertText('\\n\\nVerso:\\n')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Verso</button>
-                            <button type="button" onclick="insertText('\\n\\nRefrão:\\n')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Refrão</button>
-                            <button type="button" onclick="insertText('\\n\\nPonte:\\n')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Ponte</button>
-                            <button type="button" onclick="insertText('\\n\\nFinal:\\n')" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Final</button>
+                            <button type="button" id="btn-insert-verso" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Verso</button>
+                            <button type="button" id="btn-insert-refrao" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Refrão</button>
+                            <button type="button" id="btn-insert-ponte" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Ponte</button>
+                            <button type="button" id="btn-insert-final" class="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm hover:bg-gray-200">Final</button>
                         </div>
                     </div>
                     
@@ -1620,14 +1621,14 @@ Ave, ave, ave Maria"
             </div>
             
             <div class="flex justify-between items-center p-6 border-t bg-gray-50">
-                <button onclick="previewCifra()" class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
+                <button id="btn-preview-cifra" class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition-colors">
                     <i class="fas fa-eye mr-2"></i>Visualizar
                 </button>
                 <div class="flex space-x-3">
-                    <button onclick="closeModal()" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <button id="btn-cancel-editor" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                         Cancelar
                     </button>
-                    <button onclick="saveCifra()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <button id="btn-save-cifra" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         <i class="fas fa-save mr-2"></i>Salvar Cifra
                     </button>
                 </div>
@@ -1636,6 +1637,32 @@ Ave, ave, ave Maria"
     `;
     
     document.body.appendChild(modal);
+    
+    // Event listeners para o modal do editor
+    const closeBtn = document.getElementById('close-editor-modal-btn');
+    const cancelBtn = document.getElementById('btn-cancel-editor');
+    const saveBtn = document.getElementById('btn-save-cifra');
+    const previewBtn = document.getElementById('btn-preview-cifra');
+    const versoBtn = document.getElementById('btn-insert-verso');
+    const refraoBtn = document.getElementById('btn-insert-refrao');
+    const ponteBtn = document.getElementById('btn-insert-ponte');
+    const finalBtn = document.getElementById('btn-insert-final');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (saveBtn) saveBtn.addEventListener('click', saveCifra);
+    if (previewBtn) previewBtn.addEventListener('click', previewCifra);
+    if (versoBtn) versoBtn.addEventListener('click', () => insertText('\n\nVerso:\n'));
+    if (refraoBtn) refraoBtn.addEventListener('click', () => insertText('\n\nRefrão:\n'));
+    if (ponteBtn) ponteBtn.addEventListener('click', () => insertText('\n\nPonte:\n'));
+    if (finalBtn) finalBtn.addEventListener('click', () => insertText('\n\nFinal:\n'));
+    
+    // Fechar modal clicando fora
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
 }
 
 // Abrir editor de cifras com dados pré-preenchidos (para cifras importadas)
