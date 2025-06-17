@@ -27,7 +27,8 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "https:"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https:"],
+            scriptSrcAttr: ["'unsafe-inline'"], // PERMITIR event handlers inline
             styleSrc: ["'self'", "'unsafe-inline'", "https:"],
             fontSrc: ["'self'", "https:", "data:"],
             imgSrc: ["'self'", "https:", "data:"],

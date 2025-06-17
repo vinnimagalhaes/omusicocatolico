@@ -56,17 +56,15 @@ self.addEventListener('install', event => {
 
 // Ativação do Service Worker
 self.addEventListener('activate', event => {
-  console.log('[SW] Service Worker ativado');
+  console.log('[SW] Service Worker ativado - LIMPANDO TODOS OS CACHES!');
   
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cacheName => {
-          // Remove caches antigos
-          if (cacheName !== STATIC_CACHE && cacheName !== DYNAMIC_CACHE) {
-            console.log('[SW] Removendo cache antigo:', cacheName);
-            return caches.delete(cacheName);
-          }
+          // REMOVE TODOS OS CACHES - EMERGÊNCIA!
+          console.log('[SW] EMERGÊNCIA - Removendo cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
     })
@@ -76,49 +74,13 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// TEMPORARIAMENTE DESABILITADO - SERVICE WORKER ESTAVA CAUSANDO PROBLEMAS
 // Interceptação de requisições
 self.addEventListener('fetch', event => {
-  // Não interceptar requisições da API
-  if (event.request.url.includes('/api/')) {
-    return;
-  }
-
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        // Cache hit - return response
-        if (response) {
-          console.log('[SW] Retornando do cache:', event.request.url);
-          return response;
-        }
-
-        // Clone the request
-        const fetchRequest = event.request.clone();
-
-        return fetch(fetchRequest).then(
-          response => {
-            // Check if we received a valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
-            }
-
-            // Clone the response
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                console.log('[SW] Adicionando ao cache:', event.request.url);
-                cache.put(event.request, responseToCache);
-              });
-
-            return response;
-          }
-        ).catch(() => {
-          console.log('[SW] Rede indisponível, buscando no cache...');
-          return caches.match(event.request);
-        });
-      })
-  );
+  // DESABILITADO: Deixar todas as requisições passarem normalmente
+  // Isso vai forçar o navegador a buscar arquivos frescos
+  console.log('[SW] MODO BYPASS - Não interceptando:', event.request.url);
+  return; // Não intercepta nada
 });
 
 // Verifica se é um recurso estático
