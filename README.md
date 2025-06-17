@@ -314,4 +314,4 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para de
 
 **Desenvolvido com ❤️ para a comunidade católica**
 
-🎵 *"Cantai ao Senhor um cântico novo, porque ele fez maravilhas"* - Salmo 98:1 
+🎵 *"Cantai ao Senhor um cântico novo, porque ele fez maravilhas"* - Salmo 98:1 ## Deploy test Tue Jun 17 12:27:41 -03 2025
