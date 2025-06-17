@@ -79,7 +79,7 @@ function showAddCifraModal() {
         <div class="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-6 border-b">
                 <h3 class="text-xl font-semibold text-gray-900">Adicionar Nova Cifra</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <button id="close-main-modal-btn" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -89,7 +89,7 @@ function showAddCifraModal() {
                 
                 <div class="space-y-4">
                     <!-- Escrever Cifra -->
-                    <button onclick="openCifraEditor()" class="w-full p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-left">
+                    <button id="btn-escrever-cifra-modal" class="w-full p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-left">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
                                 <i class="fas fa-edit text-blue-600 text-xl"></i>
@@ -102,7 +102,7 @@ function showAddCifraModal() {
                     </button>
                     
                     <!-- Link da Cifra -->
-                    <button onclick="openUrlImportModal()" class="w-full p-6 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group text-left">
+                    <button id="btn-link-cifra-modal" class="w-full p-6 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group text-left">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
                                 <i class="fas fa-link text-green-600 text-xl"></i>
@@ -115,7 +115,7 @@ function showAddCifraModal() {
                     </button>
                     
                     <!-- Upload de Arquivo -->
-                    <button onclick="openCifraUploader()" class="w-full p-6 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group text-left">
+                    <button id="btn-upload-cifra-modal" class="w-full p-6 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group text-left">
                         <div class="flex items-center">
                             <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
                                 <i class="fas fa-cloud-upload-alt text-purple-600 text-xl"></i>
@@ -132,6 +132,17 @@ function showAddCifraModal() {
     `;
     
     document.body.appendChild(modal);
+    
+    // Event listeners para os botões do modal
+    const closeBtn = document.getElementById('close-main-modal-btn');
+    const escreverBtn = document.getElementById('btn-escrever-cifra-modal');
+    const linkBtn = document.getElementById('btn-link-cifra-modal');
+    const uploadBtn = document.getElementById('btn-upload-cifra-modal');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (escreverBtn) escreverBtn.addEventListener('click', openCifraEditor);
+    if (linkBtn) linkBtn.addEventListener('click', openUrlImportModal);
+    if (uploadBtn) uploadBtn.addEventListener('click', openCifraUploader);
     
     // Fechar modal clicando fora
     modal.addEventListener('click', function(e) {
