@@ -1,3 +1,6 @@
+// Autenticação e gerenciamento de sessão - OMúsicoCatólico
+// Última atualização: 17/06/2025 12:36 - Testando deploy automático
+
 // Configuração Google OAuth
 const GOOGLE_CLIENT_ID = 'your_google_client_id_here'; // Substitua pelo seu Client ID real
 
