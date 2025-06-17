@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -249,10 +256,10 @@
             </div>
             <div class="flex gap-2">
                 <!-- Botão de debug temporário -->
-                <button onclick="forcarNovoLogin()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
+                <button id="btnRenovarSessao" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
                     🔄 Renovar Sessão
                 </button>
-                <button onclick="showAddCifraModal()" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
+                <button id="btnEnviarCifra" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
                     <i class="fas fa-plus"></i>
                     Enviar Cifra
                 </button>
@@ -278,7 +285,7 @@
             <!-- Opções de Envio -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
                 <!-- Escrever Cifra -->
-                <button onclick="openCifraEditor()" class="p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-center">
+                <button id="btnEscreverCifra" class="p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-center">
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200 transition-colors">
                         <i class="fas fa-edit text-blue-600 text-xl"></i>
                     </div>
@@ -287,7 +294,7 @@
                 </button>
                 
                 <!-- Link da Cifra -->
-                <button onclick="openUrlImportModal()" class="p-6 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group text-center">
+                <button id="btnLinkCifra" class="p-6 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group text-center">
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-green-200 transition-colors">
                         <i class="fas fa-link text-green-600 text-xl"></i>
                     </div>
@@ -296,7 +303,7 @@
                 </button>
                 
                 <!-- Upload de Arquivo -->
-                <button onclick="openCifraUploader()" class="p-6 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group text-center">
+                <button id="btnUploadCifra" class="p-6 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group text-center">
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-200 transition-colors">
                         <i class="fas fa-cloud-upload-alt text-purple-600 text-xl"></i>
                     </div>
@@ -350,8 +357,52 @@
             
             console.log('[MINHAS CIFRAS] Após updateAuthUI - iniciando carregamento...');
             
+            // Configurar event listeners
+            setupEventListeners();
+            
             carregarMinhasCifras();
         });
+
+        // Configurar todos os event listeners
+        function setupEventListeners() {
+            // Botão Renovar Sessão
+            const btnRenovarSessao = document.getElementById('btnRenovarSessao');
+            if (btnRenovarSessao) {
+                btnRenovarSessao.addEventListener('click', forcarNovoLogin);
+            }
+
+            // Botão Enviar Cifra
+            const btnEnviarCifra = document.getElementById('btnEnviarCifra');
+            if (btnEnviarCifra) {
+                btnEnviarCifra.addEventListener('click', function() {
+                    window.location.href = '/';
+                });
+            }
+
+            // Botão Escrever Cifra
+            const btnEscreverCifra = document.getElementById('btnEscreverCifra');
+            if (btnEscreverCifra) {
+                btnEscreverCifra.addEventListener('click', function() {
+                    window.location.href = '/';
+                });
+            }
+
+            // Botão Link da Cifra
+            const btnLinkCifra = document.getElementById('btnLinkCifra');
+            if (btnLinkCifra) {
+                btnLinkCifra.addEventListener('click', function() {
+                    window.location.href = '/';
+                });
+            }
+
+            // Botão Upload de Cifra
+            const btnUploadCifra = document.getElementById('btnUploadCifra');
+            if (btnUploadCifra) {
+                btnUploadCifra.addEventListener('click', function() {
+                    window.location.href = '/';
+                });
+            }
+        }
 
         // Carregar cifras do usuário
         async function carregarMinhasCifras() {
@@ -452,6 +503,20 @@
             
             container.innerHTML = minhasCifras.map(cifra => createCifraCard(cifra)).join('');
             hideEmptyState();
+            
+            // Adicionar event listeners aos cards de cifra
+            setupCifraCardListeners();
+        }
+
+        // Configurar event listeners dos cards de cifra
+        function setupCifraCardListeners() {
+            const cifraCards = document.querySelectorAll('.cifra-card');
+            cifraCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const cifraId = parseInt(this.dataset.cifraId);
+                    viewMinhaCifra(cifraId);
+                });
+            });
         }
 
         // Criar card de cifra específico para "Minhas Cifras"
@@ -471,7 +536,7 @@
             };
             
             return `
-                <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" onclick="viewMinhaCifra(${cifra.id})">
+                <div class="cifra-card bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" data-cifra-id="${cifra.id}">
                     <div class="p-6">
                         <div class="flex items-start justify-between mb-3">
                             <div class="flex-1">
