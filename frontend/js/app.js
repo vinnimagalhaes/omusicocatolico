@@ -1808,7 +1808,8 @@ function openCifraUploader() {
     closeModal();
     
     const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Fundo semi-transparente manual
     modal.innerHTML = `
         <div class="bg-white rounded-lg max-w-lg w-full">
             <div class="flex justify-between items-center p-6 border-b">
@@ -1816,7 +1817,7 @@ function openCifraUploader() {
                     <i class="fas fa-cloud-upload-alt text-purple-600 mr-2"></i>
                     Upload de Cifra
                 </h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                <button id="close-upload-modal-btn" class="text-gray-400 hover:text-gray-600">
                     <i class="fas fa-times text-xl"></i>
                 </button>
             </div>
@@ -1831,11 +1832,11 @@ function openCifraUploader() {
                         <p class="text-sm text-gray-600">ou clique para selecionar</p>
                     </div>
                     <div class="flex justify-center">
-                        <button onclick="document.getElementById('fileInput').click()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <button id="btn-select-files" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
                             Selecionar Arquivos
                         </button>
                     </div>
-                    <input type="file" id="fileInput" multiple accept=".png,.jpg,.jpeg,.pdf" class="hidden" onchange="handleFileSelect(event)">
+                    <input type="file" id="fileInput" multiple accept=".png,.jpg,.jpeg,.pdf" class="hidden">
                 </div>
                 
                 <div class="mt-4 text-xs text-gray-500">
@@ -1869,10 +1870,10 @@ function openCifraUploader() {
             </div>
             
             <div class="flex justify-end space-x-3 p-6 border-t bg-gray-50">
-                <button onclick="closeModal()" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
+                <button id="btn-cancel-upload" class="px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50">
                     Cancelar
                 </button>
-                <button onclick="processUploadedFiles()" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                <button id="btn-process-files" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
                     <i class="fas fa-magic mr-2"></i>Processar
                 </button>
             </div>
@@ -1880,6 +1881,19 @@ function openCifraUploader() {
     `;
     
     document.body.appendChild(modal);
+    
+    // Event listeners para o modal de upload
+    const closeBtn = document.getElementById('close-upload-modal-btn');
+    const cancelBtn = document.getElementById('btn-cancel-upload');
+    const processBtn = document.getElementById('btn-process-files');
+    const selectFilesBtn = document.getElementById('btn-select-files');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    if (processBtn) processBtn.addEventListener('click', processUploadedFiles);
+    if (selectFilesBtn) selectFilesBtn.addEventListener('click', () => fileInput.click());
+    if (fileInput) fileInput.addEventListener('change', handleFileSelect);
     
     // Configurar drag and drop básico
     const dropZone = document.getElementById('dropZone');
@@ -1902,6 +1916,13 @@ function openCifraUploader() {
             updateFileList();
         });
     }
+    
+    // Fechar modal clicando fora
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
 }
 
 // Funções auxiliares para editor
