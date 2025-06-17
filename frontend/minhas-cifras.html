@@ -255,10 +255,6 @@
                 <p class="text-gray-600 mt-2">Gerencie suas cifras enviadas para a comunidade</p>
             </div>
             <div class="flex gap-2">
-                <!-- Botão de debug temporário -->
-                <button id="btnRenovarSessao" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors text-sm">
-                    🔄 Renovar Sessão
-                </button>
                 <button id="btnEnviarCifra" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
                     <i class="fas fa-plus"></i>
                     Enviar Cifra
@@ -383,12 +379,6 @@
 
         // Configurar todos os event listeners
         function setupEventListeners() {
-            // Botão Renovar Sessão
-            const btnRenovarSessao = document.getElementById('btnRenovarSessao');
-            if (btnRenovarSessao) {
-                btnRenovarSessao.addEventListener('click', forcarNovoLogin);
-            }
-
             // Navegação - Toggle User Menu
             const toggleUserMenuBtn = document.getElementById('toggleUserMenuBtn');
             if (toggleUserMenuBtn) {
