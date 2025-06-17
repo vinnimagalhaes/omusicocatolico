@@ -41,75 +41,9 @@
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Header Principal -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo e Título -->
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold text-blue-600">OMúsicoCatólico</h1>
-                    </div>
-                </div>
 
-                <!-- Busca Central -->
-                <div class="flex-1 max-w-md mx-8">
-                    <div class="relative">
-                        <input 
-                            type="text" 
-                            placeholder="Buscar cifras..."
-                            class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                        >
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                    </div>
-                </div>
-
-                <!-- Ações e User Menu -->
-                <div class="flex items-center space-x-4">
-                    <!-- Botão contextual (muda conforme a página) -->
-                    <button id="btnNovoRepertorio" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
-                        <i class="fas fa-plus mr-2"></i>
-                        <span class="hidden sm:inline">Novo Repertório</span>
-                    </button>
-                    
-                    <!-- User Menu -->
-                    <div class="relative" id="userMenu">
-                        <button onclick="toggleUserMenu()" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-user text-white text-sm"></i>
-                        </button>
-                        
-                        <!-- Dropdown -->
-                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                            <div class="py-1">
-                                <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-user mr-2"></i>Meu Perfil
-                                </a>
-                                <a href="repertorios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <i class="fas fa-list mr-2"></i>Meus Repertórios
-                                </a>
-                                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-cog mr-2"></i>Configurações
-                        </a>
-                        <div id="masterLink" class="hidden">
-                            <hr class="my-1">
-                            <a href="master-dashboard.html" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                <i class="fas fa-crown mr-2"></i>Painel Master
-                            </a>
-                        </div>
-                        <hr class="my-1">
-                        <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                            <i class="fas fa-sign-out-alt mr-2"></i>Sair
-                        </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Navegação Principal -->
-    <nav class="main-navigation">
+    <!-- Navegação Principal Unificada -->
+    <nav class="main-navigation" id="mainNavigation">
         <div class="nav-container">
             <!-- Desktop Navigation -->
             <div class="nav-desktop">
@@ -117,7 +51,7 @@
                 
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="/inicio" class="nav-link">
+                        <a href="/inicio" data-nav="inicio" class="nav-link">
                             <i class="fas fa-home nav-icon"></i>
                             Início
                         </a>
@@ -130,11 +64,11 @@
                             <i class="fas fa-chevron-down nav-dropdown-icon"></i>
                         </div>
                         <div class="nav-dropdown-menu">
-                            <a href="/repertorios" class="nav-dropdown-item active">
+                            <a href="/repertorios" data-nav="repertorios" class="nav-dropdown-item active">
                                 <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
                                 Meus Repertórios
                             </a>
-                            <a href="/repertorios-comunidade" class="nav-dropdown-item">
+                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-dropdown-item">
                                 <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
                                 Repertórios da Comunidade
                             </a>
@@ -142,21 +76,21 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a href="/favoritas" class="nav-link">
+                        <a href="/favoritas" data-nav="favoritas" class="nav-link">
                             <i class="fas fa-heart nav-icon"></i>
                             Favoritas
                         </a>
                     </li>
                     
                     <li class="nav-item">
-                        <a href="/minhas-cifras" class="nav-link">
+                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-link">
                             <i class="fas fa-music nav-icon"></i>
                             Minhas Cifras
                         </a>
                     </li>
                     
                     <li class="nav-item">
-                        <a href="/categorias" class="nav-link">
+                        <a href="/categorias" data-nav="categorias" class="nav-link">
                             <i class="fas fa-tags nav-icon"></i>
                             Categorias
                         </a>
@@ -185,7 +119,7 @@
                 
                 <ul class="nav-mobile-list">
                     <li class="nav-mobile-item">
-                        <a href="/inicio" class="nav-mobile-link">
+                        <a href="/inicio" data-nav="inicio" class="nav-mobile-link">
                             <i class="fas fa-home nav-icon"></i>
                             Início
                         </a>
@@ -200,11 +134,11 @@
                             <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
                         </button>
                         <div class="nav-mobile-dropdown-menu">
-                            <a href="/repertorios" class="nav-mobile-dropdown-item active">
+                            <a href="/repertorios" data-nav="repertorios" class="nav-mobile-dropdown-item active">
                                 <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
                                 Meus Repertórios
                             </a>
-                            <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item">
+                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-mobile-dropdown-item">
                                 <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
                                 Repertórios da Comunidade
                             </a>
@@ -212,21 +146,21 @@
                     </li>
                     
                     <li class="nav-mobile-item">
-                        <a href="/favoritas" class="nav-mobile-link">
+                        <a href="/favoritas" data-nav="favoritas" class="nav-mobile-link">
                             <i class="fas fa-heart nav-icon"></i>
                             Favoritas
                         </a>
                     </li>
                     
                     <li class="nav-mobile-item">
-                        <a href="/minhas-cifras" class="nav-mobile-link">
+                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-mobile-link">
                             <i class="fas fa-music nav-icon"></i>
                             Minhas Cifras
                         </a>
                     </li>
                     
                     <li class="nav-mobile-item">
-                        <a href="/categorias" class="nav-mobile-link">
+                        <a href="/categorias" data-nav="categorias" class="nav-mobile-link">
                             <i class="fas fa-tags nav-icon"></i>
                             Categorias
                         </a>

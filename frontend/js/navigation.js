@@ -6,6 +6,7 @@
 class NavigationManager {
     constructor() {
         this.mobileMenuOpen = false;
+        this.userMenuOpen = false;
         this.init();
     }
 
@@ -13,6 +14,7 @@ class NavigationManager {
         this.bindEvents();
         this.setActiveNavigation();
         this.handleResize();
+        this.initUserMenu();
     }
 
     bindEvents() {
@@ -58,6 +60,119 @@ class NavigationManager {
                 this.closeMobileMenu();
             }
         });
+
+        // Fechar menu de usuário ao clicar fora
+        document.addEventListener('click', (e) => {
+            const userDropdown = document.querySelector('.nav-user-dropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) {
+                this.closeUserMenu();
+            }
+        });
+    }
+
+    initUserMenu() {
+        // Verificar se o usuário está logado
+        this.updateUserMenuState();
+        
+        // Atualizar estado do menu quando o usuário fizer login/logout
+        window.addEventListener('userLoginStateChanged', () => {
+            this.updateUserMenuState();
+        });
+    }
+
+    updateUserMenuState() {
+        const isLoggedIn = this.checkUserLoginState();
+        const notLoggedInElements = document.querySelectorAll('#notLoggedIn, #notLoggedInMobile');
+        const loggedInElements = document.querySelectorAll('#loggedIn, #loggedInMobile');
+        
+        if (isLoggedIn) {
+            notLoggedInElements.forEach(el => el.classList.add('hidden'));
+            loggedInElements.forEach(el => el.classList.remove('hidden'));
+            this.updateUserInfo();
+        } else {
+            notLoggedInElements.forEach(el => el.classList.remove('hidden'));
+            loggedInElements.forEach(el => el.classList.add('hidden'));
+        }
+    }
+
+    checkUserLoginState() {
+        // Verificar se há token de autenticação
+        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
+        return !!token;
+    }
+
+    updateUserInfo() {
+        const userData = this.getUserData();
+        if (userData) {
+            // Atualizar nome do usuário
+            const userNameElements = document.querySelectorAll('#userName, #userNameDropdown, #userNameMobile');
+            userNameElements.forEach(el => {
+                el.textContent = userData.name || userData.email || 'Usuário';
+            });
+
+            // Atualizar iniciais
+            const userInitialsElements = document.querySelectorAll('#userInitials, #userInitialsMobile');
+            userInitialsElements.forEach(el => {
+                el.textContent = this.getUserInitials(userData.name || userData.email);
+            });
+
+            // Mostrar/esconder link master se necessário
+            const masterLinks = document.querySelectorAll('#masterLink, #masterLinkMobile');
+            masterLinks.forEach(el => {
+                if (userData.isMaster) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            });
+        }
+    }
+
+    getUserData() {
+        try {
+            const userData = localStorage.getItem('userData');
+            return userData ? JSON.parse(userData) : null;
+        } catch (error) {
+            console.error('Erro ao obter dados do usuário:', error);
+            return null;
+        }
+    }
+
+    getUserInitials(name) {
+        if (!name) return 'U';
+        return name
+            .split(' ')
+            .map(word => word.charAt(0))
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
+    }
+
+    toggleUserMenu() {
+        const userDropdown = document.querySelector('#userDropdown');
+        if (userDropdown) {
+            if (this.userMenuOpen) {
+                this.closeUserMenu();
+            } else {
+                this.openUserMenu();
+            }
+        }
+    }
+
+    openUserMenu() {
+        const userDropdown = document.querySelector('#userDropdown');
+        if (userDropdown) {
+            userDropdown.classList.remove('hidden');
+            this.userMenuOpen = true;
+        }
+    }
+
+    closeUserMenu() {
+        const userDropdown = document.querySelector('#userDropdown');
+        if (userDropdown) {
+            userDropdown.classList.add('hidden');
+            this.userMenuOpen = false;
+        }
     }
 
     toggleMobileMenu() {

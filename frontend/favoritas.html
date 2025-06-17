@@ -21,63 +21,8 @@
     </style>
 </head>
 <body class="bg-gray-50 font-sans">
-    <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo e Navegação -->
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <a href="/inicio" class="text-xl font-bold text-blue-600 hover:text-blue-700 transition-colors">OMúsicoCatólico</a>
-                    </div>
-                </div>
-
-                <!-- Busca -->
-                <div class="flex-1 max-w-md mx-8">
-                    <div class="relative">
-                        <input type="text" placeholder="Buscar cifras..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- User Menu -->
-                <div class="flex items-center space-x-4">
-                    <!-- Not Logged In -->
-                    <div id="notLoggedIn" class="hidden">
-                        <a href="login.html" class="text-gray-700 hover:text-blue-600 font-medium">Entrar</a>
-                    </div>
-
-                    <!-- Logged In -->
-                    <div id="loggedIn" class="relative">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-medium" id="userInitials">U</div>
-                            <div class="relative" id="userMenu">
-                                <button onclick="toggleUserMenu()" class="flex items-center space-x-1 text-gray-700 hover:text-blue-600">
-                                    <span id="userName">Usuário</span>
-                                    <i class="fas fa-chevron-down text-xs"></i>
-                                </button>
-                                
-                                <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-                                    <a href="/perfil" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-user mr-2"></i>Meu Perfil
-                                    </a>
-                                    <hr class="my-1">
-                                    <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                        <i class="fas fa-sign-out-alt mr-2"></i>Sair
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Navegação Principal -->
-    <nav class="main-navigation">
+    <!-- Navegação Principal Unificada -->
+    <nav class="main-navigation" id="mainNavigation">
         <div class="nav-container">
             <!-- Desktop Navigation -->
             <div class="nav-desktop">
@@ -85,24 +30,24 @@
                 
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="/inicio" class="nav-link">
+                        <a href="/inicio" class="nav-link" data-nav="inicio">
                             <i class="fas fa-home nav-icon"></i>
                             Início
                         </a>
                     </li>
                     
                     <li class="nav-item nav-dropdown">
-                        <div class="nav-link nav-dropdown-toggle">
+                        <div class="nav-link nav-dropdown-toggle" data-nav="repertorios">
                             <i class="fas fa-list nav-icon"></i>
                             Repertórios
                             <i class="fas fa-chevron-down nav-dropdown-icon"></i>
                         </div>
                         <div class="nav-dropdown-menu">
-                            <a href="/repertorios" class="nav-dropdown-item">
+                            <a href="/repertorios" class="nav-dropdown-item" data-nav="repertorios">
                                 <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
                                 Meus Repertórios
                             </a>
-                            <a href="/repertorios-comunidade" class="nav-dropdown-item">
+                            <a href="/repertorios-comunidade" class="nav-dropdown-item" data-nav="repertorios-comunidade">
                                 <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
                                 Repertórios da Comunidade
                             </a>
@@ -110,26 +55,76 @@
                     </li>
                     
                     <li class="nav-item">
-                        <a href="/favoritas" class="nav-link active">
+                        <a href="/favoritas" class="nav-link active" data-nav="favoritas">
                             <i class="fas fa-heart nav-icon"></i>
                             Favoritas
                         </a>
                     </li>
                     
                     <li class="nav-item">
-                        <a href="/minhas-cifras" class="nav-link">
+                        <a href="/minhas-cifras" class="nav-link" data-nav="minhas-cifras">
                             <i class="fas fa-music nav-icon"></i>
                             Minhas Cifras
                         </a>
                     </li>
                     
                     <li class="nav-item">
-                        <a href="/categorias" class="nav-link">
+                        <a href="/categorias" class="nav-link" data-nav="categorias">
                             <i class="fas fa-tags nav-icon"></i>
                             Categorias
                         </a>
                     </li>
                 </ul>
+
+                <!-- User Menu -->
+                <div class="nav-user-menu">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="nav-login-btn">
+                            <i class="fas fa-sign-in-alt nav-icon"></i>
+                            Entrar
+                        </a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="nav-user-dropdown">
+                        <button onclick="toggleUserMenu()" class="nav-user-btn">
+                            <div class="nav-user-avatar" id="userInitials">U</div>
+                            <span id="userName" class="nav-user-name">Usuário</span>
+                            <i class="fas fa-chevron-down nav-user-icon"></i>
+                        </button>
+                        
+                        <div id="userDropdown" class="nav-user-dropdown-menu">
+                            <div class="nav-user-dropdown-header">
+                                <span id="userNameDropdown">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-user-dropdown-item">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-user-dropdown-item">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-user-dropdown-item">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLink" class="hidden">
+                                <hr class="nav-user-divider">
+                                <a href="master-dashboard.html" class="nav-user-dropdown-item nav-user-dropdown-item-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <hr class="nav-user-divider">
+                            <button onclick="logout()" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Mobile Navigation -->
@@ -153,14 +148,14 @@
                 
                 <ul class="nav-mobile-list">
                     <li class="nav-mobile-item">
-                        <a href="/inicio" class="nav-mobile-link">
+                        <a href="/inicio" class="nav-mobile-link" data-nav="inicio">
                             <i class="fas fa-home nav-icon"></i>
                             Início
                         </a>
                     </li>
                     
                     <li class="nav-mobile-dropdown">
-                        <button class="nav-mobile-dropdown-toggle">
+                        <button class="nav-mobile-dropdown-toggle" data-nav="repertorios">
                             <div class="flex items-center gap-3">
                                 <i class="fas fa-list nav-icon"></i>
                                 Repertórios
@@ -168,11 +163,11 @@
                             <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
                         </button>
                         <div class="nav-mobile-dropdown-menu">
-                            <a href="/repertorios" class="nav-mobile-dropdown-item">
+                            <a href="/repertorios" class="nav-mobile-dropdown-item" data-nav="repertorios">
                                 <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
                                 Meus Repertórios
                             </a>
-                            <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item">
+                            <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item" data-nav="repertorios-comunidade">
                                 <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
                                 Repertórios da Comunidade
                             </a>
@@ -180,24 +175,58 @@
                     </li>
                     
                     <li class="nav-mobile-item">
-                        <a href="/favoritas" class="nav-mobile-link active">
+                        <a href="/favoritas" class="nav-mobile-link active" data-nav="favoritas">
                             <i class="fas fa-heart nav-icon"></i>
                             Favoritas
                         </a>
                     </li>
                     
                     <li class="nav-mobile-item">
-                        <a href="/minhas-cifras" class="nav-mobile-link">
+                        <a href="/minhas-cifras" class="nav-mobile-link" data-nav="minhas-cifras">
                             <i class="fas fa-music nav-icon"></i>
                             Minhas Cifras
                         </a>
                     </li>
                     
                     <li class="nav-mobile-item">
-                        <a href="/categorias" class="nav-mobile-link">
+                        <a href="/categorias" class="nav-mobile-link" data-nav="categorias">
                             <i class="fas fa-tags nav-icon"></i>
                             Categorias
                         </a>
+                    </li>
+
+                    <!-- Mobile User Menu -->
+                    <li class="nav-mobile-item nav-mobile-user">
+                        <div id="notLoggedInMobile" class="hidden">
+                            <a href="login.html" class="nav-mobile-link">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                Entrar
+                            </a>
+                        </div>
+                        <div id="loggedInMobile" class="hidden">
+                            <div class="nav-mobile-user-info">
+                                <div class="nav-mobile-user-avatar" id="userInitialsMobile">U</div>
+                                <span id="userNameMobile">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-mobile-link">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-mobile-link">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <div id="masterLinkMobile" class="hidden">
+                                <a href="master-dashboard.html" class="nav-mobile-link">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <button onclick="logout()" class="nav-mobile-link nav-mobile-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
                     </li>
                 </ul>
             </div>
