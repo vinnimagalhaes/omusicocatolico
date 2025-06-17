@@ -395,24 +395,33 @@
 
             // Botão Escrever Cifra
             const btnEscreverCifra = document.getElementById('btnEscreverCifra');
+            console.log('🔍 [SETUP] btnEscreverCifra encontrado:', !!btnEscreverCifra);
             if (btnEscreverCifra) {
                 btnEscreverCifra.addEventListener('click', function() {
+                    console.log('🖱️ [CLICK] Botão Escrever Cifra clicado!');
+                    console.log('🔍 [CLICK] Função openCifraEditor existe?', typeof openCifraEditor);
                     openCifraEditor();
                 });
             }
 
             // Botão Link da Cifra
             const btnLinkCifra = document.getElementById('btnLinkCifra');
+            console.log('🔍 [SETUP] btnLinkCifra encontrado:', !!btnLinkCifra);
             if (btnLinkCifra) {
                 btnLinkCifra.addEventListener('click', function() {
+                    console.log('🖱️ [CLICK] Botão Link Cifra clicado!');
+                    console.log('🔍 [CLICK] Função openUrlImportModal existe?', typeof openUrlImportModal);
                     openUrlImportModal();
                 });
             }
 
             // Botão Upload de Cifra
             const btnUploadCifra = document.getElementById('btnUploadCifra');
+            console.log('🔍 [SETUP] btnUploadCifra encontrado:', !!btnUploadCifra);
             if (btnUploadCifra) {
                 btnUploadCifra.addEventListener('click', function() {
+                    console.log('🖱️ [CLICK] Botão Upload Cifra clicado!');
+                    console.log('🔍 [CLICK] Função openCifraUploader existe?', typeof openCifraUploader);
                     openCifraUploader();
                 });
             }
