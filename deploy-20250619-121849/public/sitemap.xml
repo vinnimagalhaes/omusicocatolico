@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <!-- Página Principal -->
+    <url>
+        <loc>https://omusicocatolico.com.br/</loc>
+        <lastmod>2024-01-15T10:00:00+00:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Página Inicial/Dashboard -->
+    <url>
+        <loc>https://omusicocatolico.com.br/inicio</loc>
+        <lastmod>2024-01-15T10:00:00+00:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Favoritas -->
+    <url>
+        <loc>https://omusicocatolico.com.br/favoritas</loc>
+        <lastmod>2024-01-15T09:30:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Minhas Cifras -->
+    <url>
+        <loc>https://omusicocatolico.com.br/minhas-cifras</loc>
+        <lastmod>2024-01-15T09:30:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Categorias -->
+    <url>
+        <loc>https://omusicocatolico.com.br/categorias</loc>
+        <lastmod>2024-01-15T09:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Repertórios -->
+    <url>
+        <loc>https://omusicocatolico.com.br/repertorios</loc>
+        <lastmod>2024-01-15T08:30:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Repertórios da Comunidade -->
+    <url>
+        <loc>https://omusicocatolico.com.br/repertorios-comunidade</loc>
+        <lastmod>2024-01-15T08:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Páginas de Autenticação -->
+    <url>
+        <loc>https://omusicocatolico.com.br/login</loc>
+        <lastmod>2024-01-10T12:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <url>
+        <loc>https://omusicocatolico.com.br/register</loc>
+        <lastmod>2024-01-10T12:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.5</priority>
+    </url>
+
+    <!-- Landing Page -->
+    <url>
+        <loc>https://omusicocatolico.com.br/landing</loc>
+        <lastmod>2024-01-10T12:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Perfil -->
+    <url>
+        <loc>https://omusicocatolico.com.br/perfil</loc>
+        <lastmod>2024-01-10T12:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <!-- Páginas de Cifras Específicas (exemplos) -->
+    <url>
+        <loc>https://omusicocatolico.com.br/enviai-espirito</loc>
+        <lastmod>2024-01-12T15:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://omusicocatolico.com.br/tela-missa</loc>
+        <lastmod>2024-01-12T15:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Recursos Estáticos Importantes -->
+    <url>
+        <loc>https://omusicocatolico.com.br/manifest.json</loc>
+        <lastmod>2024-01-15T10:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.3</priority>
+    </url>
+
+</urlset> 

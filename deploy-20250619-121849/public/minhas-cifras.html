@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Performance & SEO Scripts -->
+    <script src="/js/performance.js" defer></script>
+    <script src="/js/seo.js" defer></script>
+    <title>Minhas Cifras - OMúsicoCatólico</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+
+    <!-- Navegação Principal Unificada -->
+    <nav class="main-navigation" id="mainNavigation">
+        <div class="nav-container">
+            <!-- Desktop Navigation -->
+            <div class="nav-desktop">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/inicio" data-nav="inicio" class="nav-link">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item nav-dropdown">
+                        <div class="nav-link nav-dropdown-toggle" data-nav="repertorios">
+                            <i class="fas fa-list nav-icon"></i>
+                            Repertórios
+                            <i class="fas fa-chevron-down nav-dropdown-icon"></i>
+                        </div>
+                        <div class="nav-dropdown-menu">
+                            <a href="/repertorios" data-nav="repertorios" class="nav-dropdown-item">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-dropdown-item">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/favoritas" data-nav="favoritas" class="nav-link">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-link active">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/categorias" data-nav="categorias" class="nav-link">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- User Menu -->
+                <div class="nav-user-menu">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="nav-login-btn">
+                            <i class="fas fa-sign-in-alt nav-icon"></i>
+                            Entrar
+                        </a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="nav-user-dropdown">
+                        <button id="toggleUserMenuBtn" class="nav-user-btn">
+                            <div class="nav-user-avatar" id="userInitials">U</div>
+                            <span id="userName" class="nav-user-name">Usuário</span>
+                            <i class="fas fa-chevron-down nav-user-icon"></i>
+                        </button>
+                        
+                        <div id="userDropdown" class="nav-user-dropdown-menu">
+                            <div class="nav-user-dropdown-header">
+                                <span id="userNameDropdown">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-user-dropdown-item">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-user-dropdown-item">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-user-dropdown-item">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLink" class="hidden">
+                                <hr class="nav-user-divider">
+                                <a href="master-dashboard.html" class="nav-user-dropdown-item nav-user-dropdown-item-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <hr class="nav-user-divider">
+                            <button id="logoutBtn" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div class="nav-mobile">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                <button class="nav-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars nav-toggle-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="nav-mobile-menu">
+            <div class="nav-mobile-content">
+                <div class="nav-mobile-header">
+                    <span class="nav-brand">OMúsicoCatólico</span>
+                    <button class="nav-mobile-close" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <ul class="nav-mobile-list">
+                    <li class="nav-mobile-item">
+                        <a href="/inicio" data-nav="inicio" class="nav-mobile-link">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-dropdown">
+                        <button class="nav-mobile-dropdown-toggle">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-list nav-icon"></i>
+                                Repertórios
+                            </div>
+                            <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
+                        </button>
+                        <div class="nav-mobile-dropdown-menu">
+                            <a href="/repertorios" data-nav="repertorios" class="nav-mobile-dropdown-item">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-mobile-dropdown-item">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/favoritas" data-nav="favoritas" class="nav-mobile-link">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-mobile-link active">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/categorias" data-nav="categorias" class="nav-mobile-link">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+
+                    <!-- Mobile User Menu -->
+                    <li class="nav-mobile-item nav-mobile-user">
+                        <div id="notLoggedInMobile" class="hidden">
+                            <a href="login.html" class="nav-mobile-link">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                Entrar
+                            </a>
+                        </div>
+                        
+                        <div id="loggedInMobile" class="nav-mobile-user-info">
+                            <div class="nav-mobile-user-header">
+                                <div class="nav-user-avatar" id="userInitialsMobile">U</div>
+                                <span id="userNameMobile">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-mobile-link">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-mobile-link">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-mobile-link">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLinkMobile" class="hidden">
+                                <a href="master-dashboard.html" class="nav-mobile-link nav-mobile-link-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <button id="logoutBtnMobile" class="nav-mobile-link nav-mobile-link-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Minhas Cifras</h1>
+                <p class="text-gray-600 mt-2">Gerencie suas cifras enviadas para a comunidade</p>
+            </div>
+            <div class="flex gap-2">
+                <button id="btnEnviarCifra" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 font-medium">
+                    <i class="fas fa-plus"></i>
+                    Enviar Cifra
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Carregando suas cifras...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="bg-blue-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-music text-blue-600 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Suas cifras aparecerão aqui!</h3>
+            <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                Compartilhe suas cifras favoritas com a comunidade. Você pode enviar cifras de 3 formas diferentes.
+            </p>
+            
+            <!-- Opções de Envio -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                <!-- Escrever Cifra -->
+                <button id="btnEscreverCifra" class="p-6 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group text-center">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200 transition-colors">
+                        <i class="fas fa-edit text-blue-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 group-hover:text-blue-900">Escrever Cifra</h4>
+                    <p class="text-sm text-gray-600 mt-1">Digite manualmente</p>
+                </button>
+                
+                <!-- Link da Cifra -->
+                <button id="btnLinkCifra" class="p-6 border-2 border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition-all group text-center">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-green-200 transition-colors">
+                        <i class="fas fa-link text-green-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 group-hover:text-green-900">Link da Cifra</h4>
+                    <p class="text-sm text-gray-600 mt-1">Importar de sites</p>
+                </button>
+                
+                <!-- Upload de Arquivo -->
+                <button id="btnUploadCifra" class="p-6 border-2 border-gray-200 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition-all group text-center">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-200 transition-colors">
+                        <i class="fas fa-cloud-upload-alt text-purple-600 text-xl"></i>
+                    </div>
+                    <h4 class="font-semibold text-gray-900 group-hover:text-purple-900">Upload de Arquivo</h4>
+                    <p class="text-sm text-gray-600 mt-1">PNG, PDF ou JPEG</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Cifras Grid -->
+        <div id="cifrasGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cifras serão preenchidas via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+    
+    <!-- Auth UI Elements (hidden, used by updateAuthUI) -->
+    <div id="notLoggedIn" class="hidden"></div>
+    <div id="loggedIn" class="hidden"></div>
+
+    <!-- Modais -->
+    <div id="modals"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Variáveis específicas da página
+        let minhasCifras = [];
+
+        // 🚨 LISTENER PARA SERVICE WORKER DE EMERGÊNCIA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'FORCE_RELOAD') {
+                    console.log('🚨 [EMERGÊNCIA] Service Worker solicitou reload:', event.data.message);
+                    setTimeout(() => {
+                        window.location.reload(true);
+                    }, 1000);
+                }
+            });
+        }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('[MINHAS CIFRAS] Página carregada, iniciando...');
+            
+            // AGUARDAR SCRIPTS CARREGAREM - FIX PARA RACE CONDITION
+            setTimeout(function() {
+                console.log('[MINHAS CIFRAS] Timeout executado - verificando funções...');
+                console.log('[MINHAS CIFRAS] openCifraEditor existe?', typeof openCifraEditor);
+                console.log('[MINHAS CIFRAS] openUrlImportModal existe?', typeof openUrlImportModal);
+                console.log('[MINHAS CIFRAS] openCifraUploader existe?', typeof openCifraUploader);
+                
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                const user = localStorage.getItem('user');
+                
+                console.log('[MINHAS CIFRAS] Token atual:', token ? `${token.substring(0, 30)}...` : 'Ausente');
+                console.log('[MINHAS CIFRAS] User atual:', user ? JSON.parse(user) : 'Ausente');
+                
+                // Verificar se token está expirado
+                if (token && typeof isTokenExpired === 'function') {
+                    console.log('[MINHAS CIFRAS] Token expirado?', isTokenExpired(token));
+                }
+                
+                updateAuthUI();
+                
+                console.log('[MINHAS CIFRAS] Após updateAuthUI - iniciando carregamento...');
+                
+                // Configurar event listeners
+                setupEventListeners();
+                
+                carregarMinhasCifras();
+            }, 100); // 100ms de delay para garantir que scripts carregaram
+        });
+
+        // Configurar todos os event listeners
+        function setupEventListeners() {
+            // Navegação - Toggle User Menu
+            const toggleUserMenuBtn = document.getElementById('toggleUserMenuBtn');
+            if (toggleUserMenuBtn) {
+                toggleUserMenuBtn.addEventListener('click', toggleUserMenu);
+            }
+
+            // Navegação - Logout buttons
+            const logoutBtn = document.getElementById('logoutBtn');
+            const logoutBtnMobile = document.getElementById('logoutBtnMobile');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+            if (logoutBtnMobile) {
+                logoutBtnMobile.addEventListener('click', logout);
+            }
+
+            // Botão Enviar Cifra
+            const btnEnviarCifra = document.getElementById('btnEnviarCifra');
+            if (btnEnviarCifra) {
+                btnEnviarCifra.addEventListener('click', function() {
+                    showAddCifraModal();
+                });
+            }
+
+            // Botão Escrever Cifra
+            const btnEscreverCifra = document.getElementById('btnEscreverCifra');
+            console.log('🔍 [SETUP] btnEscreverCifra encontrado:', !!btnEscreverCifra);
+            if (btnEscreverCifra) {
+                btnEscreverCifra.addEventListener('click', function() {
+                    console.log('🖱️ [CLICK] Botão Escrever Cifra clicado!');
+                    console.log('🔍 [CLICK] Função openCifraEditor existe?', typeof openCifraEditor);
+                    openCifraEditor();
+                });
+            }
+
+            // Botão Link da Cifra
+            const btnLinkCifra = document.getElementById('btnLinkCifra');
+            console.log('🔍 [SETUP] btnLinkCifra encontrado:', !!btnLinkCifra);
+            if (btnLinkCifra) {
+                btnLinkCifra.addEventListener('click', function() {
+                    console.log('🖱️ [CLICK] Botão Link Cifra clicado!');
+                    console.log('🔍 [CLICK] Função openUrlImportModal existe?', typeof openUrlImportModal);
+                    openUrlImportModal();
+                });
+            }
+
+            // Botão Upload de Cifra
+            const btnUploadCifra = document.getElementById('btnUploadCifra');
+            console.log('🔍 [SETUP] btnUploadCifra encontrado:', !!btnUploadCifra);
+            if (btnUploadCifra) {
+                btnUploadCifra.addEventListener('click', function() {
+                    console.log('🖱️ [CLICK] Botão Upload Cifra clicado!');
+                    console.log('🔍 [CLICK] Função openCifraUploader existe?', typeof openCifraUploader);
+                    openCifraUploader();
+                });
+            }
+        }
+
+        // Carregar cifras do usuário
+        async function carregarMinhasCifras() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user) {
+                    console.log('Usuário não encontrado no localStorage, redirecionando para login');
+                    window.location.href = '/login';
+                    return;
+                }
+
+                console.log('Carregando cifras do usuário:', user.id); // Debug
+                
+                const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+                console.log('Token disponível:', !!token); // Debug
+                
+                // Verificar se token está expirado antes de fazer a requisição
+                if (!token) {
+                    console.log('Token não encontrado, redirecionando para login');
+                    localStorage.clear();
+                    window.location.href = '/login';
+                    return;
+                }
+
+                // Temporariamente desabilitado - deixar o servidor validar
+                // try {
+                //     const payload = JSON.parse(atob(token.split('.')[1]));
+                //     const currentTime = Date.now() / 1000;
+                //     
+                //     console.log('Token exp:', new Date(payload.exp * 1000));
+                //     console.log('Current time:', new Date());
+                //     
+                //     if (payload.exp < currentTime) {
+                //         console.log('Token expirado, limpando localStorage e redirecionando');
+                //         localStorage.clear();
+                //         alert('Sua sessão expirou. Você será redirecionado para o login.');
+                //         window.location.href = '/login';
+                //         return;
+                //     }
+                // } catch (tokenError) {
+                //     console.error('Erro ao verificar token:', tokenError);
+                //     console.log('Token inválido, limpando localStorage e redirecionando');
+                //     localStorage.clear();
+                //     window.location.href = '/login';
+                //     return;
+                // }
+
+                const response = await fetchWithAuth(apiUrl('/api/cifras/minhas'));
+                
+                console.log('Response status:', response.status); // Debug
+                console.log('Response ok:', response.ok); // Debug
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                console.log('Dados recebidos da API:', data); // Debug
+                console.log('Cifras carregadas:', data.cifras); // Debug
+                
+                minhasCifras = data.cifras || [];
+                renderMinhasCifras();
+                
+            } catch (error) {
+                console.error('Erro detalhado ao carregar cifras:', error);
+                
+                if (error.message.includes('Token de autenticação não encontrado')) {
+                    console.log('Token não encontrado, redirecionando para login');
+                    localStorage.clear();
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                if (error.message.includes('Sessão expirada') || error.message.includes('Token expirado')) {
+                    console.log('Sessão/Token expirado, redirecionando para login');
+                    localStorage.clear();
+                    alert('Sua sessão expirou. Você será redirecionado para o login.');
+                    window.location.href = '/login';
+                    return;
+                }
+                
+                showEmptyState();
+                showToast(`Erro ao carregar suas cifras: ${error.message}`, 'error');
+            }
+        }
+
+        // Renderizar cifras
+        function renderMinhasCifras() {
+            console.log('Renderizando cifras:', minhasCifras); // Debug
+            
+            const container = document.getElementById('cifrasGrid');
+            
+            if (!minhasCifras || minhasCifras.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            container.innerHTML = minhasCifras.map(cifra => createCifraCard(cifra)).join('');
+            hideEmptyState();
+            
+            // Adicionar event listeners aos cards de cifra
+            setupCifraCardListeners();
+        }
+
+        // Configurar event listeners dos cards de cifra
+        function setupCifraCardListeners() {
+            const cifraCards = document.querySelectorAll('.cifra-card');
+            cifraCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const cifraId = parseInt(this.dataset.cifraId);
+                    viewMinhaCifra(cifraId);
+                });
+            });
+        }
+
+        // Criar card de cifra específico para "Minhas Cifras"
+        function createCifraCard(cifra) {
+            const statusTexto = {
+                'privada': 'Privada',
+                'pendente': 'Aguardando Análise',
+                'aprovada': 'Aprovada - Pública',
+                'rejeitada': 'Rejeitada'
+            };
+            
+            const statusCor = {
+                'privada': 'bg-gray-100 text-gray-800',
+                'pendente': 'bg-yellow-100 text-yellow-800',
+                'aprovada': 'bg-green-100 text-green-800',
+                'rejeitada': 'bg-red-100 text-red-800'
+            };
+            
+            return `
+                <div class="cifra-card bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-pointer" data-cifra-id="${cifra.id}">
+                    <div class="p-6">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="flex-1">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">${cifra.titulo}</h3>
+                                <p class="text-gray-600 text-sm">${cifra.artista}</p>
+                            </div>
+                            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full ${statusCor[cifra.status_analise] || statusCor['privada']}">
+                                ${statusTexto[cifra.status_analise] || statusTexto['privada']}
+                            </span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="mr-4"><i class="fas fa-eye mr-1"></i>${cifra.views || 0} visualizações</span>
+                            <span><i class="fas fa-clock mr-1"></i>${formatDate(cifra.created_at)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Visualizar cifra específica de "Minhas Cifras"
+        function viewMinhaCifra(cifraId) {
+            const cifra = minhasCifras.find(c => c.id === cifraId);
+            if (cifra) {
+                console.log('Cifra encontrada:', cifra); // Debug
+                showMinhaCifraModal(cifra);
+            }
+        }
+
+        // Configurar event listeners dos cards
+        function setupCardEventListeners() {
+            // Os event listeners são configurados via onclick no HTML dos cards
+        }
+
+        // Mostrar estado vazio
+        function showEmptyState() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('cifrasGrid').classList.add('hidden');
+        }
+        
+        // Esconder estado vazio
+        function hideEmptyState() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('cifrasGrid').classList.remove('hidden');
+        }
+
+        // Funções de navegação
+        function filtrarFavoritas() {
+            window.location.href = '/favoritas';
+        }
+
+        function filtrarMinhasCifras() {
+            // Já estamos na página, não faz nada
+            return;
+        }
+
+        // Formatar data
+        function formatDate(dateString) {
+            if (!dateString) return 'Data não disponível';
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        // Função de debug para forçar novo login
+        function forcarNovoLogin() {
+            console.log('[DEBUG] Forçando novo login...');
+            localStorage.clear();
+            alert('Sessão limpa. Você será redirecionado para o login.');
+            window.location.href = '/login';
+        }
+    </script>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <!-- Scripts já carregados no head - removendo duplicata -->
+</body>
+</html> 

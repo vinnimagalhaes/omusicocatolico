@@ -69,4 +69,4 @@ jobs:
       if: failure()
       run: |
         echo "💥 Falha no deploy!"
-        echo "📋 Verifique os logs acima para mais detalhes" 
+        echo "📋 Verifique os logs acima para mais detalhes" a

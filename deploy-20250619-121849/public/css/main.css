@@ -1,0 +1,553 @@
+/* =================================
+   MAIN CSS - OMúsicoCatólico
+   Arquivo Principal de Estilos
+   ================================= */
+
+/* Importações na ordem correta */
+@import url('./design-system.css');
+@import url('./components.css');
+@import url('./responsive.css');
+
+/* === ESTILOS ESPECÍFICOS DO PROJETO === */
+
+/* Layout Principal */
+.app-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-gray-50);
+}
+
+.app-header {
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-gray-200);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-sticky);
+}
+
+.app-main {
+    flex: 1;
+    padding: var(--spacing-6) 0;
+    min-height: calc(100vh - 80px);
+}
+
+.app-footer {
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-gray-200);
+    padding: var(--spacing-6) 0;
+    margin-top: auto;
+}
+
+/* === CIFRAS ESPECÍFICAS === */
+.cifra-grid {
+    display: grid;
+    gap: var(--spacing-6);
+    margin-top: var(--spacing-6);
+}
+
+/* Grid responsivo para cifras */
+.cifra-grid.cols-1 {
+    grid-template-columns: 1fr;
+}
+
+.cifra-grid.cols-2 {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.cifra-grid.cols-3 {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+}
+
+.cifra-grid.cols-4 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+/* Cifra Container - Para exibição de cifras */
+.cifra-display {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.cifra-display-header {
+    padding: var(--spacing-4);
+    background-color: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.cifra-display-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-1);
+}
+
+.cifra-display-artist {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+.cifra-display-body {
+    padding: var(--spacing-6);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    background-color: var(--color-gray-50);
+    white-space: pre-wrap;
+    overflow-x: auto;
+    color: var(--color-gray-800);
+}
+
+/* Elementos da cifra */
+.cifra-linha {
+    margin-bottom: var(--spacing-4);
+    font-family: var(--font-family-mono);
+}
+
+.cifra-acordes {
+    color: var(--color-accent-600);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-1);
+    letter-spacing: 0.05em;
+    display: block;
+    line-height: 1.4;
+}
+
+.cifra-letra {
+    color: var(--color-gray-700);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-3);
+    display: block;
+    line-height: 1.5;
+}
+
+/* === CONTROLES DE CIFRA === */
+.cifra-controls {
+    padding: var(--spacing-4);
+    background-color: var(--color-white);
+    border-top: 1px solid var(--color-gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-3);
+    flex-wrap: wrap;
+}
+
+.cifra-controls-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.cifra-column-selector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    padding: var(--spacing-2);
+    background-color: var(--color-gray-100);
+    border-radius: var(--radius-lg);
+}
+
+.cifra-column-btn {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-all);
+    color: var(--color-gray-600);
+}
+
+.cifra-column-btn.active {
+    background-color: var(--color-primary-600);
+    color: var(--color-white);
+}
+
+.cifra-column-btn:hover:not(.active) {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-800);
+}
+
+/* === FILTROS E BUSCA === */
+.search-section {
+    background-color: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--color-gray-200);
+    margin-bottom: var(--spacing-6);
+}
+
+.search-input-group {
+    position: relative;
+    margin-bottom: var(--spacing-4);
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--spacing-3) var(--spacing-4);
+    padding-left: var(--spacing-10);
+    font-size: var(--font-size-base);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-lg);
+    transition: var(--transition-all);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: var(--spacing-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-gray-400);
+    pointer-events: none;
+}
+
+.filter-row {
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.filter-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+}
+
+.filter-select {
+    min-width: 120px;
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-gray-300);
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    transition: var(--transition-all);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+/* === DASHBOARD === */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+}
+
+.stat-card {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+    color: var(--color-white);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(25%, -25%);
+}
+
+.stat-card-success {
+    background: linear-gradient(135deg, var(--color-secondary-500), var(--color-secondary-700));
+}
+
+.stat-card-warning {
+    background: linear-gradient(135deg, var(--color-warning), #f59e0b);
+}
+
+.stat-card-danger {
+    background: linear-gradient(135deg, var(--color-accent-500), var(--color-accent-700));
+}
+
+.stat-value {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-1);
+}
+
+.stat-label {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}
+
+/* === REPERTÓRIOS === */
+.repertorio-card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition: var(--transition-all);
+    cursor: pointer;
+}
+
+.repertorio-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+    border-color: var(--color-primary-300);
+}
+
+.repertorio-card-header {
+    padding: var(--spacing-4);
+    background: linear-gradient(135deg, var(--color-primary-50), var(--color-secondary-50));
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.repertorio-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+    margin-bottom: var(--spacing-1);
+}
+
+.repertorio-meta {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+}
+
+.repertorio-card-body {
+    padding: var(--spacing-4);
+}
+
+.repertorio-cifras-preview {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-700);
+    margin-bottom: var(--spacing-3);
+}
+
+.repertorio-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+}
+
+/* === GRADIENTES === */
+.gradient-bg-primary {
+    background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700));
+}
+
+.gradient-bg-secondary {
+    background: linear-gradient(135deg, var(--color-secondary-500), var(--color-secondary-700));
+}
+
+.gradient-text-primary {
+    background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* === ANIMAÇÕES === */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+.scale-in {
+    animation: scaleIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from { 
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* === ESTADOS DE LOADING === */
+.loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-12) var(--spacing-6);
+    color: var(--color-gray-500);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-gray-200);
+    border-top: 3px solid var(--color-primary-600);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: var(--spacing-4);
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-12) var(--spacing-6);
+    text-align: center;
+    color: var(--color-gray-500);
+}
+
+.empty-state-icon {
+    font-size: var(--font-size-5xl);
+    color: var(--color-gray-300);
+    margin-bottom: var(--spacing-4);
+}
+
+.empty-state-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-700);
+    margin-bottom: var(--spacing-2);
+}
+
+.empty-state-description {
+    font-size: var(--font-size-base);
+    color: var(--color-gray-500);
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+/* === RESPONSIVIDADE ESPECÍFICA === */
+@media (max-width: 768px) {
+    .app-main {
+        padding: var(--spacing-4) 0;
+    }
+    
+    .cifra-grid.cols-2,
+    .cifra-grid.cols-3,
+    .cifra-grid.cols-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .cifra-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-4);
+    }
+    
+    .search-section {
+        padding: var(--spacing-4);
+    }
+}
+
+@media (max-width: 480px) {
+    .cifra-display-body {
+        padding: var(--spacing-4);
+        font-size: var(--font-size-xs);
+    }
+    
+    .cifra-acordes,
+    .cifra-letra {
+        font-size: var(--font-size-xs);
+    }
+    
+    .repertorio-card-header,
+    .repertorio-card-body {
+        padding: var(--spacing-3);
+    }
+}
+
+/* === IMPRESSÃO === */
+@media print {
+    .app-header,
+    .app-footer,
+    .cifra-controls,
+    .search-section,
+    .btn,
+    .nav {
+        display: none !important;
+    }
+    
+    .cifra-display,
+    .cifra-card {
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+        break-inside: avoid;
+        margin-bottom: var(--spacing-4) !important;
+    }
+    
+    .cifra-display-body,
+    .cifra-content {
+        background-color: transparent !important;
+        color: #000 !important;
+    }
+    
+    .cifra-acordes {
+        color: #000 !important;
+        font-weight: bold !important;
+    }
+    
+    .cifra-letra {
+        color: #000 !important;
+    }
+}
+
+/* === DARK MODE (preparado para futuro) === */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Cores serão ajustadas quando implementarmos dark mode */
+    }
+} 

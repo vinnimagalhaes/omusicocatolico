@@ -1,0 +1,3248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Master - OMúsicoCatólico</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .sidebar-item:hover { 
+            background-color: #1f2937; 
+            transform: translateX(4px);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .stat-card-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+        
+        .stat-card-success {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        }
+        
+        .stat-card-warning {
+            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-xl font-bold text-red-600 flex items-center">
+                        <i class="fas fa-crown mr-2"></i>
+                        Painel Master - OMúsicoCatólico
+                    </h1>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Notificações -->
+                    <div class="relative">
+                        <button class="p-2 text-gray-400 hover:text-gray-600 relative">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center" id="notificationBadge">0</span>
+                        </button>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm text-gray-700">Master</span>
+                        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">
+                            <i class="fas fa-sign-out-alt mr-1"></i>
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex">
+        <!-- Sidebar -->
+        <div class="w-64 bg-gray-800 text-white min-h-screen">
+            <div class="p-6">
+                <h2 class="text-lg font-semibold mb-6">Menu Master</h2>
+                <nav class="space-y-2">
+                    <a href="#dashboard" onclick="showSection('dashboard')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200 bg-gray-700" id="nav-dashboard">
+                        <i class="fas fa-tachometer-alt mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a href="#users" onclick="showSection('users')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-users">
+                        <i class="fas fa-users mr-3"></i>
+                        Gestão de Usuários
+                    </a>
+                    <a href="#cifras" onclick="showSection('cifras')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-cifras">
+                        <i class="fas fa-music mr-3"></i>
+                        Administração de Cifras
+                    </a>
+                    <a href="#cifras-analise" onclick="showSection('cifras-analise')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-cifras-analise">
+                        <i class="fas fa-search mr-3"></i>
+                        Cifras para Análise
+                        <span id="cifras-pendentes-badge" class="ml-auto bg-red-500 text-white text-xs px-2 py-1 rounded-full hidden">0</span>
+                    </a>
+                    <a href="#content" onclick="showSection('content')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-content">
+                        <i class="fas fa-plus-circle mr-3"></i>
+                        Gestão de Conteúdo
+                    </a>
+                    <a href="#banners" onclick="showSection('banners')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-banners">
+                        <i class="fas fa-image mr-3"></i>
+                        Banners & Carrosseis
+                    </a>
+                    <a href="#analytics" onclick="showSection('analytics')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-analytics">
+                        <i class="fas fa-chart-line mr-3"></i>
+                        Analytics
+                    </a>
+                    <a href="#settings" onclick="showSection('settings')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-settings">
+                        <i class="fas fa-cog mr-3"></i>
+                        Configurações
+                    </a>
+                    <a href="#logs" onclick="showSection('logs')" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200" id="nav-logs">
+                        <i class="fas fa-file-alt mr-3"></i>
+                        Logs do Sistema
+                    </a>
+                    
+                    <hr class="my-4 border-gray-600">
+                    
+                    <a href="/inicio" class="sidebar-item flex items-center p-3 rounded-lg transition-all duration-200 text-green-400">
+                        <i class="fas fa-home mr-3"></i>
+                        Voltar ao Site
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-8">
+            
+            <!-- Dashboard Section -->
+            <div id="section-dashboard" class="section">
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Dashboard Master</h2>
+                    <p class="text-gray-600">Visão geral do sistema OMúsicoCatólico</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Usuários -->
+                    <div class="stat-card text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-blue-100 text-sm">Total de Usuários</p>
+                                <p class="text-2xl font-bold" id="totalUsers">-</p>
+                                <p class="text-blue-100 text-xs mt-1" id="newUsersToday">+0 hoje</p>
+                            </div>
+                            <i class="fas fa-users text-3xl text-blue-200"></i>
+                        </div>
+                    </div>
+
+                    <!-- Cifras -->
+                    <div class="stat-card-success text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-green-100 text-sm">Total de Cifras</p>
+                                <p class="text-2xl font-bold" id="totalCifras">-</p>
+                                <p class="text-green-100 text-xs mt-1" id="newCifrasToday">+0 hoje</p>
+                            </div>
+                            <i class="fas fa-music text-3xl text-green-200"></i>
+                        </div>
+                    </div>
+
+                    <!-- Repertórios -->
+                    <div class="stat-card-warning text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-yellow-100 text-sm">Repertórios</p>
+                                <p class="text-2xl font-bold" id="totalRepertorios">-</p>
+                                <p class="text-yellow-100 text-xs mt-1" id="publicRepertorios">0 públicos</p>
+                            </div>
+                            <i class="fas fa-list text-3xl text-yellow-200"></i>
+                        </div>
+                    </div>
+
+                    <!-- Sistema -->
+                    <div class="stat-card-danger text-white p-6 rounded-xl shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-red-100 text-sm">Status do Sistema</p>
+                                <p class="text-lg font-bold flex items-center">
+                                    <span class="pulse-dot w-2 h-2 bg-green-400 rounded-full mr-2"></span>
+                                    Online
+                                </p>
+                                <p class="text-red-100 text-xs mt-1" id="serverUptime">Uptime: -</p>
+                            </div>
+                            <i class="fas fa-server text-3xl text-red-200"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <!-- Activity Chart -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Atividade dos Últimos 7 Dias</h3>
+                        <div class="chart-container">
+                            <canvas id="activityChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="bg-white rounded-xl shadow-sm p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Atividades Recentes</h3>
+                        <div class="space-y-4" id="recentActivity">
+                            <!-- Será preenchido via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button onclick="showSection('users')" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg transition-colors">
+                            <i class="fas fa-user-plus mb-2 text-lg"></i>
+                            <div class="font-medium">Gerenciar Usuários</div>
+                            <div class="text-sm opacity-75">Adicionar, promover, banir</div>
+                        </button>
+                        
+                        <button onclick="showSection('cifras')" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg transition-colors">
+                            <i class="fas fa-music mb-2 text-lg"></i>
+                            <div class="font-medium">Administrar Cifras</div>
+                            <div class="text-sm opacity-75">Editar cifras da comunidade</div>
+                        </button>
+                        
+                        <button onclick="showSection('content')" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg transition-colors">
+                            <i class="fas fa-plus-circle mb-2 text-lg"></i>
+                            <div class="font-medium">Adicionar Conteúdo</div>
+                            <div class="text-sm opacity-75">Banners, carrosseis</div>
+                        </button>
+                        
+                        <button onclick="backupSystem()" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg transition-colors">
+                            <i class="fas fa-download mb-2 text-lg"></i>
+                            <div class="font-medium">Backup do Sistema</div>
+                            <div class="text-sm opacity-75">Exportar dados</div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Management Section -->
+            <div id="section-users" class="section hidden">
+                <div class="mb-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-900 mb-2">Gestão de Usuários</h2>
+                            <p class="text-gray-600">Gerenciar todos os usuários do sistema</p>
+                        </div>
+                        <button onclick="showAddUserModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Adicionar Usuário
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" id="userSearch" placeholder="Buscar usuários..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <select id="userRoleFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todos os tipos</option>
+                            <option value="user">Usuários</option>
+                            <option value="admin">Administradores</option>
+                        </select>
+                        <select id="userStatusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todos os status</option>
+                            <option value="true">Ativos</option>
+                            <option value="false">Banidos</option>
+                        </select>
+                        <button onclick="refreshUsers()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Users Table -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Lista de Usuários</h3>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="usersLoading" class="p-6">
+                        <div class="space-y-4">
+                            <div class="loading-shimmer h-12 rounded"></div>
+                            <div class="loading-shimmer h-12 rounded"></div>
+                            <div class="loading-shimmer h-12 rounded"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Users List -->
+                    <div id="usersList" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usuário</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Último Acesso</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="usersEmpty" class="hidden p-12 text-center">
+                        <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum usuário encontrado</h3>
+                        <p class="text-gray-500">Tente ajustar os filtros ou adicionar um novo usuário.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cifras Management Section -->
+            <div id="section-cifras" class="section hidden">
+                <div class="mb-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-900 mb-2">Administração de Cifras</h2>
+                            <p class="text-gray-600">Gerenciar e editar cifras enviadas pela comunidade</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <div class="flex flex-wrap items-center gap-4 mb-4">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" id="cifraSearch" placeholder="Buscar por título, artista ou letra..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <select id="cifraCategoria" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Todas as categorias</option>
+                            <option value="entrada">Entrada</option>
+                            <option value="gloria">Glória</option>
+                            <option value="salmo">Salmo</option>
+                            <option value="aleluia">Aleluia</option>
+                            <option value="ofertorio">Ofertório</option>
+                            <option value="santo">Santo</option>
+                            <option value="comunhao">Comunhão</option>
+                            <option value="final">Final</option>
+                            <option value="adoracao">Adoração</option>
+                            <option value="maria">Maria</option>
+                            <option value="natal">Natal</option>
+                            <option value="pascoa">Páscoa</option>
+                            <option value="outras">Outras</option>
+                        </select>
+                        <select id="cifraOrdem" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="recente">Mais recentes</option>
+                            <option value="titulo">Por título</option>
+                            <option value="artista">Por artista</option>
+                            <option value="views">Mais visualizadas</option>
+                        </select>
+                        <button onclick="refreshCifras()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                    </div>
+                    
+                    <!-- Bulk Actions -->
+                    <div id="cifrasBulkActions" class="hidden border-t pt-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <span id="selectedCifrasCount" class="text-sm text-gray-600">0 cifras selecionadas</span>
+                                <button onclick="selectAllCifras()" class="text-sm text-blue-600 hover:text-blue-800">
+                                    Selecionar todas
+                                </button>
+                                <button onclick="deselectAllCifras()" class="text-sm text-blue-600 hover:text-blue-800">
+                                    Deselecionar todas
+                                </button>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="bulkToggleCifrasStatus(true)" class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                                    <i class="fas fa-eye mr-1"></i>Ativar
+                                </button>
+                                <button onclick="bulkToggleCifrasStatus(false)" class="px-3 py-1 bg-yellow-600 text-white text-sm rounded hover:bg-yellow-700">
+                                    <i class="fas fa-eye-slash mr-1"></i>Desativar
+                                </button>
+                                <button onclick="bulkDeleteCifras()" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                    <i class="fas fa-trash mr-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cifras Table -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Lista de Cifras</h3>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="cifrasLoading" class="p-6">
+                        <div class="space-y-4">
+                            <div class="loading-shimmer h-16 rounded"></div>
+                            <div class="loading-shimmer h-16 rounded"></div>
+                            <div class="loading-shimmer h-16 rounded"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cifras List -->
+                    <div id="cifrasList" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            <input type="checkbox" id="selectAllCifrasCheck" onchange="toggleAllCifras()" 
+                                                   class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cifra</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tom</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criador</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Visualizações</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cifrasTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="cifrasEmpty" class="hidden p-12 text-center">
+                        <i class="fas fa-music text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhuma cifra encontrada</h3>
+                        <p class="text-gray-500">Tente ajustar os filtros ou aguarde novos envios da comunidade.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cifras para Análise Section -->
+            <div id="section-cifras-analise" class="section hidden">
+                <div class="mb-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-900 mb-2">Cifras para Análise</h2>
+                            <p class="text-gray-600">Revisar e aprovar cifras enviadas pela comunidade</p>
+                        </div>
+                        <button onclick="refreshCifrasAnalise()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-sync-alt mr-2"></i>
+                            Atualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-yellow-800">Pendentes</p>
+                                <p class="text-2xl font-bold text-yellow-900" id="cifrasPendentesCount">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-check text-green-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-green-800">Aprovadas</p>
+                                <p class="text-2xl font-bold text-green-900" id="cifrasAprovadasCount">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-times text-red-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-red-800">Rejeitadas</p>
+                                <p class="text-2xl font-bold text-red-900" id="cifrasRejeitadasCount">-</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-6">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-triangle text-orange-600 text-2xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-orange-800">Atrasadas</p>
+                                <p class="text-2xl font-bold text-orange-900" id="cifrasAtrasadasCount">-</p>
+                                <p class="text-xs text-orange-600">+7 dias</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cifras Pendentes Table -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Cifras Aguardando Análise</h3>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="cifrasAnaliseLoading" class="p-6">
+                        <div class="space-y-4">
+                            <div class="loading-shimmer h-16 rounded"></div>
+                            <div class="loading-shimmer h-16 rounded"></div>
+                            <div class="loading-shimmer h-16 rounded"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cifras List -->
+                    <div id="cifrasAnaliseList" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cifra</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Categoria</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tom</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enviado por</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Envio</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aguardando</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cifrasAnaliseTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="cifrasAnaliseEmpty" class="hidden p-12 text-center">
+                        <i class="fas fa-check-circle text-4xl text-green-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhuma cifra pendente</h3>
+                        <p class="text-gray-500">Todas as cifras foram analisadas! 🎉</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Management Section -->
+            <div id="section-content" class="section hidden">
+                <div class="mb-8">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-900 mb-2">Gestão de Conteúdo</h2>
+                            <p class="text-gray-600">Gerenciar textos, imagens, banners e páginas do site</p>
+                        </div>
+                        <button onclick="showAddContentModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>
+                            Adicionar Conteúdo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Total de Conteúdos</p>
+                                <p class="text-2xl font-bold text-gray-900" id="totalContentCount">-</p>
+                            </div>
+                            <i class="fas fa-file-alt text-2xl text-purple-500"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Conteúdos Ativos</p>
+                                <p class="text-2xl font-bold text-green-600" id="activeContentCount">-</p>
+                            </div>
+                            <i class="fas fa-eye text-2xl text-green-500"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Conteúdos Inativos</p>
+                                <p class="text-2xl font-bold text-red-600" id="inactiveContentCount">-</p>
+                            </div>
+                            <i class="fas fa-eye-slash text-2xl text-red-500"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-6 rounded-xl shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600">Criados Recentemente</p>
+                                <p class="text-2xl font-bold text-blue-600" id="recentContentCount">-</p>
+                            </div>
+                            <i class="fas fa-clock text-2xl text-blue-500"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" id="contentSearch" placeholder="Buscar por título, chave ou conteúdo..." 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        </div>
+                        <select id="contentTypeFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <option value="">Todos os tipos</option>
+                            <option value="pagina">Páginas</option>
+                            <option value="banner">Banners</option>
+                            <option value="texto">Textos</option>
+                            <option value="imagem">Imagens</option>
+                            <option value="carrossel">Carrossel</option>
+                        </select>
+                        <select id="contentStatusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <option value="">Todos os status</option>
+                            <option value="true">Ativos</option>
+                            <option value="false">Inativos</option>
+                        </select>
+                        <button onclick="refreshContent()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-sync-alt mr-2"></i>Atualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Content Table -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Lista de Conteúdos</h3>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="contentLoading" class="p-6">
+                        <div class="space-y-4">
+                            <div class="loading-shimmer h-16 rounded"></div>
+                            <div class="loading-shimmer h-16 rounded"></div>
+                            <div class="loading-shimmer h-16 rounded"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Content List -->
+                    <div id="contentList" class="hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Conteúdo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chave</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Criado por</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contentTableBody" class="bg-white divide-y divide-gray-200">
+                                    <!-- Will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="contentEmpty" class="hidden p-12 text-center">
+                        <i class="fas fa-file-alt text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum conteúdo encontrado</h3>
+                        <p class="text-gray-500 mb-4">Comece criando seu primeiro conteúdo para o site.</p>
+                        <button onclick="showAddContentModal()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg">
+                            <i class="fas fa-plus mr-2"></i>
+                            Adicionar Conteúdo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-banners" class="section hidden">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Banners & Carrosseis</h2>
+                <p class="text-gray-600">Em desenvolvimento...</p>
+            </div>
+
+            <div id="section-analytics" class="section hidden">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Analytics</h2>
+                <p class="text-gray-600">Em desenvolvimento...</p>
+            </div>
+
+            <div id="section-settings" class="section hidden">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Configurações</h2>
+                <p class="text-gray-600">Em desenvolvimento...</p>
+            </div>
+
+            <div id="section-logs" class="section hidden">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Logs do Sistema</h2>
+                <p class="text-gray-600">Em desenvolvimento...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 class="text-lg font-semibold mb-4">Adicionar Usuário</h3>
+            
+            <form id="addUserForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Nome</label>
+                    <input type="text" id="newUserName" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="newUserEmail" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Senha</label>
+                    <input type="password" id="newUserPassword" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Usuário</label>
+                    <select id="newUserRole" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="user">Usuário</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" onclick="closeAddUserModal()" 
+                            class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                            class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                        Adicionar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Cifra Modal -->
+    <div id="editCifraModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold">Editar Cifra</h3>
+                <button onclick="closeEditCifraModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="editCifraForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Informações Básicas -->
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Informações Básicas</h4>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Título</label>
+                        <input type="text" id="editCifraTitulo" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Artista</label>
+                        <input type="text" id="editCifraArtista" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Compositor</label>
+                        <input type="text" id="editCifraCompositor" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Tom</label>
+                            <select id="editCifraTom" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="C">C</option>
+                                <option value="C#">C#</option>
+                                <option value="D">D</option>
+                                <option value="D#">D#</option>
+                                <option value="E">E</option>
+                                <option value="F">F</option>
+                                <option value="F#">F#</option>
+                                <option value="G">G</option>
+                                <option value="G#">G#</option>
+                                <option value="A">A</option>
+                                <option value="A#">A#</option>
+                                <option value="B">B</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Categoria</label>
+                            <select id="editCifraCategoria" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="entrada">Entrada</option>
+                                <option value="gloria">Glória</option>
+                                <option value="salmo">Salmo</option>
+                                <option value="aleluia">Aleluia</option>
+                                <option value="ofertorio">Ofertório</option>
+                                <option value="santo">Santo</option>
+                                <option value="comunhao">Comunhão</option>
+                                <option value="final">Final</option>
+                                <option value="adoracao">Adoração</option>
+                                <option value="maria">Maria</option>
+                                <option value="natal">Natal</option>
+                                <option value="pascoa">Páscoa</option>
+                                <option value="outras">Outras</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Dificuldade</label>
+                            <select id="editCifraDificuldade" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <option value="1">Fácil</option>
+                                <option value="2">Médio</option>
+                                <option value="3">Difícil</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">BPM</label>
+                            <input type="number" id="editCifraBpm" min="50" max="200" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Capo</label>
+                            <input type="number" id="editCifraCapo" min="0" max="12" 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">YouTube URL</label>
+                        <input type="url" id="editCifraYoutube" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Spotify URL</label>
+                        <input type="url" id="editCifraSpotify" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input type="checkbox" id="editCifraAtivo" class="mr-2">
+                        <label for="editCifraAtivo" class="text-sm text-gray-700">Cifra Ativa</label>
+                    </div>
+                </div>
+                
+                <!-- Letra da Cifra -->
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Letra e Cifra</h4>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Letra com Cifras</label>
+                        <textarea id="editCifraLetra" rows="20" required 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono text-sm"
+                                  placeholder="Digite a letra com as cifras..."></textarea>
+                    </div>
+                </div>
+                
+                <!-- Botões de Ação -->
+                <div class="md:col-span-2 flex justify-between items-center pt-6 border-t">
+                    <div class="text-sm text-gray-500">
+                        <span id="editCifraCriador"></span>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button type="button" onclick="closeEditCifraModal()" 
+                                class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="button" onclick="deleteCifra()" 
+                                class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Excluir
+                        </button>
+                        <button type="submit" 
+                                class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Salvar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Aprovar Cifra -->
+    <div id="aprovarCifraModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-green-800">Aprovar Cifra</h3>
+                <button onclick="closeAprovarCifraModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex items-center justify-center w-12 h-12 mx-auto bg-green-100 rounded-full mb-4">
+                    <i class="fas fa-check text-green-600 text-xl"></i>
+                </div>
+                <p class="text-center text-gray-700 mb-4">
+                    Tem certeza que deseja aprovar esta cifra? Ela ficará disponível para toda a comunidade.
+                </p>
+                <div id="aprovarCifraInfo" class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <!-- Informações da cifra serão preenchidas aqui -->
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Observações (opcional)</label>
+                <textarea id="aprovarCifraObservacoes" rows="3" 
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                          placeholder="Adicione observações sobre a aprovação..."></textarea>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button type="button" onclick="closeAprovarCifraModal()" 
+                        class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancelar
+                </button>
+                <button type="button" onclick="confirmarAprovacao()" 
+                        class="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-check mr-2"></i>Aprovar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Rejeitar Cifra -->
+    <div id="rejeitarCifraModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-red-800">Rejeitar Cifra</h3>
+                <button onclick="closeRejeitarCifraModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+                    <i class="fas fa-times text-red-600 text-xl"></i>
+                </div>
+                <p class="text-center text-gray-700 mb-4">
+                    Tem certeza que deseja rejeitar esta cifra? O usuário poderá fazer correções e reenviar.
+                </p>
+                <div id="rejeitarCifraInfo" class="bg-gray-50 rounded-lg p-4 mb-4">
+                    <!-- Informações da cifra serão preenchidas aqui -->
+                </div>
+            </div>
+            
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Motivo da rejeição *</label>
+                <textarea id="rejeitarCifraObservacoes" rows="4" required
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                          placeholder="Explique o motivo da rejeição para que o usuário possa corrigir..."></textarea>
+                <p class="text-xs text-gray-500 mt-1">Este texto será enviado para o usuário</p>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button type="button" onclick="closeRejeitarCifraModal()" 
+                        class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                    Cancelar
+                </button>
+                <button type="button" onclick="confirmarRejeicao()" 
+                        class="flex-1 bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                    <i class="fas fa-times mr-2"></i>Rejeitar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Visualizar Cifra para Análise -->
+    <div id="visualizarCifraAnaliseModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg w-full max-w-6xl mx-4 max-h-[90vh] flex flex-col overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900" id="visualizarCifraTitulo">Título da Cifra</h3>
+                    <p class="text-gray-600" id="visualizarCifraArtista">Artista</p>
+                </div>
+                <button onclick="closeVisualizarCifraAnaliseModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Informações da Cifra -->
+                    <div class="lg:col-span-1 space-y-4">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <h4 class="font-medium text-gray-900 mb-3">Informações</h4>
+                            <div class="space-y-2 text-sm">
+                                <div><span class="font-medium">Tom:</span> <span id="visualizarCifraTom">-</span></div>
+                                <div><span class="font-medium">Categoria:</span> <span id="visualizarCifraCategoria">-</span></div>
+                                <div><span class="font-medium">Enviado por:</span> <span id="visualizarCifraUsuario">-</span></div>
+                                <div><span class="font-medium">Data de envio:</span> <span id="visualizarCifraDataEnvio">-</span></div>
+                                <div><span class="font-medium">Aguardando há:</span> <span id="visualizarCifraAguardando">-</span></div>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <button onclick="abrirModalAprovar()" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                                <i class="fas fa-check mr-2"></i>Aprovar Cifra
+                            </button>
+                            <button onclick="abrirModalRejeitar()" class="w-full bg-red-600 text-white py-3 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-times mr-2"></i>Rejeitar Cifra
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Letra da Cifra -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-gray-50 rounded-lg p-4 h-full">
+                            <h4 class="font-medium text-gray-900 mb-3">Letra e Cifra</h4>
+                            <div class="bg-white rounded border p-4 max-h-96 overflow-y-auto">
+                                <pre id="visualizarCifraLetra" class="whitespace-pre-wrap font-mono text-sm">Carregando...</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Content Modal -->
+    <div id="addContentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold">Adicionar Conteúdo</h3>
+                <button onclick="closeAddContentModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="addContentForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Informações Básicas -->
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Informações Básicas</h4>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Conteúdo *</label>
+                        <select id="addContentTipo" required onchange="updateContentFields()"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <option value="">Selecione o tipo</option>
+                            <option value="pagina">Página</option>
+                            <option value="banner">Banner</option>
+                            <option value="texto">Texto</option>
+                            <option value="imagem">Imagem</option>
+                            <option value="carrossel">Item do Carrossel</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Chave Única *</label>
+                        <input type="text" id="addContentChave" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                               placeholder="ex: home_banner_1, sobre_texto">
+                        <p class="text-xs text-gray-500 mt-1">Identificador único para este conteúdo</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Título *</label>
+                        <input type="text" id="addContentTitulo" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    
+                    <div id="addContentUrlLinkDiv" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">URL de Destino</label>
+                        <input type="url" id="addContentUrlLink" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                               placeholder="https://...">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ordem</label>
+                            <input type="number" id="addContentOrdem" min="0" value="0"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        </div>
+                        
+                        <div class="flex items-center pt-6">
+                            <input type="checkbox" id="addContentAtivo" checked class="mr-2">
+                            <label for="addContentAtivo" class="text-sm text-gray-700">Conteúdo Ativo</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Agendamento -->
+                    <div class="border-t pt-4">
+                        <h5 class="font-medium text-gray-900 mb-3">Agendamento (Opcional)</h5>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Data de Início</label>
+                                <input type="datetime-local" id="addContentDataInicio" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Data de Fim</label>
+                                <input type="datetime-local" id="addContentDataFim" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conteúdo e Imagem -->
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Conteúdo</h4>
+                    
+                    <!-- Upload de Imagem -->
+                    <div id="addContentImagemDiv">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Imagem</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                            <input type="file" id="addContentImagem" accept="image/*" class="hidden" onchange="previewImage(this, 'addImagePreview')">
+                            <div id="addImagePreview" class="hidden mb-4">
+                                <img id="addImagePreviewImg" src="" alt="Preview" class="max-w-full h-32 object-cover mx-auto rounded">
+                                <button type="button" onclick="removeImagePreview('add')" class="mt-2 text-red-600 hover:text-red-800 text-sm">
+                                    <i class="fas fa-trash mr-1"></i>Remover
+                                </button>
+                            </div>
+                            <div id="addImageUpload">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-600 mb-2">Clique para fazer upload ou arraste uma imagem</p>
+                                <button type="button" onclick="document.getElementById('addContentImagem').click()" 
+                                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm">
+                                    Selecionar Imagem
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">PNG, JPG, GIF até 5MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Editor de Conteúdo -->
+                    <div id="addContentConteudoDiv">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Conteúdo HTML</label>
+                        <textarea id="addContentConteudo" rows="12" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-sm"
+                                  placeholder="Digite o conteúdo HTML..."></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Você pode usar HTML para formatação</p>
+                    </div>
+                    
+                    <!-- Metadados -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Metadados (JSON)</label>
+                        <textarea id="addContentMetadados" rows="4" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-sm"
+                                  placeholder='{"cor": "#ff0000", "tamanho": "grande"}'></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Configurações extras em formato JSON (opcional)</p>
+                    </div>
+                </div>
+                
+                <!-- Botões de Ação -->
+                <div class="md:col-span-2 flex justify-end space-x-3 pt-6 border-t">
+                    <button type="button" onclick="closeAddContentModal()" 
+                            class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                        Cancelar
+                    </button>
+                    <button type="submit" 
+                            class="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-save mr-2"></i>Criar Conteúdo
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Content Modal -->
+    <div id="editContentModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-4xl mx-4 max-h-screen overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold">Editar Conteúdo</h3>
+                <button onclick="closeEditContentModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="editContentForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Informações Básicas -->
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Informações Básicas</h4>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de Conteúdo *</label>
+                        <select id="editContentTipo" required onchange="updateEditContentFields()"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            <option value="pagina">Página</option>
+                            <option value="banner">Banner</option>
+                            <option value="texto">Texto</option>
+                            <option value="imagem">Imagem</option>
+                            <option value="carrossel">Item do Carrossel</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Chave Única *</label>
+                        <input type="text" id="editContentChave" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        <p class="text-xs text-gray-500 mt-1">Identificador único para este conteúdo</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Título *</label>
+                        <input type="text" id="editContentTitulo" required 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    
+                    <div id="editContentUrlLinkDiv">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">URL de Destino</label>
+                        <input type="url" id="editContentUrlLink" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Ordem</label>
+                            <input type="number" id="editContentOrdem" min="0"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        </div>
+                        
+                        <div class="flex items-center pt-6">
+                            <input type="checkbox" id="editContentAtivo" class="mr-2">
+                            <label for="editContentAtivo" class="text-sm text-gray-700">Conteúdo Ativo</label>
+                        </div>
+                    </div>
+                    
+                    <!-- Agendamento -->
+                    <div class="border-t pt-4">
+                        <h5 class="font-medium text-gray-900 mb-3">Agendamento (Opcional)</h5>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Data de Início</label>
+                                <input type="datetime-local" id="editContentDataInicio" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Data de Fim</label>
+                                <input type="datetime-local" id="editContentDataFim" 
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Conteúdo e Imagem -->
+                <div class="space-y-4">
+                    <h4 class="font-medium text-gray-900">Conteúdo</h4>
+                    
+                    <!-- Upload de Imagem -->
+                    <div id="editContentImagemDiv">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Imagem</label>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                            <input type="file" id="editContentImagem" accept="image/*" class="hidden" onchange="previewImage(this, 'editImagePreview')">
+                            <div id="editImagePreview" class="hidden mb-4">
+                                <img id="editImagePreviewImg" src="" alt="Preview" class="max-w-full h-32 object-cover mx-auto rounded">
+                                <div class="mt-2 space-x-2">
+                                    <button type="button" onclick="removeImagePreview('edit')" class="text-red-600 hover:text-red-800 text-sm">
+                                        <i class="fas fa-trash mr-1"></i>Remover
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="editImageUpload">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-gray-600 mb-2">Clique para fazer upload ou arraste uma imagem</p>
+                                <button type="button" onclick="document.getElementById('editContentImagem').click()" 
+                                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm">
+                                    Selecionar Imagem
+                                </button>
+                                <p class="text-xs text-gray-500 mt-2">PNG, JPG, GIF até 5MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Editor de Conteúdo -->
+                    <div id="editContentConteudoDiv">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Conteúdo HTML</label>
+                        <textarea id="editContentConteudo" rows="12" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-sm"
+                                  placeholder="Digite o conteúdo HTML..."></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Você pode usar HTML para formatação</p>
+                    </div>
+                    
+                    <!-- Metadados -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Metadados (JSON)</label>
+                        <textarea id="editContentMetadados" rows="4" 
+                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 font-mono text-sm"
+                                  placeholder='{"cor": "#ff0000", "tamanho": "grande"}'></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Configurações extras em formato JSON (opcional)</p>
+                    </div>
+                </div>
+                
+                <!-- Botões de Ação -->
+                <div class="md:col-span-2 flex justify-between items-center pt-6 border-t">
+                    <div class="text-sm text-gray-500">
+                        <span id="editContentCriador"></span>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button type="button" onclick="closeEditContentModal()" 
+                                class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="button" onclick="deleteContent()" 
+                                class="bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="fas fa-trash mr-2"></i>Excluir
+                        </button>
+                        <button type="submit" 
+                                class="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-save mr-2"></i>Salvar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Global variables
+        let currentSection = 'dashboard';
+        let allUsers = [];
+        let allCifras = [];
+        let currentEditingCifra = null;
+        let dashboardData = {};
+
+        // Bulk actions for cifras
+        let selectedCifras = new Set();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            checkMasterAuth();
+            loadDashboardData();
+            loadUsers();
+            loadCifras();
+            setupEventListeners();
+        });
+
+        // Authentication check
+        function checkMasterAuth() {
+            const token = localStorage.getItem('authToken');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if user is master (this will be validated by the server)
+            // For now, we'll let the server handle the master validation
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // User search and filters
+            document.getElementById('userSearch')?.addEventListener('input', filterUsers);
+            document.getElementById('userRoleFilter')?.addEventListener('change', filterUsers);
+            document.getElementById('userStatusFilter')?.addEventListener('change', filterUsers);
+            
+            // Cifra search and filters
+            document.getElementById('cifraSearch')?.addEventListener('input', debounce(loadCifras, 500));
+            document.getElementById('cifraCategoria')?.addEventListener('change', loadCifras);
+            document.getElementById('cifraOrdem')?.addEventListener('change', loadCifras);
+            
+            // Forms
+            document.getElementById('addUserForm')?.addEventListener('submit', handleAddUser);
+            document.getElementById('editCifraForm')?.addEventListener('submit', handleEditCifra);
+        }
+
+        // Section navigation
+        function showSection(sectionName) {
+            console.log('🧭 Navegando para seção:', sectionName);
+            
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show target section
+            const targetSection = document.getElementById(`section-${sectionName}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                console.log('✅ Seção mostrada:', sectionName);
+            } else {
+                console.error('❌ Seção não encontrada:', `section-${sectionName}`);
+            }
+            
+            // Update nav
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('bg-gray-700');
+            });
+            const navItem = document.getElementById(`nav-${sectionName}`);
+            if (navItem) {
+                navItem.classList.add('bg-gray-700');
+                console.log('✅ Navegação atualizada para:', sectionName);
+            } else {
+                console.error('❌ Item de navegação não encontrado:', `nav-${sectionName}`);
+            }
+            
+            currentSection = sectionName;
+            
+            // Load section data if needed
+            if (sectionName === 'users' && allUsers.length === 0) {
+                console.log('📥 Carregando usuários...');
+                loadUsers();
+            } else if (sectionName === 'cifras') {
+                console.log('📥 Carregando cifras...');
+                loadCifras();
+            }
+        }
+
+        // Dashboard data loading
+        async function loadDashboardData() {
+            try {
+                const response = await fetch(apiUrl('/api/master/dashboard'), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    dashboardData = await response.json();
+                    updateDashboardUI();
+                } else {
+                    throw new Error('Acesso negado');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar dashboard:', error);
+                if (error.message === 'Acesso negado') {
+                    showToast('Acesso negado. Você não tem privilégios de master.', 'error');
+                    setTimeout(() => {
+                        window.location.href = '/inicio';
+                    }, 2000);
+                }
+            }
+        }
+
+        // Update dashboard UI
+        function updateDashboardUI() {
+            if (!dashboardData.success) return;
+            
+            const data = dashboardData.data;
+            
+            // Update stats
+            document.getElementById('totalUsers').textContent = data.stats.totalUsers || 0;
+            document.getElementById('newUsersToday').textContent = `+${data.stats.newUsersToday || 0} hoje`;
+            document.getElementById('totalCifras').textContent = data.stats.totalCifras || 0;
+            document.getElementById('newCifrasToday').textContent = `+${data.stats.newCifrasToday || 0} hoje`;
+            document.getElementById('totalRepertorios').textContent = data.stats.totalRepertorios || 0;
+            document.getElementById('publicRepertorios').textContent = `${data.stats.publicRepertorios || 0} públicos`;
+            document.getElementById('serverUptime').textContent = `Uptime: ${data.stats.uptime || 'N/A'}`;
+            
+            // Update recent activity
+            updateRecentActivity(data.recentActivity || []);
+        }
+
+        // Update recent activity
+        function updateRecentActivity(activities) {
+            const container = document.getElementById('recentActivity');
+            
+            if (activities.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">Nenhuma atividade recente</p>';
+                return;
+            }
+            
+            container.innerHTML = activities.map(activity => `
+                <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="${activity.icon} text-blue-600 text-sm"></i>
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900">${activity.description}</p>
+                        <p class="text-xs text-gray-500">${formatDate(activity.timestamp)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Users management
+        async function loadUsers() {
+            try {
+                document.getElementById('usersLoading').classList.remove('hidden');
+                document.getElementById('usersList').classList.add('hidden');
+                document.getElementById('usersEmpty').classList.add('hidden');
+                
+                const response = await fetch(apiUrl('/api/master/users'), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    allUsers = data.users || [];
+                    renderUsers(allUsers);
+                } else {
+                    throw new Error('Erro ao carregar usuários');
+                }
+            } catch (error) {
+                console.error('Erro ao carregar usuários:', error);
+                showToast('Erro ao carregar usuários', 'error');
+            } finally {
+                document.getElementById('usersLoading').classList.add('hidden');
+            }
+        }
+
+        // Render users table
+        function renderUsers(users) {
+            const tbody = document.getElementById('usersTableBody');
+            
+            if (users.length === 0) {
+                document.getElementById('usersEmpty').classList.remove('hidden');
+                document.getElementById('usersList').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('usersEmpty').classList.add('hidden');
+            document.getElementById('usersList').classList.remove('hidden');
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                                ${user.avatar ? 
+                                    `<img src="${user.avatar}" class="w-10 h-10 rounded-full object-cover" alt="${user.nome}">` :
+                                    `<i class="fas fa-user text-gray-600"></i>`
+                                }
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${user.nome}</div>
+                                <div class="text-sm text-gray-500">ID: ${user.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${user.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${
+                            user.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-800'
+                        }">
+                            ${user.role === 'admin' ? 'Admin' : 'Usuário'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${
+                            user.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }">
+                            ${user.ativo ? 'Ativo' : 'Banido'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${user.ultimo_acesso ? formatDate(user.ultimo_acesso) : 'Nunca'}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex space-x-2">
+                            ${user.role !== 'admin' ? 
+                                `<button onclick="promoteUser(${user.id})" class="text-purple-600 hover:text-purple-900" title="Promover a Admin">
+                                    <i class="fas fa-crown"></i>
+                                </button>` : ''
+                            }
+                            <button onclick="toggleUserStatus(${user.id}, ${!user.ativo})" class="text-${user.ativo ? 'red' : 'green'}-600 hover:text-${user.ativo ? 'red' : 'green'}-900" title="${user.ativo ? 'Banir' : 'Reativar'}">
+                                <i class="fas fa-${user.ativo ? 'ban' : 'check'}"></i>
+                            </button>
+                            <button onclick="editUser(${user.id})" class="text-blue-600 hover:text-blue-900" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteUser(${user.id})" class="text-red-600 hover:text-red-900" title="Deletar">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter users
+        function filterUsers() {
+            const search = document.getElementById('userSearch').value.toLowerCase();
+            const roleFilter = document.getElementById('userRoleFilter').value;
+            const statusFilter = document.getElementById('userStatusFilter').value;
+            
+            let filtered = allUsers.filter(user => {
+                const matchesSearch = user.nome.toLowerCase().includes(search) || 
+                                    user.email.toLowerCase().includes(search);
+                const matchesRole = !roleFilter || user.role === roleFilter;
+                const matchesStatus = !statusFilter || user.ativo.toString() === statusFilter;
+                
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+            
+            renderUsers(filtered);
+        }
+
+        // User actions
+        function showAddUserModal() {
+            document.getElementById('addUserModal').classList.remove('hidden');
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').classList.add('hidden');
+            document.getElementById('addUserForm').reset();
+        }
+
+        async function handleAddUser(e) {
+            e.preventDefault();
+            
+            const userData = {
+                nome: document.getElementById('newUserName').value,
+                email: document.getElementById('newUserEmail').value,
+                senha: document.getElementById('newUserPassword').value,
+                role: document.getElementById('newUserRole').value
+            };
+            
+            try {
+                const response = await fetch(apiUrl('/api/master/users'), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Usuário criado com sucesso!', 'success');
+                    closeAddUserModal();
+                    loadUsers();
+                } else {
+                    showToast(data.message || 'Erro ao criar usuário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao criar usuário:', error);
+                showToast('Erro ao criar usuário', 'error');
+            }
+        }
+
+        async function promoteUser(userId) {
+            if (!confirm('Tem certeza que deseja promover este usuário a administrador?')) return;
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}/promote`), {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Usuário promovido com sucesso!', 'success');
+                    loadUsers();
+                } else {
+                    showToast(data.message || 'Erro ao promover usuário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao promover usuário:', error);
+                showToast('Erro ao promover usuário', 'error');
+            }
+        }
+
+        async function toggleUserStatus(userId, activate) {
+            const action = activate ? 'reativar' : 'banir';
+            if (!confirm(`Tem certeza que deseja ${action} este usuário?`)) return;
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}/toggle-status`), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ ativo: activate })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(`Usuário ${activate ? 'reativado' : 'banido'} com sucesso!`, 'success');
+                    loadUsers();
+                } else {
+                    showToast(data.message || `Erro ao ${action} usuário`, 'error');
+                }
+            } catch (error) {
+                console.error(`Erro ao ${action} usuário:`, error);
+                showToast(`Erro ao ${action} usuário`, 'error');
+            }
+        }
+
+        function editUser(userId) {
+            // TODO: Implement edit user modal
+            showToast('Funcionalidade de edição em desenvolvimento', 'info');
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('Tem certeza que deseja DELETAR este usuário? Esta ação não pode ser desfeita!')) return;
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}`), {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Usuário deletado com sucesso!', 'success');
+                    loadUsers();
+                } else {
+                    showToast(data.message || 'Erro ao deletar usuário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao deletar usuário:', error);
+                showToast('Erro ao deletar usuário', 'error');
+            }
+        }
+
+        function refreshUsers() {
+            loadUsers();
+            showToast('Lista de usuários atualizada!', 'success');
+        }
+
+        // === CIFRAS MANAGEMENT ===
+        
+        // Load all cifras
+        async function loadCifras() {
+            try {
+                console.log('🔍 Iniciando carregamento de cifras...');
+                
+                const token = localStorage.getItem('authToken');
+                const user = JSON.parse(localStorage.getItem('user') || '{}');
+                
+                console.log('Token:', token ? 'Presente' : 'Ausente');
+                console.log('Usuário:', user.email || 'Email não encontrado');
+                
+                document.getElementById('cifrasLoading').classList.remove('hidden');
+                document.getElementById('cifrasList').classList.add('hidden');
+                document.getElementById('cifrasEmpty').classList.add('hidden');
+                
+                const params = new URLSearchParams();
+                const search = document.getElementById('cifraSearch')?.value;
+                const categoria = document.getElementById('cifraCategoria')?.value;
+                const ordem = document.getElementById('cifraOrdem')?.value || 'recente';
+                
+                if (search) params.append('search', search);
+                if (categoria) params.append('categoria', categoria);
+                if (ordem) params.append('ordem', ordem);
+                
+                const url = apiUrl(`/api/master/cifras?${params.toString()}`);
+                console.log('🌐 URL da requisição:', url);
+                
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                console.log('📡 Status da resposta:', response.status);
+                console.log('📡 Status text:', response.statusText);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.log('❌ Resposta de erro:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Dados recebidos:', data);
+                
+                if (data.success) {
+                    allCifras = data.cifras;
+                    renderCifras(allCifras);
+                    console.log('✅ Cifras renderizadas:', allCifras.length);
+                } else {
+                    throw new Error(data.message || 'Erro ao carregar cifras');
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar cifras:', error);
+                showToast('Erro ao carregar cifras: ' + error.message, 'error');
+            } finally {
+                document.getElementById('cifrasLoading').classList.add('hidden');
+            }
+        }
+
+        // Render cifras table
+        function renderCifras(cifras) {
+            const tbody = document.getElementById('cifrasTableBody');
+            
+            if (cifras.length === 0) {
+                document.getElementById('cifrasEmpty').classList.remove('hidden');
+                document.getElementById('cifrasList').classList.add('hidden');
+                return;
+            }
+            
+            document.getElementById('cifrasEmpty').classList.add('hidden');
+            document.getElementById('cifrasList').classList.remove('hidden');
+            
+            tbody.innerHTML = cifras.map(cifra => `
+                <tr class="${!cifra.ativo ? 'bg-red-50' : ''}">
+                    <td class="px-6 py-4">
+                        <input type="checkbox" class="cifra-checkbox rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                               value="${cifra.id}" onchange="updateBulkActionsVisibility()">
+                    </td>
+                    <td class="px-6 py-4">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">${cifra.titulo}</div>
+                            <div class="text-sm text-gray-500">${cifra.artista}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+                            ${formatCategory(cifra.categoria)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${cifra.tom}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${cifra.usuario?.nome || 'Usuário removido'}</div>
+                        <div class="text-sm text-gray-500">${cifra.usuario?.email || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${cifra.views_formatadas || cifra.views || 0}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full ${
+                            cifra.ativo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }">
+                            ${cifra.ativo ? 'Ativa' : 'Inativa'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button onclick="toggleCifraStatus(${cifra.id}, ${!cifra.ativo})" 
+                                    class="text-${cifra.ativo ? 'red' : 'green'}-600 hover:text-${cifra.ativo ? 'red' : 'green'}-900" 
+                                    title="${cifra.ativo ? 'Desativar' : 'Ativar'}">
+                                <i class="fas fa-${cifra.ativo ? 'eye-slash' : 'eye'}"></i>
+                            </button>
+                            <button onclick="editCifra(${cifra.id})" 
+                                    class="text-blue-600 hover:text-blue-900" 
+                                    title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="viewCifra(${cifra.id})" 
+                                    class="text-green-600 hover:text-green-900" 
+                                    title="Visualizar">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Refresh cifras with current filters
+        function refreshCifras() {
+            loadCifras();
+        }
+
+        // Edit cifra
+        async function editCifra(cifraId) {
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${cifraId}`), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentEditingCifra = data.cifra;
+                    populateEditForm(data.cifra);
+                    document.getElementById('editCifraModal').classList.remove('hidden');
+                } else {
+                    showToast(data.message || 'Erro ao carregar cifra', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar cifra para edição:', error);
+                showToast('Erro ao carregar cifra', 'error');
+            }
+        }
+
+        // Populate edit form
+        function populateEditForm(cifra) {
+            document.getElementById('editCifraTitulo').value = cifra.titulo || '';
+            document.getElementById('editCifraArtista').value = cifra.artista || '';
+            document.getElementById('editCifraCompositor').value = cifra.compositor || '';
+            document.getElementById('editCifraTom').value = cifra.tom || 'C';
+            document.getElementById('editCifraCategoria').value = cifra.categoria || 'outras';
+            document.getElementById('editCifraDificuldade').value = cifra.dificuldade || '1';
+            document.getElementById('editCifraBpm').value = cifra.bpm || '';
+            document.getElementById('editCifraCapo').value = cifra.capo || '';
+            document.getElementById('editCifraYoutube').value = cifra.youtube_url || '';
+            document.getElementById('editCifraSpotify').value = cifra.spotify_url || '';
+            document.getElementById('editCifraLetra').value = cifra.letra || '';
+            document.getElementById('editCifraAtivo').checked = cifra.ativo !== false;
+            
+            // Show creator info
+            const criadorInfo = cifra.usuario ? 
+                `Criado por: ${cifra.usuario.nome} (${cifra.usuario.email})` : 
+                'Criador: Usuário removido';
+            document.getElementById('editCifraCriador').textContent = criadorInfo;
+        }
+
+        // Close edit modal
+        function closeEditCifraModal() {
+            document.getElementById('editCifraModal').classList.add('hidden');
+            currentEditingCifra = null;
+        }
+
+        // Save cifra changes
+        async function handleEditCifra(e) {
+            e.preventDefault();
+            
+            if (!currentEditingCifra) return;
+            
+            const formData = {
+                titulo: document.getElementById('editCifraTitulo').value.trim(),
+                artista: document.getElementById('editCifraArtista').value.trim(),
+                compositor: document.getElementById('editCifraCompositor').value.trim(),
+                tom: document.getElementById('editCifraTom').value,
+                categoria: document.getElementById('editCifraCategoria').value,
+                dificuldade: parseInt(document.getElementById('editCifraDificuldade').value),
+                bpm: parseInt(document.getElementById('editCifraBpm').value) || null,
+                capo: parseInt(document.getElementById('editCifraCapo').value) || null,
+                youtube_url: document.getElementById('editCifraYoutube').value.trim() || null,
+                spotify_url: document.getElementById('editCifraSpotify').value.trim() || null,
+                letra: document.getElementById('editCifraLetra').value.trim(),
+                ativo: document.getElementById('editCifraAtivo').checked
+            };
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${currentEditingCifra.id}`), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Cifra atualizada com sucesso!', 'success');
+                    closeEditCifraModal();
+                    loadCifras();
+                } else {
+                    showToast(data.message || 'Erro ao atualizar cifra', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao atualizar cifra:', error);
+                showToast('Erro ao atualizar cifra', 'error');
+            }
+        }
+
+        // Toggle cifra status
+        async function toggleCifraStatus(cifraId, activate) {
+            const action = activate ? 'ativar' : 'desativar';
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${cifraId}/toggle-status`), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ ativo: activate })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(`Cifra ${activate ? 'ativada' : 'desativada'} com sucesso!`, 'success');
+                    loadCifras();
+                } else {
+                    showToast(data.message || `Erro ao ${action} cifra`, 'error');
+                }
+                
+            } catch (error) {
+                console.error(`Erro ao ${action} cifra:`, error);
+                showToast(`Erro ao ${action} cifra`, 'error');
+            }
+        }
+
+        // Delete cifra
+        async function deleteCifra() {
+            if (!currentEditingCifra) return;
+            
+            if (!confirm('Tem certeza que deseja DELETAR esta cifra? Esta ação não pode ser desfeita!')) return;
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${currentEditingCifra.id}`), {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Cifra deletada com sucesso!', 'success');
+                    closeEditCifraModal();
+                    loadCifras();
+                } else {
+                    showToast(data.message || 'Erro ao deletar cifra', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao deletar cifra:', error);
+                showToast('Erro ao deletar cifra', 'error');
+            }
+        }
+
+        // View cifra (opens in new tab)
+        function viewCifra(cifraId) {
+            window.open(`cifra.html?id=${cifraId}`, '_blank');
+        }
+
+        // Format category for display
+        function formatCategory(categoria) {
+            const categorias = {
+                'entrada': 'Entrada',
+                'gloria': 'Glória',
+                'salmo': 'Salmo',
+                'aleluia': 'Aleluia',
+                'ofertorio': 'Ofertório',
+                'santo': 'Santo',
+                'comunhao': 'Comunhão',
+                'final': 'Final',
+                'adoracao': 'Adoração',
+                'maria': 'Maria',
+                'natal': 'Natal',
+                'pascoa': 'Páscoa',
+                'outras': 'Outras'
+            };
+            return categorias[categoria] || categoria;
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            return new Date(dateString).toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgColor = {
+                success: 'bg-green-600',
+                error: 'bg-red-600',
+                warning: 'bg-yellow-600',
+                info: 'bg-blue-600'
+            }[type] || 'bg-gray-600';
+            
+            toast.className = `${bgColor} text-white px-4 py-2 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            toast.textContent = message;
+            
+            container.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Remove after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 300);
+            }, 5000);
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            window.location.href = '/inicio';
+        }
+
+        // Placeholder functions
+        function backupSystem() {
+            showToast('Funcionalidade de backup em desenvolvimento', 'info');
+        }
+
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Bulk actions for cifras
+        function updateBulkActionsVisibility() {
+            const checkboxes = document.querySelectorAll('.cifra-checkbox:checked');
+            const bulkActions = document.getElementById('cifrasBulkActions');
+            const countElement = document.getElementById('selectedCifrasCount');
+            
+            selectedCifras.clear();
+            checkboxes.forEach(cb => selectedCifras.add(parseInt(cb.value)));
+            
+            if (selectedCifras.size > 0) {
+                bulkActions.classList.remove('hidden');
+                countElement.textContent = `${selectedCifras.size} cifra${selectedCifras.size > 1 ? 's' : ''} selecionada${selectedCifras.size > 1 ? 's' : ''}`;
+            } else {
+                bulkActions.classList.add('hidden');
+            }
+            
+            // Update select all checkbox
+            const selectAllCheck = document.getElementById('selectAllCifrasCheck');
+            const allCheckboxes = document.querySelectorAll('.cifra-checkbox');
+            if (selectedCifras.size === allCheckboxes.length && allCheckboxes.length > 0) {
+                selectAllCheck.checked = true;
+                selectAllCheck.indeterminate = false;
+            } else if (selectedCifras.size > 0) {
+                selectAllCheck.checked = false;
+                selectAllCheck.indeterminate = true;
+            } else {
+                selectAllCheck.checked = false;
+                selectAllCheck.indeterminate = false;
+            }
+        }
+
+        function toggleAllCifras() {
+            const selectAllCheck = document.getElementById('selectAllCifrasCheck');
+            const checkboxes = document.querySelectorAll('.cifra-checkbox');
+            
+            checkboxes.forEach(cb => {
+                cb.checked = selectAllCheck.checked;
+            });
+            
+            updateBulkActionsVisibility();
+        }
+
+        function selectAllCifras() {
+            document.querySelectorAll('.cifra-checkbox').forEach(cb => cb.checked = true);
+            updateBulkActionsVisibility();
+        }
+
+        function deselectAllCifras() {
+            document.querySelectorAll('.cifra-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('selectAllCifrasCheck').checked = false;
+            updateBulkActionsVisibility();
+        }
+
+        async function bulkToggleCifrasStatus(ativo) {
+            if (selectedCifras.size === 0) {
+                showToast('Nenhuma cifra selecionada', 'warning');
+                return;
+            }
+
+            const action = ativo ? 'ativar' : 'desativar';
+            if (!confirm(`Tem certeza que deseja ${action} ${selectedCifras.size} cifra${selectedCifras.size > 1 ? 's' : ''}?`)) {
+                return;
+            }
+
+            try {
+                const promises = Array.from(selectedCifras).map(cifraId => 
+                    fetch(apiUrl(`/api/master/cifras/${cifraId}/toggle-status`), {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        },
+                        body: JSON.stringify({ ativo })
+                    })
+                );
+
+                const results = await Promise.all(promises);
+                const successCount = results.filter(r => r.ok).length;
+
+                if (successCount === selectedCifras.size) {
+                    showToast(`${successCount} cifras ${ativo ? 'ativadas' : 'desativadas'} com sucesso!`, 'success');
+                } else {
+                    showToast(`${successCount} de ${selectedCifras.size} cifras foram ${ativo ? 'ativadas' : 'desativadas'}`, 'warning');
+                }
+
+                deselectAllCifras();
+                loadCifras();
+            } catch (error) {
+                console.error('Erro ao alterar status das cifras:', error);
+                showToast('Erro ao alterar status das cifras', 'error');
+            }
+        }
+
+        async function bulkDeleteCifras() {
+            if (selectedCifras.size === 0) {
+                showToast('Nenhuma cifra selecionada', 'warning');
+                return;
+            }
+
+            if (!confirm(`⚠️ ATENÇÃO: Esta ação irá excluir permanentemente ${selectedCifras.size} cifra${selectedCifras.size > 1 ? 's' : ''}.\n\nEsta ação NÃO pode ser desfeita!\n\nDeseja continuar?`)) {
+                return;
+            }
+
+            // Confirmação dupla para segurança
+            if (!confirm('Confirma a exclusão? Digite "CONFIRMAR" para prosseguir:')) {
+                return;
+            }
+
+            try {
+                const promises = Array.from(selectedCifras).map(cifraId => 
+                    fetch(apiUrl(`/api/master/cifras/${cifraId}`), {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                        }
+                    })
+                );
+
+                const results = await Promise.all(promises);
+                const successCount = results.filter(r => r.ok).length;
+
+                if (successCount === selectedCifras.size) {
+                    showToast(`${successCount} cifras excluídas com sucesso!`, 'success');
+                } else {
+                    showToast(`${successCount} de ${selectedCifras.size} cifras foram excluídas`, 'warning');
+                }
+
+                deselectAllCifras();
+                loadCifras();
+            } catch (error) {
+                console.error('Erro ao excluir cifras:', error);
+                showToast('Erro ao excluir cifras', 'error');
+            }
+        }
+
+        // Users management functions
+        async function promoteUser(userId) {
+            if (!confirm('Tem certeza que deseja promover este usuário a administrador?')) return;
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}/promote`), {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Usuário promovido com sucesso!', 'success');
+                    loadUsers();
+                } else {
+                    showToast(data.message || 'Erro ao promover usuário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao promover usuário:', error);
+                showToast('Erro ao promover usuário', 'error');
+            }
+        }
+
+        async function toggleUserStatus(userId, ativo) {
+            const action = ativo ? 'reativar' : 'banir';
+            if (!confirm(`Tem certeza que deseja ${action} este usuário?`)) return;
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}/toggle-status`), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ ativo })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(data.message || `Usuário ${ativo ? 'reativado' : 'banido'} com sucesso!`, 'success');
+                    loadUsers();
+                } else {
+                    showToast(data.message || `Erro ao ${action} usuário`, 'error');
+                }
+            } catch (error) {
+                console.error(`Erro ao ${action} usuário:`, error);
+                showToast(`Erro ao ${action} usuário`, 'error');
+            }
+        }
+
+        async function deleteUser(userId) {
+            if (!confirm('⚠️ ATENÇÃO: Esta ação irá excluir permanentemente este usuário e todos os dados associados (cifras, repertórios, etc.).\n\nEsta ação NÃO pode ser desfeita!\n\nDeseja continuar?')) {
+                return;
+            }
+            
+            // Confirmação dupla para segurança
+            if (!confirm('Confirma a exclusão permanente? Esta ação é IRREVERSÍVEL!')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}`), {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Usuário excluído com sucesso!', 'success');
+                    loadUsers();
+                } else {
+                    showToast(data.message || 'Erro ao excluir usuário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir usuário:', error);
+                showToast('Erro ao excluir usuário', 'error');
+            }
+        }
+
+        async function editUser(userId) {
+            try {
+                const response = await fetch(apiUrl(`/api/master/users/${userId}`), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Implementar modal de edição de usuário aqui se necessário
+                    showToast('Funcionalidade de edição em desenvolvimento', 'info');
+                } else {
+                    showToast(data.message || 'Erro ao carregar usuário', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar usuário para edição:', error);
+                showToast('Erro ao carregar usuário', 'error');
+            }
+        }
+
+        function filterUsers() {
+            const searchTerm = document.getElementById('userSearch')?.value?.toLowerCase() || '';
+            const roleFilter = document.getElementById('userRoleFilter')?.value || '';
+            const statusFilter = document.getElementById('userStatusFilter')?.value || '';
+            
+            const filteredUsers = allUsers.filter(user => {
+                const matchesSearch = !searchTerm || 
+                    user.nome.toLowerCase().includes(searchTerm) ||
+                    user.email.toLowerCase().includes(searchTerm);
+                
+                const matchesRole = !roleFilter || user.role === roleFilter;
+                
+                const matchesStatus = !statusFilter || 
+                    (statusFilter === 'true' && user.ativo) ||
+                    (statusFilter === 'false' && !user.ativo);
+                
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+            
+            renderUsers(filteredUsers);
+        }
+
+        function refreshUsers() {
+            loadUsers();
+        }
+
+        function showAddUserModal() {
+            showToast('Funcionalidade de adicionar usuário em desenvolvimento', 'info');
+        }
+
+        // ===== FUNÇÕES PARA ANÁLISE DE CIFRAS =====
+
+        let cifrasParaAnalise = [];
+        let cifraAtualAnalise = null;
+
+        // Carregar cifras para análise
+        async function loadCifrasAnalise() {
+            try {
+                document.getElementById('cifrasAnaliseLoading').classList.remove('hidden');
+                document.getElementById('cifrasAnaliseList').classList.add('hidden');
+                document.getElementById('cifrasAnaliseEmpty').classList.add('hidden');
+
+                const response = await fetch(apiUrl('/api/master/cifras-para-analise'), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    cifrasParaAnalise = data.cifras;
+                    renderCifrasAnalise();
+                    loadCifrasAnaliseStats();
+                } else {
+                    showToast('Erro ao carregar cifras para análise', 'error');
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar cifras para análise:', error);
+                showToast('Erro ao carregar cifras para análise', 'error');
+            } finally {
+                document.getElementById('cifrasAnaliseLoading').classList.add('hidden');
+            }
+        }
+
+        // Carregar estatísticas de análise
+        async function loadCifrasAnaliseStats() {
+            try {
+                const response = await fetch(apiUrl('/api/master/cifras-analise-stats'), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('cifrasPendentesCount').textContent = stats.pendentes;
+                    document.getElementById('cifrasAprovadasCount').textContent = stats.aprovadas;
+                    document.getElementById('cifrasRejeitadasCount').textContent = stats.rejeitadas;
+                    document.getElementById('cifrasAtrasadasCount').textContent = stats.pendentesMuitoTempo;
+
+                    // Atualizar badge no menu
+                    const badge = document.getElementById('cifras-pendentes-badge');
+                    if (stats.pendentes > 0) {
+                        badge.textContent = stats.pendentes;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Renderizar cifras para análise
+        function renderCifrasAnalise() {
+            const tbody = document.getElementById('cifrasAnaliseTableBody');
+            const emptyState = document.getElementById('cifrasAnaliseEmpty');
+            const listContainer = document.getElementById('cifrasAnaliseList');
+
+            if (cifrasParaAnalise.length === 0) {
+                listContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            listContainer.classList.remove('hidden');
+
+            tbody.innerHTML = cifrasParaAnalise.map(cifra => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div>
+                            <div class="text-sm font-medium text-gray-900">${cifra.titulo}</div>
+                            <div class="text-sm text-gray-500">${cifra.artista}</div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getCategoryBadgeColor(cifra.categoria)}">
+                            ${formatCategory(cifra.categoria)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        ${cifra.tom}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${cifra.usuario?.nome || 'Usuário removido'}</div>
+                        <div class="text-sm text-gray-500">${cifra.usuario?.email || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${new Date(cifra.data_submissao).toLocaleDateString('pt-BR')}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm ${cifra.dias_aguardando > 7 ? 'text-red-600 font-medium' : 'text-gray-500'}">
+                            ${cifra.dias_aguardando} dia${cifra.dias_aguardando !== 1 ? 's' : ''}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button onclick="visualizarCifraAnalise(${cifra.id})" 
+                                class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-eye mr-1"></i>Analisar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Visualizar cifra para análise
+        async function visualizarCifraAnalise(cifraId) {
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${cifraId}`), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    cifraAtualAnalise = data.cifra;
+                    preencherModalVisualizacao(data.cifra);
+                    document.getElementById('visualizarCifraAnaliseModal').classList.remove('hidden');
+                } else {
+                    showToast('Erro ao carregar cifra', 'error');
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar cifra:', error);
+                showToast('Erro ao carregar cifra', 'error');
+            }
+        }
+
+        // Preencher modal de visualização
+        function preencherModalVisualizacao(cifra) {
+            document.getElementById('visualizarCifraTitulo').textContent = cifra.titulo;
+            document.getElementById('visualizarCifraArtista').textContent = cifra.artista;
+            document.getElementById('visualizarCifraTom').textContent = cifra.tom;
+            document.getElementById('visualizarCifraCategoria').textContent = formatCategory(cifra.categoria);
+            document.getElementById('visualizarCifraUsuario').textContent = cifra.usuario?.nome || 'Usuário removido';
+            document.getElementById('visualizarCifraDataEnvio').textContent = new Date(cifra.data_submissao).toLocaleDateString('pt-BR');
+            
+            const diasAguardando = Math.floor((new Date() - new Date(cifra.data_submissao)) / (1000 * 60 * 60 * 24));
+            document.getElementById('visualizarCifraAguardando').textContent = `${diasAguardando} dia${diasAguardando !== 1 ? 's' : ''}`;
+            
+            document.getElementById('visualizarCifraLetra').textContent = cifra.letra;
+        }
+
+        // Abrir modal de aprovação
+        function abrirModalAprovar() {
+            if (!cifraAtualAnalise) return;
+            
+            document.getElementById('aprovarCifraInfo').innerHTML = `
+                <div class="text-sm">
+                    <div class="font-medium">${cifraAtualAnalise.titulo}</div>
+                    <div class="text-gray-600">${cifraAtualAnalise.artista}</div>
+                    <div class="text-gray-500 mt-1">Enviado por: ${cifraAtualAnalise.usuario?.nome || 'Usuário removido'}</div>
+                </div>
+            `;
+            
+            document.getElementById('aprovarCifraObservacoes').value = '';
+            document.getElementById('visualizarCifraAnaliseModal').classList.add('hidden');
+            document.getElementById('aprovarCifraModal').classList.remove('hidden');
+        }
+
+        // Abrir modal de rejeição
+        function abrirModalRejeitar() {
+            if (!cifraAtualAnalise) return;
+            
+            document.getElementById('rejeitarCifraInfo').innerHTML = `
+                <div class="text-sm">
+                    <div class="font-medium">${cifraAtualAnalise.titulo}</div>
+                    <div class="text-gray-600">${cifraAtualAnalise.artista}</div>
+                    <div class="text-gray-500 mt-1">Enviado por: ${cifraAtualAnalise.usuario?.nome || 'Usuário removido'}</div>
+                </div>
+            `;
+            
+            document.getElementById('rejeitarCifraObservacoes').value = '';
+            document.getElementById('visualizarCifraAnaliseModal').classList.add('hidden');
+            document.getElementById('rejeitarCifraModal').classList.remove('hidden');
+        }
+
+        // Confirmar aprovação
+        async function confirmarAprovacao() {
+            if (!cifraAtualAnalise) return;
+            
+            const observacoes = document.getElementById('aprovarCifraObservacoes').value.trim();
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${cifraAtualAnalise.id}/aprovar`), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ observacoes })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Cifra aprovada com sucesso!', 'success');
+                    closeAprovarCifraModal();
+                    refreshCifrasAnalise();
+                } else {
+                    showToast(data.message || 'Erro ao aprovar cifra', 'error');
+                }
+
+            } catch (error) {
+                console.error('Erro ao aprovar cifra:', error);
+                showToast('Erro ao aprovar cifra', 'error');
+            }
+        }
+
+        // Confirmar rejeição
+        async function confirmarRejeicao() {
+            if (!cifraAtualAnalise) return;
+            
+            const observacoes = document.getElementById('rejeitarCifraObservacoes').value.trim();
+            
+            if (!observacoes) {
+                showToast('Por favor, informe o motivo da rejeição', 'warning');
+                return;
+            }
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/cifras/${cifraAtualAnalise.id}/rejeitar`), {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: JSON.stringify({ observacoes })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showToast('Cifra rejeitada. O usuário foi notificado.', 'success');
+                    closeRejeitarCifraModal();
+                    refreshCifrasAnalise();
+                } else {
+                    showToast(data.message || 'Erro ao rejeitar cifra', 'error');
+                }
+
+            } catch (error) {
+                console.error('Erro ao rejeitar cifra:', error);
+                showToast('Erro ao rejeitar cifra', 'error');
+            }
+        }
+
+        // Fechar modais
+        function closeVisualizarCifraAnaliseModal() {
+            document.getElementById('visualizarCifraAnaliseModal').classList.add('hidden');
+            cifraAtualAnalise = null;
+        }
+
+        function closeAprovarCifraModal() {
+            document.getElementById('aprovarCifraModal').classList.add('hidden');
+        }
+
+        function closeRejeitarCifraModal() {
+            document.getElementById('rejeitarCifraModal').classList.add('hidden');
+        }
+
+        // Atualizar cifras para análise
+        function refreshCifrasAnalise() {
+            loadCifrasAnalise();
+        }
+
+        // Função auxiliar para cores de categoria
+        function getCategoryBadgeColor(categoria) {
+            const colors = {
+                'entrada': 'bg-blue-100 text-blue-800',
+                'gloria': 'bg-yellow-100 text-yellow-800',
+                'salmo': 'bg-green-100 text-green-800',
+                'aleluia': 'bg-purple-100 text-purple-800',
+                'ofertorio': 'bg-orange-100 text-orange-800',
+                'santo': 'bg-red-100 text-red-800',
+                'comunhao': 'bg-pink-100 text-pink-800',
+                'final': 'bg-indigo-100 text-indigo-800',
+                'adoracao': 'bg-rose-100 text-rose-800',
+                'maria': 'bg-sky-100 text-sky-800',
+                'natal': 'bg-emerald-100 text-emerald-800',
+                'pascoa': 'bg-amber-100 text-amber-800',
+                'outras': 'bg-gray-100 text-gray-800'
+            };
+            return colors[categoria] || colors['outras'];
+        }
+
+        // Modificar a função showSection para incluir cifras-analise
+        const originalShowSection = showSection;
+        showSection = function(section) {
+            originalShowSection(section);
+            
+            // Carregar dados específicos da seção
+            if (section === 'cifras-analise') {
+                loadCifrasAnalise();
+            }
+        };
+
+        // Carregar estatísticas na inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... código existente ...
+            loadCifrasAnaliseStats(); // Adicionar esta linha
+        });
+        // ==========================================
+        // CONTENT MANAGEMENT FUNCTIONS
+        // ==========================================
+
+        // Global variables for content
+        let allContents = [];
+        let currentEditingContent = null;
+
+        // Load content data when section is shown
+        function loadContentSection() {
+            if (currentSection === 'content') {
+                loadContent();
+                loadContentStats();
+            }
+        }
+
+        // Load content stats
+        async function loadContentStats() {
+            try {
+                const response = await fetch(apiUrl('/api/master/content-stats'), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('totalContentCount').textContent = stats.total;
+                    document.getElementById('activeContentCount').textContent = stats.active;
+                    document.getElementById('inactiveContentCount').textContent = stats.inactive;
+                    document.getElementById('recentContentCount').textContent = stats.recent;
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas de conteúdo:', error);
+            }
+        }
+
+        // Load content list
+        async function loadContent() {
+            try {
+                document.getElementById('contentLoading').classList.remove('hidden');
+                document.getElementById('contentList').classList.add('hidden');
+                document.getElementById('contentEmpty').classList.add('hidden');
+
+                const tipo = document.getElementById('contentTypeFilter')?.value || '';
+                const ativo = document.getElementById('contentStatusFilter')?.value || '';
+
+                const params = new URLSearchParams();
+                if (tipo) params.append('tipo', tipo);
+                if (ativo) params.append('ativo', ativo);
+
+                const response = await fetch(apiUrl(`/api/master/content?${params.toString()}`), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    allContents = data.contents || [];
+                    renderContent(allContents);
+                } else {
+                    showToast('Erro ao carregar conteúdos', 'error');
+                }
+
+            } catch (error) {
+                console.error('Erro ao carregar conteúdos:', error);
+                showToast('Erro ao carregar conteúdos', 'error');
+            } finally {
+                document.getElementById('contentLoading').classList.add('hidden');
+            }
+        }
+
+        // Render content table
+        function renderContent(contents) {
+            const tbody = document.getElementById('contentTableBody');
+            const emptyState = document.getElementById('contentEmpty');
+            const listContainer = document.getElementById('contentList');
+
+            if (contents.length === 0) {
+                listContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            listContainer.classList.remove('hidden');
+
+            tbody.innerHTML = contents.map(content => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            ${content.url_imagem_completa ? 
+                                `<img src="${content.url_imagem_completa}" alt="Imagem do conteúdo ${content.titulo}" class="w-10 h-10 object-cover rounded mr-3">` : 
+                                `<div class="w-10 h-10 bg-gray-200 rounded mr-3 flex items-center justify-center">
+                                    <i class="fas fa-file-alt text-gray-400"></i>
+                                </div>`
+                            }
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">${content.titulo}</div>
+                                <div class="text-sm text-gray-500">${content.chave}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getContentTypeBadgeColor(content.tipo)}">
+                            ${formatContentType(content.tipo)}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                        ${content.chave}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${content.is_ativo_agora ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                            ${content.is_ativo_agora ? 'Ativo' : 'Inativo'}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${content.criador?.nome || 'Sistema'}</div>
+                        <div class="text-sm text-gray-500">${content.criador?.email || ''}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${formatDate(content.createdAt)}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                        <button onclick="editContent(${content.id})" 
+                                class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-edit mr-1"></i>Editar
+                        </button>
+                        <button onclick="toggleContentStatus(${content.id})" 
+                                class="text-${content.ativo ? 'red' : 'green'}-600 hover:text-${content.ativo ? 'red' : 'green'}-900">
+                            <i class="fas fa-${content.ativo ? 'eye-slash' : 'eye'} mr-1"></i>${content.ativo ? 'Desativar' : 'Ativar'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Format content type
+        function formatContentType(tipo) {
+            const types = {
+                'pagina': 'Página',
+                'banner': 'Banner',
+                'texto': 'Texto',
+                'imagem': 'Imagem',
+                'carrossel': 'Carrossel'
+            };
+            return types[tipo] || tipo;
+        }
+
+        // Get content type badge color
+        function getContentTypeBadgeColor(tipo) {
+            const colors = {
+                'pagina': 'bg-blue-100 text-blue-800',
+                'banner': 'bg-purple-100 text-purple-800',
+                'texto': 'bg-gray-100 text-gray-800',
+                'imagem': 'bg-green-100 text-green-800',
+                'carrossel': 'bg-yellow-100 text-yellow-800'
+            };
+            return colors[tipo] || 'bg-gray-100 text-gray-800';
+        }
+
+        // Show add content modal
+        function showAddContentModal() {
+            document.getElementById('addContentForm').reset();
+            document.getElementById('addContentTipo').value = '';
+            document.getElementById('addContentAtivo').checked = true;
+            removeImagePreview('add');
+            updateContentFields();
+            document.getElementById('addContentModal').classList.remove('hidden');
+        }
+
+        // Close add content modal
+        function closeAddContentModal() {
+            document.getElementById('addContentModal').classList.add('hidden');
+        }
+
+        // Update content fields based on type
+        function updateContentFields() {
+            const tipo = document.getElementById('addContentTipo').value;
+            const urlLinkDiv = document.getElementById('addContentUrlLinkDiv');
+            
+            if (tipo === 'banner' || tipo === 'carrossel') {
+                urlLinkDiv.classList.remove('hidden');
+            } else {
+                urlLinkDiv.classList.add('hidden');
+            }
+        }
+
+        // Update edit content fields based on type
+        function updateEditContentFields() {
+            const tipo = document.getElementById('editContentTipo').value;
+            const urlLinkDiv = document.getElementById('editContentUrlLinkDiv');
+            
+            if (tipo === 'banner' || tipo === 'carrossel') {
+                urlLinkDiv.classList.remove('hidden');
+            } else {
+                urlLinkDiv.classList.add('hidden');
+            }
+        }
+
+        // Preview image
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.getElementById(previewId);
+                    const previewImg = document.getElementById(previewId + 'Img');
+                    const uploadDiv = document.getElementById(previewId.replace('Preview', 'Upload'));
+                    
+                    previewImg.src = e.target.result;
+                    previewDiv.classList.remove('hidden');
+                    uploadDiv.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Remove image preview
+        function removeImagePreview(mode) {
+            const previewDiv = document.getElementById(mode + 'ImagePreview');
+            const uploadDiv = document.getElementById(mode + 'ImageUpload');
+            const input = document.getElementById(mode + 'ContentImagem');
+            
+            previewDiv.classList.add('hidden');
+            uploadDiv.classList.remove('hidden');
+            input.value = '';
+        }
+
+        // Handle add content form
+        document.getElementById('addContentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('tipo', document.getElementById('addContentTipo').value);
+            formData.append('chave', document.getElementById('addContentChave').value);
+            formData.append('titulo', document.getElementById('addContentTitulo').value);
+            formData.append('conteudo', document.getElementById('addContentConteudo').value);
+            formData.append('url_link', document.getElementById('addContentUrlLink').value);
+            formData.append('ordem', document.getElementById('addContentOrdem').value);
+            formData.append('ativo', document.getElementById('addContentAtivo').checked);
+            formData.append('data_inicio', document.getElementById('addContentDataInicio').value);
+            formData.append('data_fim', document.getElementById('addContentDataFim').value);
+            formData.append('metadados', document.getElementById('addContentMetadados').value);
+            
+            const imageFile = document.getElementById('addContentImagem').files[0];
+            if (imageFile) {
+                formData.append('imagem', imageFile);
+            }
+            
+            try {
+                const response = await fetch(apiUrl('/api/master/content'), {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Conteúdo criado com sucesso!', 'success');
+                    closeAddContentModal();
+                    loadContent();
+                    loadContentStats();
+                } else {
+                    showToast(data.message || 'Erro ao criar conteúdo', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao criar conteúdo:', error);
+                showToast('Erro ao criar conteúdo', 'error');
+            }
+        });
+
+        // Edit content
+        async function editContent(contentId) {
+            try {
+                const response = await fetch(apiUrl(`/api/master/content/${contentId}`), {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentEditingContent = data.content;
+                    fillEditContentForm(data.content);
+                    document.getElementById('editContentModal').classList.remove('hidden');
+                } else {
+                    showToast(data.message || 'Erro ao carregar conteúdo', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao carregar conteúdo:', error);
+                showToast('Erro ao carregar conteúdo', 'error');
+            }
+        }
+
+        // Fill edit content form
+        function fillEditContentForm(content) {
+            document.getElementById('editContentTipo').value = content.tipo;
+            document.getElementById('editContentChave').value = content.chave;
+            document.getElementById('editContentTitulo').value = content.titulo;
+            document.getElementById('editContentConteudo').value = content.conteudo || '';
+            document.getElementById('editContentUrlLink').value = content.url_link || '';
+            document.getElementById('editContentOrdem').value = content.ordem;
+            document.getElementById('editContentAtivo').checked = content.ativo;
+            document.getElementById('editContentDataInicio').value = content.data_inicio ? new Date(content.data_inicio).toISOString().slice(0, 16) : '';
+            document.getElementById('editContentDataFim').value = content.data_fim ? new Date(content.data_fim).toISOString().slice(0, 16) : '';
+            document.getElementById('editContentMetadados').value = content.metadados ? JSON.stringify(content.metadados, null, 2) : '';
+            
+            // Show existing image if any
+            if (content.url_imagem_completa) {
+                const previewDiv = document.getElementById('editImagePreview');
+                const previewImg = document.getElementById('editImagePreviewImg');
+                const uploadDiv = document.getElementById('editImageUpload');
+                
+                previewImg.src = content.url_imagem_completa;
+                previewDiv.classList.remove('hidden');
+                uploadDiv.classList.add('hidden');
+            } else {
+                removeImagePreview('edit');
+            }
+            
+            // Update creator info
+            document.getElementById('editContentCriador').textContent = 
+                `Criado por: ${content.criador?.nome || 'Sistema'} em ${formatDate(content.createdAt)}`;
+            
+            updateEditContentFields();
+        }
+
+        // Close edit content modal
+        function closeEditContentModal() {
+            document.getElementById('editContentModal').classList.add('hidden');
+            currentEditingContent = null;
+        }
+
+        // Handle edit content form
+        document.getElementById('editContentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (!currentEditingContent) return;
+            
+            const formData = new FormData();
+            formData.append('tipo', document.getElementById('editContentTipo').value);
+            formData.append('chave', document.getElementById('editContentChave').value);
+            formData.append('titulo', document.getElementById('editContentTitulo').value);
+            formData.append('conteudo', document.getElementById('editContentConteudo').value);
+            formData.append('url_link', document.getElementById('editContentUrlLink').value);
+            formData.append('ordem', document.getElementById('editContentOrdem').value);
+            formData.append('ativo', document.getElementById('editContentAtivo').checked);
+            formData.append('data_inicio', document.getElementById('editContentDataInicio').value);
+            formData.append('data_fim', document.getElementById('editContentDataFim').value);
+            formData.append('metadados', document.getElementById('editContentMetadados').value);
+            
+            const imageFile = document.getElementById('editContentImagem').files[0];
+            if (imageFile) {
+                formData.append('imagem', imageFile);
+            }
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/content/${currentEditingContent.id}`), {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Conteúdo atualizado com sucesso!', 'success');
+                    closeEditContentModal();
+                    loadContent();
+                    loadContentStats();
+                } else {
+                    showToast(data.message || 'Erro ao atualizar conteúdo', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao atualizar conteúdo:', error);
+                showToast('Erro ao atualizar conteúdo', 'error');
+            }
+        });
+
+        // Toggle content status
+        async function toggleContentStatus(contentId) {
+            try {
+                const response = await fetch(apiUrl(`/api/master/content/${contentId}/toggle-status`), {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(data.message, 'success');
+                    loadContent();
+                    loadContentStats();
+                } else {
+                    showToast(data.message || 'Erro ao alterar status', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao alterar status:', error);
+                showToast('Erro ao alterar status', 'error');
+            }
+        }
+
+        // Delete content
+        async function deleteContent() {
+            if (!currentEditingContent) return;
+            
+            if (!confirm('Tem certeza que deseja excluir este conteúdo? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(apiUrl(`/api/master/content/${currentEditingContent.id}`), {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast('Conteúdo excluído com sucesso!', 'success');
+                    closeEditContentModal();
+                    loadContent();
+                    loadContentStats();
+                } else {
+                    showToast(data.message || 'Erro ao excluir conteúdo', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir conteúdo:', error);
+                showToast('Erro ao excluir conteúdo', 'error');
+            }
+        }
+
+        // Refresh content
+        function refreshContent() {
+            loadContent();
+            loadContentStats();
+        }
+
+        // Setup content filters
+        document.getElementById('contentSearch')?.addEventListener('input', debounce(filterContent, 500));
+        document.getElementById('contentTypeFilter')?.addEventListener('change', loadContent);
+        document.getElementById('contentStatusFilter')?.addEventListener('change', loadContent);
+
+        // Filter content
+        function filterContent() {
+            const searchTerm = document.getElementById('contentSearch')?.value?.toLowerCase() || '';
+            
+            if (!searchTerm) {
+                renderContent(allContents);
+                return;
+            }
+            
+            const filteredContents = allContents.filter(content => {
+                return content.titulo.toLowerCase().includes(searchTerm) ||
+                       content.chave.toLowerCase().includes(searchTerm) ||
+                       (content.conteudo && content.conteudo.toLowerCase().includes(searchTerm));
+            });
+            
+            renderContent(filteredContents);
+        }
+
+        // Update section navigation to load content when needed
+        if (typeof originalShowSection === 'undefined') {
+            const originalShowSection = showSection;
+            showSection = function(sectionName) {
+                originalShowSection(sectionName);
+                if (sectionName === 'content') {
+                    loadContentSection();
+                }
+            };
+        }
+
+    </script>
+</body>
+</html>

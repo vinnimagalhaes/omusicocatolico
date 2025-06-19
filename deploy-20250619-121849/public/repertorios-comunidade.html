@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Performance & SEO Scripts -->
+    <script src="/js/performance.js" defer></script>
+    <script src="/js/seo.js" defer></script>
+    <title>Repertórios da Comunidade - OMúsicoCatólico</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .repertorio-card {
+            transition: all 0.3s ease;
+        }
+
+        .repertorio-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .repertorio-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+
+    <!-- Navegação Principal Unificada -->
+    <nav class="main-navigation" id="mainNavigation">
+        <div class="nav-container">
+            <!-- Desktop Navigation -->
+            <div class="nav-desktop">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/inicio" data-nav="inicio" class="nav-link">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item nav-dropdown">
+                        <div class="nav-link nav-dropdown-toggle active">
+                            <i class="fas fa-list nav-icon"></i>
+                            Repertórios
+                            <i class="fas fa-chevron-down nav-dropdown-icon"></i>
+                        </div>
+                        <div class="nav-dropdown-menu">
+                            <a href="/repertorios" data-nav="repertorios" class="nav-dropdown-item">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-dropdown-item active">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/favoritas" data-nav="favoritas" class="nav-link">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-link">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/categorias" data-nav="categorias" class="nav-link">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div class="nav-mobile">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                <button class="nav-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars nav-toggle-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="nav-mobile-menu">
+            <div class="nav-mobile-content">
+                <div class="nav-mobile-header">
+                    <span class="nav-brand">OMúsicoCatólico</span>
+                    <button class="nav-mobile-close" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <ul class="nav-mobile-list">
+                    <li class="nav-mobile-item">
+                        <a href="/inicio" data-nav="inicio" class="nav-mobile-link">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-dropdown">
+                        <button class="nav-mobile-dropdown-toggle active">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-list nav-icon"></i>
+                                Repertórios
+                            </div>
+                            <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
+                        </button>
+                        <div class="nav-mobile-dropdown-menu">
+                            <a href="/repertorios" data-nav="repertorios" class="nav-mobile-dropdown-item">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-mobile-dropdown-item active">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/favoritas" data-nav="favoritas" class="nav-mobile-link">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-mobile-link">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/categorias" data-nav="categorias" class="nav-mobile-link">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header da página -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+                            <i class="fas fa-users text-green-600 mr-3"></i>
+                            Repertórios da Comunidade
+                        </h1>
+                        <p class="text-gray-600 mt-2">Descubra e explore repertórios compartilhados pela comunidade católica</p>
+                    </div>
+                    
+                    <!-- Filtros -->
+                    <div class="flex items-center space-x-4">
+                        <select id="sortFilter" class="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="recent">Mais Recentes</option>
+                            <option value="popular">Mais Populares</option>
+                            <option value="name">Nome A-Z</option>
+                            <option value="cifras">Mais Cifras</option>
+                        </select>
+                        
+                        <button onclick="refreshRepertoires()" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatísticas rápidas -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-green-100 rounded-lg">
+                            <i class="fas fa-users text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Total de Repertórios</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalRepertoires">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-blue-100 rounded-lg">
+                            <i class="fas fa-music text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Cifras Compartilhadas</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalCifras">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-purple-100 rounded-lg">
+                            <i class="fas fa-eye text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Visualizações</p>
+                            <p class="text-2xl font-bold text-gray-900" id="totalViews">-</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 bg-yellow-100 rounded-lg">
+                            <i class="fas fa-star text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-600">Mais Popular</p>
+                            <p class="text-sm font-bold text-gray-900" id="mostPopular">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Repertórios -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-900">Todos os Repertórios</h2>
+                        <span class="text-sm text-gray-500" id="repertoiresCount">Carregando...</span>
+                    </div>
+                    
+                    <!-- Loading State -->
+                    <div id="loadingState" class="space-y-4">
+                        <div class="loading-shimmer h-20 rounded-lg"></div>
+                        <div class="loading-shimmer h-20 rounded-lg"></div>
+                        <div class="loading-shimmer h-20 rounded-lg"></div>
+                    </div>
+                    
+                    <!-- Repertórios Grid -->
+                    <div id="repertoriesGrid" class="hidden space-y-4">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                    
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden text-center py-12">
+                        <i class="fas fa-folder-open text-gray-300 text-5xl mb-4"></i>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhum repertório encontrado</h3>
+                        <p class="text-gray-500">Ainda não há repertórios públicos na comunidade.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/config.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
+    <script>
+        let allRepertoires = [];
+        let filteredRepertoires = [];
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            loadCommunityRepertoires();
+            setupEventListeners();
+            checkMasterAccess();
+        });
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Busca
+            document.getElementById('searchInput').addEventListener('input', handleSearch);
+            
+            // Filtro de ordenação
+            document.getElementById('sortFilter').addEventListener('change', handleSort);
+        }
+
+        // Carregar repertórios da comunidade
+        async function loadCommunityRepertoires() {
+            try {
+                showLoading();
+                
+                const response = await fetch(apiUrl('/api/repertorios/publicos'));
+                const data = await response.json();
+                
+                if (data.success) {
+                    allRepertoires = data.repertorios || [];
+                    filteredRepertoires = [...allRepertoires];
+                    updateStatistics();
+                    renderRepertoires();
+                } else {
+                    showError('Erro ao carregar repertórios: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar repertórios da comunidade:', error);
+                showError('Erro ao conectar com o servidor');
+            }
+        }
+
+        // Mostrar estado de carregamento
+        function showLoading() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('repertoriesGrid').classList.add('hidden');
+            document.getElementById('emptyState').classList.add('hidden');
+        }
+
+        // Renderizar repertórios
+        function renderRepertoires() {
+            const grid = document.getElementById('repertoriesGrid');
+            const loading = document.getElementById('loadingState');
+            const empty = document.getElementById('emptyState');
+            
+            loading.classList.add('hidden');
+            
+            if (filteredRepertoires.length === 0) {
+                grid.classList.add('hidden');
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            grid.classList.remove('hidden');
+            
+            grid.innerHTML = filteredRepertoires.map(repertorio => `
+                <div class="repertorio-card bg-white border border-gray-200 rounded-lg p-6 hover:border-green-300 transition-all cursor-pointer" onclick="viewRepertoire(${repertorio.id})">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3 mb-3">
+                                <h3 class="text-lg font-semibold text-gray-900">${repertorio.nome}</h3>
+                                <span class="repertorio-tag bg-green-100 text-green-700">Público</span>
+                            </div>
+                            
+                            <p class="text-gray-600 mb-4 line-clamp-2">${repertorio.descricao || 'Repertório compartilhado pela comunidade'}</p>
+                            
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4 text-sm text-gray-500">
+                                    <span><i class="fas fa-music mr-1"></i>${repertorio.cifra_count || 0} cifras</span>
+                                    <span><i class="fas fa-user mr-1"></i>${repertorio.usuario?.nome || 'Anônimo'}</span>
+                                    <span><i class="fas fa-calendar mr-1"></i>${formatDate(repertorio.createdAt)}</span>
+                                </div>
+                                
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="event.stopPropagation(); copyRepertoire(${repertorio.id})" class="p-2 text-gray-400 hover:text-blue-600 rounded-lg transition-colors" title="Copiar para meus repertórios">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                    <button onclick="event.stopPropagation(); shareRepertoire(${repertorio.id})" class="p-2 text-gray-400 hover:text-green-600 rounded-lg transition-colors" title="Compartilhar">
+                                        <i class="fas fa-share-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Atualizar contador
+            document.getElementById('repertoiresCount').textContent = `${filteredRepertoires.length} repertório(s) encontrado(s)`;
+        }
+
+        // Atualizar estatísticas
+        function updateStatistics() {
+            const totalRepertoires = allRepertoires.length;
+            const totalCifras = allRepertoires.reduce((sum, rep) => sum + (rep.cifra_count || 0), 0);
+            const totalViews = allRepertoires.reduce((sum, rep) => sum + (rep.views || 0), 0);
+            const mostPopular = allRepertoires.length > 0 ? 
+                allRepertoires.reduce((prev, current) => (prev.cifra_count > current.cifra_count) ? prev : current).nome : 
+                'Nenhum';
+            
+            document.getElementById('totalRepertoires').textContent = totalRepertoires;
+            document.getElementById('totalCifras').textContent = totalCifras;
+            document.getElementById('totalViews').textContent = totalViews.toLocaleString();
+            document.getElementById('mostPopular').textContent = mostPopular;
+        }
+
+        // Buscar repertórios
+        function handleSearch(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            
+            if (searchTerm === '') {
+                filteredRepertoires = [...allRepertoires];
+            } else {
+                filteredRepertoires = allRepertoires.filter(repertorio => 
+                    repertorio.nome.toLowerCase().includes(searchTerm) ||
+                    (repertorio.descricao && repertorio.descricao.toLowerCase().includes(searchTerm)) ||
+                    (repertorio.usuario && repertorio.usuario.nome.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            renderRepertoires();
+        }
+
+        // Ordenar repertórios
+        function handleSort() {
+            const sortType = document.getElementById('sortFilter').value;
+            
+            switch (sortType) {
+                case 'recent':
+                    filteredRepertoires.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'popular':
+                    filteredRepertoires.sort((a, b) => (b.cifra_count || 0) - (a.cifra_count || 0));
+                    break;
+                case 'name':
+                    filteredRepertoires.sort((a, b) => a.nome.localeCompare(b.nome));
+                    break;
+                case 'cifras':
+                    filteredRepertoires.sort((a, b) => (b.cifra_count || 0) - (a.cifra_count || 0));
+                    break;
+            }
+            
+            renderRepertoires();
+        }
+
+        // Atualizar repertórios
+        function refreshRepertoires() {
+            loadCommunityRepertoires();
+            showToast('Repertórios atualizados!', 'success');
+        }
+
+        // Visualizar repertório
+        function viewRepertoire(id) {
+            window.location.href = `repertorio.html?id=${id}&community=true`;
+        }
+
+        // Copiar repertório
+        async function copyRepertoire(id) {
+            // TODO: Implementar cópia de repertório
+            showToast('Funcionalidade de cópia será implementada em breve!', 'info');
+        }
+
+        // Compartilhar repertório
+        function shareRepertoire(id) {
+            const url = `${window.location.origin}/repertorio.html?id=${id}&community=true`;
+            navigator.clipboard.writeText(url).then(() => {
+                showToast('Link copiado para a área de transferência!', 'success');
+            });
+        }
+
+        // Formatar data
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR');
+        }
+
+        // Mostrar erro
+        function showError(message) {
+            showToast(message, 'error');
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+
+        // Toast notification (implementação básica)
+        function showToast(message, type = 'info') {
+            // Implementação básica do toast
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            
+            // Criar elemento toast
+            const toast = document.createElement('div');
+            toast.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+                type === 'success' ? 'bg-green-600 text-white' :
+                type === 'error' ? 'bg-red-600 text-white' :
+                'bg-blue-600 text-white'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // Auth UI (implementação básica)
+        function updateAuthUI() {
+            const token = localStorage.getItem('authToken');
+            const notLoggedIn = document.getElementById('notLoggedIn');
+            const loggedIn = document.getElementById('loggedIn');
+            
+            if (token) {
+                notLoggedIn.classList.add('hidden');
+                loggedIn.classList.remove('hidden');
+            } else {
+                notLoggedIn.classList.remove('hidden');
+                loggedIn.classList.add('hidden');
+            }
+        }
+
+        // User menu
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+                                    window.location.href = '/inicio';
+        }
+
+        // Verificar se usuário é master e mostrar link do painel
+        function checkMasterAccess() {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const masterEmails = [
+                        'master@omusicacatolico.com',
+        'admin@omusicacatolico.com',
+        'vinicius@omusicacatolico.com'
+            ];
+            
+            if (user.email && masterEmails.includes(user.email)) {
+                const masterLink = document.getElementById('masterLink');
+                if (masterLink) {
+                    masterLink.classList.remove('hidden');
+                }
+            }
+        }
+    </script>
+</body>
+</html> 

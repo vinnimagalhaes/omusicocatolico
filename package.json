@@ -1,61 +1,83 @@
 {
-  "name": "omusicacatolico",
+  "name": "catcifras",
   "version": "1.0.0",
-  "description": "Plataforma de cifras católicas moderna e responsiva",
-  "main": "backend/server.js",
+  "description": "CatCifras - Enterprise Catholic Music Platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
-    "start-server": "bash start-server.sh",
-    "init-db": "node scripts/init-db.js",
-    "build": "echo 'Build process for production'",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "sync:force": "node -e 'require(\"./backend/models\").sincronizarBanco(true).then(() => process.exit())'"
+    "start": "npm run build && npm run start:production",
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:web\"",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "format": "npm run format --workspaces",
+    "clean": "rimraf node_modules apps/*/node_modules packages/*/node_modules",
+    "start:production": "node apps/api/server.js",
+    "setup": "npm install && npm run build",
+    "build:api": "npm run build --workspace=@catcifras/api",
+    "build:web": "npm run build --workspace=@catcifras/web",
+    "test:coverage": "npm run test:coverage --workspaces",
+    "lint:fix": "npm run lint:fix --workspaces",
+    "migrate:legacy": "node tools/scripts/migrate-legacy.js",
+    "deploy": "bash tools/scripts/deploy.sh"
   },
   "keywords": [
+    "monorepo",
     "cifras",
-    "católica",
-    "música",
-    "igreja",
-    "acordes",
-    "letras"
+    "catholic",
+    "music",
+    "church",
+    "chords",
+    "lyrics",
+    "enterprise"
   ],
-  "author": "Vinicius Magalhães",
+  "author": "Vinicius Magalhães <contato@omusicacatolico.com>",
   "license": "MIT",
-  "dependencies": {
-    "axios": "^1.6.2",
-    "bcrypt": "^6.0.0",
-    "bcryptjs": "^2.4.3",
-    "cheerio": "^1.0.0-rc.12",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "express-rate-limit": "^7.5.0",
-    "google-auth-library": "^9.4.1",
-    "helmet": "^7.2.0",
-    "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.5-lts.1",
-    "mysql2": "^3.14.1",
-    "pdf-parse": "^1.1.1",
-    "pg": "^8.16.0",
-    "sequelize": "^6.37.7",
-    "sharp": "^0.33.1",
-    "sqlite3": "^5.1.7",
-    "tesseract.js": "^5.0.4"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "@commitlint/cli": "^18.4.3",
+    "@commitlint/config-conventional": "^18.4.3",
+    "commitizen": "^4.3.0",
+    "concurrently": "^8.2.2",
+    "husky": "^8.0.3",
+    "lerna": "^8.0.0",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0"
   },
-  "engines": {
-    "node": ">=14.0.0"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,yml,yaml}": [
+      "prettier --write"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/viniciusmagalhaes/omusicacatolico.git"
+    "url": "https://github.com/viniciusmagalhaes/catcifras.git"
   },
   "bugs": {
-    "url": "https://github.com/viniciusmagalhaes/omusicacatolico/issues"
+    "url": "https://github.com/viniciusmagalhaes/catcifras/issues"
   },
-  "homepage": "https://github.com/viniciusmagalhaes/omusicacatolico#readme"
+  "homepage": "https://github.com/viniciusmagalhaes/catcifras#readme"
 }
