@@ -727,5 +727,13 @@
     <script src="js/config.js?v=2"></script>
     <script src="js/auth.js?v=2"></script>
     <script src="js/app.js?v=2"></script>
+    
+    <script>
+        // Inicializar interface do usuário quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            initializeNewHomepage();
+        });
+    </script>
 </body>
 </html> 
