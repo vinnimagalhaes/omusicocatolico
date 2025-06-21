@@ -61,13 +61,24 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME)
             .then(cache => {
               cache.put(event.request, responseClone);
-            });
+            })
+            .catch(err => console.log('Erro ao cachear:', err));
         }
         return response;
       })
       .catch(() => {
         // Se falhar, tenta buscar no cache
-        return caches.match(event.request);
+        return caches.match(event.request)
+          .then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+            // Se não encontrar no cache, retorna uma resposta de erro
+            return new Response('Offline - conteúdo não encontrado', {
+              status: 503,
+              statusText: 'Service Unavailable'
+            });
+          });
       })
   );
 }); 

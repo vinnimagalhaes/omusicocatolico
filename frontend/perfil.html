@@ -198,7 +198,7 @@
         async function loadUserData() {
             try {
                 // Buscar dados atualizados da API
-                const response = await fetchWithAuth(apiUrl('/api/auth/profile'), {
+                const response = await fetchWithAuth('/api/auth/profile', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -285,7 +285,7 @@
             const localizacao = document.getElementById('inputLocalizacao').value.trim();
             
             try {
-                const response = await fetchWithAuth(apiUrl('/api/auth/profile'), {
+                const response = await fetchWithAuth('/api/auth/profile', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -336,7 +336,7 @@
             }
             
             try {
-                const response = await fetchWithAuth(apiUrl('/api/auth/change-password'), {
+                const response = await fetchWithAuth('/api/auth/change-password', {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
