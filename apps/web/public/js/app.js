@@ -73,9 +73,7 @@ document.addEventListener('click', function(e) {
 
 // Modal Adicionar Cifra com 3 opções
 function showAddCifraModal() {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-    modal.innerHTML = `
+    const content = `
         <div class="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-6 border-b">
                 <h3 class="text-xl font-semibold text-gray-900">Adicionar Nova Cifra</h3>
@@ -131,6 +129,7 @@ function showAddCifraModal() {
         </div>
     `;
     
+    const modal = createModal(content, { maxWidth: 'max-w-md', zIndex: 'z-50' });
     document.body.appendChild(modal);
     
     // Event listeners para os botões do modal
@@ -143,13 +142,6 @@ function showAddCifraModal() {
     if (escreverBtn) escreverBtn.addEventListener('click', openCifraEditor);
     if (linkBtn) linkBtn.addEventListener('click', openUrlImportModal);
     if (uploadBtn) uploadBtn.addEventListener('click', openCifraUploader);
-    
-    // Fechar modal clicando fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
 }
 
 // Carregar cifras da API
@@ -1022,9 +1014,7 @@ async function addToRepertorio(id) {
 }
 
 function showRepertorioSelectionModal(cifra, repertorios) {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-    modal.innerHTML = `
+    const content = `
         <div class="bg-white rounded-lg max-w-md w-full">
             <div class="flex justify-between items-center p-6 border-b">
                 <h3 class="text-lg font-semibold text-gray-900">Adicionar ao Repertório</h3>
@@ -1066,14 +1056,8 @@ function showRepertorioSelectionModal(cifra, repertorios) {
         </div>
     `;
     
+    const modal = createModal(content, { maxWidth: 'max-w-md', zIndex: 'z-50' });
     document.body.appendChild(modal);
-    
-    // Fechar modal clicando fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
 }
 
 async function adicionarCifraAoRepertorio(cifraId, repertorioId) {
@@ -1303,18 +1287,164 @@ function escapeHtml(text) {
 }
 
 function closeModal() {
-    const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
-    if (modal) {
-        modal.remove();
-    }
+    // Buscar por TODOS os tipos de modais possíveis
+    const possibleSelectors = [
+        '.fixed.inset-0.bg-black.bg-opacity-50',  // Tailwind modals
+        '.fixed.inset-0',                        // Generic fixed modals
+        '.modal.show',                           // CSS modals with show class
+        '.modal',                                // Any modal
+        '[data-modal]',                          // Data attribute modals
+        '.z-\\[9999\\]',                        // High z-index modals
+        '.z-\\[10000\\]'                        // Even higher z-index modals
+    ];
     
-    // Mostrar dropdowns novamente
-    document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
-        dropdown.style.display = '';
+    let modalRemoved = false;
+    
+    // Tentar remover modals com cada seletor
+    possibleSelectors.forEach(selector => {
+        try {
+            const modals = document.querySelectorAll(selector);
+            modals.forEach(modal => {
+                // Verificar se realmente parece um modal (tem backdrop ou está em fullscreen)
+                const isModal = modal.classList.contains('fixed') || 
+                               modal.classList.contains('modal') ||
+                               modal.hasAttribute('data-modal') ||
+                               modal.style.position === 'fixed';
+                
+                if (isModal) {
+                    modal.remove();
+                    modalRemoved = true;
+                }
+            });
+        } catch (error) {
+            console.warn(`Erro ao tentar remover modals com seletor ${selector}:`, error);
+        }
     });
     
-    // Reabilitar dropdowns quando modal fecha
-    document.body.classList.remove('modal-open');
+    // Se nenhum modal foi removido, tentar busca mais ampla
+    if (!modalRemoved) {
+        const allFixed = document.querySelectorAll('[style*="position: fixed"], [class*="fixed"]');
+        allFixed.forEach(element => {
+            // Verificar se parece um modal baseado nas características
+            const hasBackdrop = element.style.backgroundColor === 'rgba(0, 0, 0, 0.5)' ||
+                               element.classList.contains('bg-black') ||
+                               element.classList.contains('bg-opacity-50');
+            
+            const isFullscreen = element.style.top === '0px' || 
+                                element.classList.contains('inset-0');
+            
+            if (hasBackdrop && isFullscreen) {
+                element.remove();
+                modalRemoved = true;
+            }
+        });
+    }
+    
+    // Sempre executar limpeza, independente de ter encontrado modal
+    cleanup();
+    
+    function cleanup() {
+        // Restaurar dropdowns - múltiplas formas de busca
+        const dropdownSelectors = [
+            '.nav-item-dropdown',
+            '.nav-dropdown',
+            '.dropdown-menu',
+            '[data-dropdown]'
+        ];
+        
+        dropdownSelectors.forEach(selector => {
+            try {
+                document.querySelectorAll(selector).forEach(dropdown => {
+                    dropdown.style.display = '';
+                    dropdown.style.visibility = '';
+                });
+            } catch (error) {
+                console.warn(`Erro ao restaurar dropdowns com seletor ${selector}:`, error);
+            }
+        });
+        
+        // Remover todas as classes relacionadas a modal do body
+        const modalClasses = ['modal-open', 'overflow-hidden', 'no-scroll'];
+        modalClasses.forEach(className => {
+            document.body.classList.remove(className);
+        });
+        
+        // Restaurar scroll do body
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        
+        // Limpar quaisquer estilos inline que possam ter sido adicionados
+        document.body.style.paddingRight = '';
+        
+        // Reabilitar scroll em dispositivos móveis
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+    }
+    
+    // Log para debug (remover em produção se necessário)
+    if (modalRemoved) {
+        console.log('Modal fechado com sucesso');
+    } else {
+        console.log('Nenhum modal encontrado para fechar, mas limpeza executada');
+    }
+}
+
+// Função auxiliar para criar modals padronizados
+function createModal(content, options = {}) {
+    const {
+        maxWidth = 'max-w-4xl',
+        zIndex = 'z-[9999]',
+        className = '',
+        onClose = null
+    } = options;
+    
+    const modal = document.createElement('div');
+    modal.className = `fixed inset-0 bg-black bg-opacity-50 ${zIndex} flex items-center justify-center p-4 ${className}`;
+    modal.setAttribute('data-modal', 'true');
+    modal.innerHTML = content;
+    
+    // Preparar ambiente para modal
+    document.querySelectorAll('.nav-item-dropdown, .nav-dropdown').forEach(dropdown => {
+        dropdown.style.display = 'none';
+    });
+    document.body.classList.add('modal-open');
+    
+    // Event listener para fechar clicando fora
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
+        }
+    });
+    
+    // Event listener para ESC key
+    const escHandler = function(e) {
+        if (e.key === 'Escape') {
+            if (onClose) {
+                onClose();
+            } else {
+                closeModal();
+            }
+            document.removeEventListener('keydown', escHandler);
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+    
+    return modal;
+}
+
+// Padronizar outras funções de fechamento para usar closeModal()
+function closeConfirmModal() {
+    console.log('Fechando modal de confirmação');
+    closeModal();
+}
+
+function closeSuccessModal() {
+    closeModal();
 }
 
 function toggleFavoriteModal(id) {

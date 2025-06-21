@@ -651,6 +651,30 @@
     gap: var(--spacing-3);
 }
 
+/* Regras para evitar conflitos quando modais estão abertos */
+body.modal-open {
+    overflow: hidden;
+}
+
+body.modal-open .nav-item-dropdown,
+body.modal-open .nav-dropdown {
+    display: none !important;
+    visibility: hidden !important;
+    z-index: -1 !important;
+}
+
+body.modal-open .nav-item-dropdown:hover .dropdown-menu,
+body.modal-open .nav-dropdown:hover .nav-dropdown-menu {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Garantir que modals tenham precedência sobre todos os outros elementos */
+[data-modal="true"] {
+    z-index: var(--z-modal) !important;
+}
+
 /* === FORMULÁRIOS === */
 .form-group {
     margin-bottom: var(--spacing-4);
