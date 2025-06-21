@@ -197,8 +197,29 @@
         // Carregar dados do usuário
         async function loadUserData() {
             try {
-                const user = JSON.parse(localStorage.getItem('user'));
+                // Buscar dados atualizados da API
+                const response = await fetchWithAuth(apiUrl('/api/auth/profile'), {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erro na resposta da API');
+                }
+                
+                const data = await response.json();
+                
+                if (!data.success) {
+                    throw new Error(data.message || 'Erro ao carregar dados');
+                }
+                
+                const user = data.user;
                 userData = user;
+                
+                // Atualizar localStorage
+                localStorage.setItem('user', JSON.stringify(user));
                 
                 // Atualizar interface
                 document.getElementById('userName').textContent = user.nome;
@@ -219,6 +240,22 @@
             } catch (error) {
                 console.error('Erro ao carregar dados do usuário:', error);
                 showToast('Erro ao carregar dados do perfil', 'error');
+                
+                // Fallback para localStorage se a API falhar
+                try {
+                    const localUser = JSON.parse(localStorage.getItem('user'));
+                    if (localUser) {
+                        userData = localUser;
+                        // Usar dados locais...
+                        document.getElementById('userName').textContent = localUser.nome;
+                        document.getElementById('userInitials').textContent = getInitials(localUser.nome);
+                        document.getElementById('profileName').textContent = localUser.nome;
+                        document.getElementById('profileEmail').textContent = localUser.email;
+                        document.getElementById('profileInitials').textContent = getInitials(localUser.nome);
+                    }
+                } catch (fallbackError) {
+                    console.error('Erro no fallback:', fallbackError);
+                }
             }
         }
 

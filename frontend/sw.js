@@ -39,7 +39,19 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Estratégia: Network first, fallback para cache
+  // Não cachear requisições POST, PUT, DELETE, etc.
+  if (event.request.method !== 'GET') {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Não cachear URLs da API (dados dinâmicos)
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // Estratégia: Network first, fallback para cache (apenas para GET)
   event.respondWith(
     fetch(event.request)
       .then(response => {

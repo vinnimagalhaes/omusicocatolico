@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>OMúsicoCatólico - Cifras Católicas, Repertórios e Ferramentas para Liturgia</title>
+    <meta name="description" content="Encontre cifras para músicas católicas, crie repertórios personalizados e compartilhe com sua comunidade. Ferramentas para músicos católicos: transpositor, afinador e metrônomo.">
+    <meta name="keywords" content="cifras católicas, música católica, repertório missa, letras católicas, acordes, igreja, liturgia, canto católico, hinário">
+    <meta name="author" content="OMúsicoCatólico">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://omusicocatolico.com.br/inicio">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OMúsicoCatólico - Cifras e Repertórios Católicos">
+    <meta property="og:description" content="A maior plataforma de cifras católicas do Brasil. Crie repertórios, encontre acordes e compartilhe música sacra com sua comunidade.">
+    <meta property="og:url" content="https://omusicocatolico.com.br/inicio">
+    <meta property="og:site_name" content="OMúsicoCatólico">
+    <meta property="og:image" content="https://omusicocatolico.com.br/images/og-image.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OMúsicoCatólico - Cifras e Repertórios Católicos">
+    <meta name="twitter:description" content="A maior plataforma de cifras católicas do Brasil. Crie repertórios, encontre acordes e compartilhe música sacra.">
+    <meta name="twitter:image" content="https://omusicocatolico.com.br/images/twitter-card.jpg">
+    
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#2563eb">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="OMúsicoCatólico">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    
+    <!-- CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
+    
+    <!-- Tailwind CSS mantido temporariamente para compatibilidade -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Critical CSS Inline -->
+    <style>
+        /* Critical CSS - Above the fold styles */
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        html{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Inter',sans-serif;line-height:1.5;-webkit-text-size-adjust:100%}
+        body{background-color:#f8fafc;color:#1f2937;font-size:16px}
+        .header-critical{background:#fff;border-bottom:1px solid #e5e7eb;position:sticky;top:0;z-index:50;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+        .loading-critical{display:flex;align-items:center;justify-content:center;min-height:200px}
+        .spinner-critical{width:2rem;height:2rem;border:2px solid #e5e7eb;border-top:2px solid #3b82f6;border-radius:50%;animation:spin 1s linear infinite}
+        @keyframes spin{to{transform:rotate(360deg)}}
+        img{max-width:100%;height:auto;loading:lazy}
+        @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;transition-duration:0.01ms!important}}
+    </style>
+    
+    <!-- Performance & SEO Scripts -->
+    <script src="/js/performance.js" defer></script>
+    <script src="/js/seo.js" defer></script>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "OMúsicoCatólico",
+        "description": "Plataforma de cifras católicas, repertórios e ferramentas para músicos da igreja",
+        "url": "https://omusicocatolico.com.br",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://omusicocatolico.com.br/buscar?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "OMúsicoCatólico",
+            "url": "https://omusicocatolico.com.br"
+        }
+    }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.4/dist/tesseract.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-item:hover { background-color: #f3f4f6; }
+        .category-tag { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 500; }
+        .tom-tag { font-size: 11px; padding: 2px 6px; border-radius: 4px; background: #e5f3ff; color: #1d4ed8; }
+        
+        /* Estilos para navegação principal */
+        .nav-item:hover { 
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Gradientes estilo landing page */
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-text-gold {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .gradient-bg-welcome {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 20%, #4facfe 40%, #00f2fe 60%, #43e97b 80%, #38f9d7 100%);
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, rgba(240, 147, 251, 0.05) 0%, rgba(245, 87, 108, 0.05) 20%, rgba(79, 172, 254, 0.05) 40%, rgba(0, 242, 254, 0.05) 60%, rgba(67, 233, 123, 0.05) 80%, rgba(56, 249, 215, 0.05) 100%);
+            border: 1px solid rgba(79, 172, 254, 0.1);
+        }
+
+        /* Banner Carousel Styles */
+        .banner-carousel-container:hover .banner-arrow {
+            opacity: 1;
+        }
+
+        .banner-dot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .banner-dot:not(.active) {
+            background-color: #e5e7eb;
+            opacity: 0.6;
+        }
+
+        .banner-dot.active {
+            background-color: #2563eb;
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .custom-banner img {
+            transition: transform 0.3s ease;
+        }
+
+        .custom-banner:hover img {
+            transform: scale(1.02);
+        }
+
+        .banner-slide {
+            flex: 0 0 100%;
+        }
+
+        .banner-slides {
+            transform: translateX(0);
+        }
+
+        .admin-banner-btn {
+            backdrop-filter: blur(10px);
+        }
+
+        /* Dropdown Navigation Styles */
+        .nav-item-dropdown {
+            position: relative;
+            z-index: 1000;
+        }
+        
+        /* Permitir overflow do dropdown */
+        nav .flex {
+            overflow: visible !important;
+        }
+        
+        .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-item-dropdown:hover .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .nav-item-dropdown:hover .nav-item {
+            background-color: white;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-menu {
+            min-width: 200px;
+            z-index: 40;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .dropdown-item:first-child {
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom-left-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        /* Carousel Styles */
+        .carousel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            flex: 0 0 100%;
+            min-width: 100%;
+        }
+
+        .carousel-dots .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .carousel-dots .carousel-dot.active {
+            background-color: #2563eb;
+            transform: scale(1.2);
+        }
+
+        .carousel-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .carousel-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .carousel-item h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 4px;
+        }
+
+        .carousel-item p {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .carousel-item .tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .carousel-item .tag {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Forçar dropdowns invisíveis quando modal está aberto */
+        body.modal-open .nav-item-dropdown:hover .dropdown-menu {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(2px) !important;
+            z-index: -1 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Navegação Principal Unificada -->
+    <nav class="main-navigation" id="mainNavigation">
+        <div class="nav-container">
+            <!-- Desktop Navigation -->
+            <div class="nav-desktop">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/inicio" class="nav-link active" data-nav="inicio">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item nav-dropdown">
+                        <div class="nav-link nav-dropdown-toggle" data-nav="repertorios">
+                            <i class="fas fa-list nav-icon"></i>
+                            Repertórios
+                            <i class="fas fa-chevron-down nav-dropdown-icon"></i>
+                        </div>
+                        <div class="nav-dropdown-menu">
+                            <a href="/repertorios" class="nav-dropdown-item" data-nav="repertorios">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="nav-dropdown-item" data-nav="repertorios-comunidade">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/favoritas" class="nav-link" data-nav="favoritas">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/minhas-cifras" class="nav-link" data-nav="minhas-cifras">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/categorias" class="nav-link" data-nav="categorias">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- User Menu -->
+                <div class="nav-user-menu">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="nav-login-btn">
+                            <i class="fas fa-sign-in-alt nav-icon"></i>
+                            Entrar
+                        </a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="nav-user-dropdown">
+                        <button onclick="toggleUserMenu()" class="nav-user-btn">
+                            <div class="nav-user-avatar" id="userInitials">U</div>
+                            <span id="userName" class="nav-user-name">Usuário</span>
+                            <i class="fas fa-chevron-down nav-user-icon"></i>
+                        </button>
+                        
+                        <div id="userDropdown" class="nav-user-dropdown-menu">
+                            <div class="nav-user-dropdown-header">
+                                <span id="userNameDropdown">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-user-dropdown-item">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-user-dropdown-item">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-user-dropdown-item">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLink" class="hidden">
+                                <hr class="nav-user-divider">
+                                <a href="master-dashboard.html" class="nav-user-dropdown-item nav-user-dropdown-item-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <hr class="nav-user-divider">
+                            <button onclick="logout()" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div class="nav-mobile">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                <button class="nav-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars nav-toggle-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="nav-mobile-menu">
+            <div class="nav-mobile-content">
+                <div class="nav-mobile-header">
+                    <span class="nav-brand">OMúsicoCatólico</span>
+                    <button class="nav-mobile-close" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <ul class="nav-mobile-list">
+                    <li class="nav-mobile-item">
+                        <a href="/inicio" class="nav-mobile-link active" data-nav="inicio">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-dropdown">
+                        <button class="nav-mobile-dropdown-toggle" data-nav="repertorios">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-list nav-icon"></i>
+                                Repertórios
+                            </div>
+                            <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
+                        </button>
+                        <div class="nav-mobile-dropdown-menu">
+                            <a href="/repertorios" class="nav-mobile-dropdown-item" data-nav="repertorios">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item" data-nav="repertorios-comunidade">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/favoritas" class="nav-mobile-link" data-nav="favoritas">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/minhas-cifras" class="nav-mobile-link" data-nav="minhas-cifras">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/categorias" class="nav-mobile-link" data-nav="categorias">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+
+                    <!-- Mobile User Menu -->
+                    <li class="nav-mobile-item nav-mobile-user">
+                        <div id="notLoggedInMobile" class="hidden">
+                            <a href="login.html" class="nav-mobile-link">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                Entrar
+                            </a>
+                        </div>
+                        <div id="loggedInMobile" class="hidden">
+                            <div class="nav-mobile-user-info">
+                                <div class="nav-mobile-user-avatar" id="userInitialsMobile">U</div>
+                                <span id="userNameMobile">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-mobile-link">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-mobile-link">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <div id="masterLinkMobile" class="hidden">
+                                <a href="master-dashboard.html" class="nav-mobile-link">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <button onclick="logout()" class="nav-mobile-link nav-mobile-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Banner Carousel Section -->
+                <div class="banner-carousel-container mb-8 md:mb-12 relative">
+                    <div class="banner-carousel overflow-hidden rounded-3xl">
+                        <!-- Banner slides -->
+                        <div class="banner-slides flex transition-transform duration-500 ease-in-out" id="bannerSlides">
+                            <!-- Default welcome banner -->
+                            <div class="banner-slide min-w-full welcome-section relative overflow-hidden p-8 md:p-12 text-center flex flex-col justify-center items-center min-h-[300px] md:min-h-[400px] rounded-3xl" style="background: #000000;">
+                                <div class="relative z-10 w-full">
+                                <h3 class="text-3xl md:text-5xl font-bold mb-4 leading-tight" style="color: #ffffff;">
+                                    <span style="background: linear-gradient(90deg, #007AFF 0%, #5856D6 25%, #AF52DE 50%, #FF2D92 75%, #FF9500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">OMúsicoCatólico</span>: a serviço da Liturgia.
+                                </h3>
+                                <p class="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed" style="color: #d1d5db;">
+                                    Encontre cifras para <span style="background: linear-gradient(90deg, #007AFF 0%, #5856D6 25%, #AF52DE 50%, #FF2D92 75%, #FF9500 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 600;">músicas católicas</span>, 
+                                    crie seus repertórios e compartilhe com sua comunidade.
+                                </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Custom banner slots (will be populated by JavaScript) -->
+                            <div class="banner-slide min-w-full custom-banner hidden" id="banner-slot-1">
+                                <img src="" alt="Banner 1" class="w-full h-64 md:h-80 object-cover rounded-3xl">
+                            </div>
+                            <div class="banner-slide min-w-full custom-banner hidden" id="banner-slot-2">
+                                <img src="" alt="Banner 2" class="w-full h-64 md:h-80 object-cover rounded-3xl">
+                            </div>
+                            <div class="banner-slide min-w-full custom-banner hidden" id="banner-slot-3">
+                                <img src="" alt="Banner 3" class="w-full h-64 md:h-80 object-cover rounded-3xl">
+                            </div>
+                            <div class="banner-slide min-w-full custom-banner hidden" id="banner-slot-4">
+                                <img src="" alt="Banner 4" class="w-full h-64 md:h-80 object-cover rounded-3xl">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navigation dots -->
+                    <div class="banner-dots flex justify-center space-x-2 mt-4" id="bannerDots">
+                        <button class="banner-dot w-3 h-3 rounded-full bg-blue-600 opacity-100" data-slide="0"></button>
+                    </div>
+                    
+                    <!-- Navigation arrows -->
+                    <button class="banner-arrow banner-arrow-left absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all opacity-0" id="bannerArrowLeft">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="banner-arrow banner-arrow-right absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-full shadow-lg transition-all opacity-0" id="bannerArrowRight">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    
+
+                </div>
+
+                <!-- Ferramentas Rápidas -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <i class="fas fa-tools text-blue-600 mr-2"></i>
+                        Ferramentas para Músicos
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Transpositor -->
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100 hover:shadow-md transition-all cursor-pointer" onclick="openTranspositor()">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">Transpositor</h3>
+                                    <p class="text-sm text-gray-600">Mude o tom das cifras</p>
+                                </div>
+                                <i class="fas fa-music text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Afinador -->
+                        <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border border-green-100 hover:shadow-md transition-all cursor-pointer" onclick="openTuner()">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">Afinador</h3>
+                                    <p class="text-sm text-gray-600">Afine seu instrumento</p>
+                                </div>
+                                <i class="fas fa-guitar text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Metrônomo -->
+                        <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-4 rounded-lg border border-purple-100 hover:shadow-md transition-all cursor-pointer" onclick="openMetronome()">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="font-medium text-gray-900">Metrônomo</h3>
+                                    <p class="text-sm text-gray-600">Mantenha o tempo</p>
+                                </div>
+                                <i class="fas fa-clock text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sugestão do Dia Litúrgico -->
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-6 mb-8" id="liturgicalSuggestion">
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-2 flex items-center">
+                                <i class="fas fa-calendar-alt text-amber-600 mr-2"></i>
+                                Sugestão Litúrgica de Hoje
+                            </h2>
+                            <p class="text-gray-700 mb-3" id="liturgicalDate">Carregando...</p>
+                            <div class="space-y-2" id="liturgicalSongs">
+                                <!-- Será preenchido via JavaScript -->
+                            </div>
+                        </div>
+                        <button onclick="refreshLiturgicalSuggestion()" class="text-amber-600 hover:text-amber-700 p-2">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid Principal - Carrosseis -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Mais Tocadas - Carrossel -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center justify-between">
+                            <span>
+                                <i class="fas fa-fire text-red-500 mr-2"></i>
+                                Mais Tocadas
+                            </span>
+                            <button onclick="viewAllMostPlayed()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                Ver todas →
+                            </button>
+                        </h3>
+                        <div class="relative overflow-hidden rounded-lg" id="mostPlayedCarousel">
+                            <div class="carousel-container flex transition-transform duration-500 ease-in-out" id="mostPlayedSlides">
+                                <!-- Slides serão preenchidos via JavaScript -->
+                            </div>
+                            <!-- Indicadores -->
+                            <div class="carousel-dots flex justify-center space-x-2 mt-3" id="mostPlayedDots">
+                                <!-- Dots serão preenchidos via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Novas Cifras - Carrossel -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center justify-between">
+                            <span>
+                                <i class="fas fa-plus-circle text-green-500 mr-2"></i>
+                                Novas Cifras
+                            </span>
+                            <button onclick="viewAllNew()" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                Ver todas →
+                            </button>
+                        </h3>
+                        <div class="relative overflow-hidden rounded-lg" id="newSongsCarousel">
+                            <div class="carousel-container flex transition-transform duration-500 ease-in-out" id="newSongsSlides">
+                                <!-- Slides serão preenchidos via JavaScript -->
+                            </div>
+                            <!-- Indicadores -->
+                            <div class="carousel-dots flex justify-center space-x-2 mt-3" id="newSongsDots">
+                                <!-- Dots serão preenchidos via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Por Categoria - Carrossel -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center justify-between">
+                            <span>
+                                <i class="fas fa-list text-blue-500 mr-2"></i>
+                                Por Categoria
+                            </span>
+                            <a href="categorias.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                                Ver todas →
+                            </a>
+                        </h3>
+                        <div class="relative overflow-hidden rounded-lg" id="categoryCarousel">
+                            <div class="carousel-container flex transition-transform duration-500 ease-in-out" id="categorySlides">
+                                <!-- Slides serão preenchidos via JavaScript -->
+                            </div>
+                            <!-- Indicadores -->
+                            <div class="carousel-dots flex justify-center space-x-2 mt-3" id="categoryDots">
+                                <!-- Dots serão preenchidos via JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Repertórios da Comunidade -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <i class="fas fa-users text-indigo-600 mr-2"></i>
+                            Repertórios da Comunidade
+                        </h2>
+                        <a href="repertorios.html" class="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                            Ver todos →
+                        </a>
+                    </div>
+                    <div id="communityRepertoires" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Será preenchido via JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Busca Detalhada (Hidden por padrão) -->
+                <div id="searchResults" class="hidden">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-6">Resultados da Busca</h2>
+                    <div id="songsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        <!-- Song Cards will be populated by JavaScript -->
+                    </div>
+                </div>
+        </main>
+    </div>
+
+    <script src="js/config.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
+</body>
+</html> 

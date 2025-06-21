@@ -1,0 +1,240 @@
+<!-- ========================================
+     TEMPLATE DE NAVEGAÇÃO - OMúsicoCatólico
+     Template reutilizável para navegação principal
+     ======================================== -->
+
+<!-- Navegação Principal -->
+<nav class="main-navigation" id="mainNavigation">
+    <div class="nav-container">
+        <!-- Desktop Navigation -->
+        <div class="nav-desktop">
+            <a href="/" class="nav-brand">OMúsicoCatólico</a>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="/inicio" class="nav-link" data-nav="inicio">
+                        <i class="fas fa-home nav-icon"></i>
+                        Início
+                    </a>
+                </li>
+                
+                <li class="nav-item nav-dropdown">
+                    <div class="nav-link nav-dropdown-toggle" data-nav="repertorios">
+                        <i class="fas fa-list nav-icon"></i>
+                        Repertórios
+                        <i class="fas fa-chevron-down nav-dropdown-icon"></i>
+                    </div>
+                    <div class="nav-dropdown-menu">
+                        <a href="/repertorios" class="nav-dropdown-item" data-nav="repertorios">
+                            <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                            Meus Repertórios
+                        </a>
+                        <a href="/repertorios-comunidade" class="nav-dropdown-item" data-nav="repertorios-comunidade">
+                            <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                            Repertórios da Comunidade
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/favoritas" class="nav-link" data-nav="favoritas">
+                        <i class="fas fa-heart nav-icon"></i>
+                        Favoritas
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/minhas-cifras" class="nav-link" data-nav="minhas-cifras">
+                        <i class="fas fa-music nav-icon"></i>
+                        Minhas Cifras
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a href="/categorias" class="nav-link" data-nav="categorias">
+                        <i class="fas fa-tags nav-icon"></i>
+                        Categorias
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User Menu -->
+            <div class="nav-user-menu">
+                <!-- Not Logged In -->
+                <div id="notLoggedIn" class="hidden">
+                    <a href="login.html" class="nav-login-btn">
+                        <i class="fas fa-sign-in-alt nav-icon"></i>
+                        Entrar
+                    </a>
+                </div>
+
+                <!-- Logged In -->
+                <div id="loggedIn" class="nav-user-dropdown">
+                    <button onclick="toggleUserMenu()" class="nav-user-btn">
+                        <div class="nav-user-avatar" id="userInitials">U</div>
+                        <span id="userName" class="nav-user-name">Usuário</span>
+                        <i class="fas fa-chevron-down nav-user-icon"></i>
+                    </button>
+                    
+                    <div id="userDropdown" class="nav-user-dropdown-menu">
+                        <div class="nav-user-dropdown-header">
+                            <span id="userNameDropdown">Usuário</span>
+                        </div>
+                        <a href="/perfil" class="nav-user-dropdown-item">
+                            <i class="fas fa-user nav-icon"></i>
+                            Meu Perfil
+                        </a>
+                        <a href="/repertorios" class="nav-user-dropdown-item">
+                            <i class="fas fa-list nav-icon"></i>
+                            Meus Repertórios
+                        </a>
+                        <a href="#" class="nav-user-dropdown-item">
+                            <i class="fas fa-cog nav-icon"></i>
+                            Configurações
+                        </a>
+                        <div id="masterLink" class="hidden">
+                            <hr class="nav-user-divider">
+                            <a href="master-dashboard.html" class="nav-user-dropdown-item nav-user-dropdown-item-master">
+                                <i class="fas fa-crown nav-icon"></i>
+                                Painel Master
+                            </a>
+                        </div>
+                        <hr class="nav-user-divider">
+                        <button onclick="logout()" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                            <i class="fas fa-sign-out-alt nav-icon"></i>
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div class="nav-mobile">
+            <a href="/" class="nav-brand">OMúsicoCatólico</a>
+            <button class="nav-toggle" aria-label="Abrir menu">
+                <i class="fas fa-bars nav-toggle-icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="nav-mobile-menu">
+        <div class="nav-mobile-content">
+            <div class="nav-mobile-header">
+                <span class="nav-brand">OMúsicoCatólico</span>
+                <button class="nav-mobile-close" aria-label="Fechar menu">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <ul class="nav-mobile-list">
+                <li class="nav-mobile-item">
+                    <a href="/inicio" class="nav-mobile-link" data-nav="inicio">
+                        <i class="fas fa-home nav-icon"></i>
+                        Início
+                    </a>
+                </li>
+                
+                <li class="nav-mobile-dropdown">
+                    <button class="nav-mobile-dropdown-toggle" data-nav="repertorios">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-list nav-icon"></i>
+                            Repertórios
+                        </div>
+                        <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
+                    </button>
+                    <div class="nav-mobile-dropdown-menu">
+                        <a href="/repertorios" class="nav-mobile-dropdown-item" data-nav="repertorios">
+                            <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                            Meus Repertórios
+                        </a>
+                        <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item" data-nav="repertorios-comunidade">
+                            <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                            Repertórios da Comunidade
+                        </a>
+                    </div>
+                </li>
+                
+                <li class="nav-mobile-item">
+                    <a href="/favoritas" class="nav-mobile-link" data-nav="favoritas">
+                        <i class="fas fa-heart nav-icon"></i>
+                        Favoritas
+                    </a>
+                </li>
+                
+                <li class="nav-mobile-item">
+                    <a href="/minhas-cifras" class="nav-mobile-link" data-nav="minhas-cifras">
+                        <i class="fas fa-music nav-icon"></i>
+                        Minhas Cifras
+                    </a>
+                </li>
+                
+                <li class="nav-mobile-item">
+                    <a href="/categorias" class="nav-mobile-link" data-nav="categorias">
+                        <i class="fas fa-tags nav-icon"></i>
+                        Categorias
+                    </a>
+                </li>
+
+                <!-- Mobile User Menu -->
+                <li class="nav-mobile-item nav-mobile-user">
+                    <div id="notLoggedInMobile" class="hidden">
+                        <a href="login.html" class="nav-mobile-link">
+                            <i class="fas fa-sign-in-alt nav-icon"></i>
+                            Entrar
+                        </a>
+                    </div>
+                    <div id="loggedInMobile" class="hidden">
+                        <div class="nav-mobile-user-info">
+                            <div class="nav-mobile-user-avatar" id="userInitialsMobile">U</div>
+                            <span id="userNameMobile">Usuário</span>
+                        </div>
+                        <a href="/perfil" class="nav-mobile-link">
+                            <i class="fas fa-user nav-icon"></i>
+                            Meu Perfil
+                        </a>
+                        <a href="/repertorios" class="nav-mobile-link">
+                            <i class="fas fa-list nav-icon"></i>
+                            Meus Repertórios
+                        </a>
+                        <div id="masterLinkMobile" class="hidden">
+                            <a href="master-dashboard.html" class="nav-mobile-link">
+                                <i class="fas fa-crown nav-icon"></i>
+                                Painel Master
+                            </a>
+                        </div>
+                        <button onclick="logout()" class="nav-mobile-link nav-mobile-logout">
+                            <i class="fas fa-sign-out-alt nav-icon"></i>
+                            Sair
+                        </button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 
+INSTRUÇÕES DE USO:
+
+1. Inclua este template em suas páginas HTML
+2. Adicione o CSS: <link href="css/main.css" rel="stylesheet">
+3. Adicione o JavaScript: <script src="js/navigation.js" defer></script>
+4. Para marcar a página ativa, use: window.navigationManager.updateActiveNavigation('nome-da-pagina');
+
+Páginas disponíveis:
+- 'inicio' 
+- 'repertorios'
+- 'repertorios-comunidade'
+- 'favoritas'
+- 'minhas-cifras'
+- 'categorias'
+
+Exemplo de implementação no JavaScript da página:
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.navigationManager) {
+        window.navigationManager.updateActiveNavigation('inicio');
+    }
+});
+--> 

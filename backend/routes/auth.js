@@ -295,6 +295,54 @@ router.get('/verify', async (req, res) => {
     }
 });
 
+// Obter dados do perfil do usuário
+router.get('/profile', async (req, res) => {
+    try {
+        let token = req.cookies?.access_token;
+        if (!token) {
+            token = req.headers.authorization?.split(' ')[1];
+        }
+        
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: 'Token não fornecido'
+            });
+        }
+
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || JWT_SECRET);
+        const user = await User.findByPk(decoded.id);
+        
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: 'Usuário não encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            user: {
+                id: user.id,
+                email: user.email,
+                nome: user.nome,
+                bio: user.bio,
+                localizacao: user.localizacao,
+                avatar: user.avatar,
+                role: user.role,
+                createdAt: user.createdAt
+            }
+        });
+
+    } catch (error) {
+        console.error('Erro ao obter perfil:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Erro interno do servidor'
+        });
+    }
+});
+
 // Atualizar perfil do usuário
 router.put('/profile', async (req, res) => {
     try {

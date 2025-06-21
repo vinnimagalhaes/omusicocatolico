@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+    <script src="js/navigation.js" defer></script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Performance & SEO Scripts -->
+    <script src="/js/performance.js" defer></script>
+    <script src="/js/seo.js" defer></script>
+    <title>Minhas Favoritas - OMúsicoCatólico</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navegação Principal Unificada -->
+    <nav class="main-navigation" id="mainNavigation">
+        <div class="nav-container">
+            <!-- Desktop Navigation -->
+            <div class="nav-desktop">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="/inicio" class="nav-link" data-nav="inicio">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item nav-dropdown">
+                        <div class="nav-link nav-dropdown-toggle" data-nav="repertorios">
+                            <i class="fas fa-list nav-icon"></i>
+                            Repertórios
+                            <i class="fas fa-chevron-down nav-dropdown-icon"></i>
+                        </div>
+                        <div class="nav-dropdown-menu">
+                            <a href="/repertorios" class="nav-dropdown-item" data-nav="repertorios">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="nav-dropdown-item" data-nav="repertorios-comunidade">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/favoritas" class="nav-link active" data-nav="favoritas">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/minhas-cifras" class="nav-link" data-nav="minhas-cifras">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a href="/categorias" class="nav-link" data-nav="categorias">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- User Menu -->
+                <div class="nav-user-menu">
+                    <!-- Not Logged In -->
+                    <div id="notLoggedIn" class="hidden">
+                        <a href="login.html" class="nav-login-btn">
+                            <i class="fas fa-sign-in-alt nav-icon"></i>
+                            Entrar
+                        </a>
+                    </div>
+
+                    <!-- Logged In -->
+                    <div id="loggedIn" class="nav-user-dropdown">
+                        <button onclick="toggleUserMenu()" class="nav-user-btn">
+                            <div class="nav-user-avatar" id="userInitials">U</div>
+                            <span id="userName" class="nav-user-name">Usuário</span>
+                            <i class="fas fa-chevron-down nav-user-icon"></i>
+                        </button>
+                        
+                        <div id="userDropdown" class="nav-user-dropdown-menu">
+                            <div class="nav-user-dropdown-header">
+                                <span id="userNameDropdown">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-user-dropdown-item">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-user-dropdown-item">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="#" class="nav-user-dropdown-item">
+                                <i class="fas fa-cog nav-icon"></i>
+                                Configurações
+                            </a>
+                            <div id="masterLink" class="hidden">
+                                <hr class="nav-user-divider">
+                                <a href="master-dashboard.html" class="nav-user-dropdown-item nav-user-dropdown-item-master">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <hr class="nav-user-divider">
+                            <button onclick="logout()" class="nav-user-dropdown-item nav-user-dropdown-item-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation -->
+            <div class="nav-mobile">
+                <a href="/" class="nav-brand">OMúsicoCatólico</a>
+                <button class="nav-toggle" aria-label="Abrir menu">
+                    <i class="fas fa-bars nav-toggle-icon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="nav-mobile-menu">
+            <div class="nav-mobile-content">
+                <div class="nav-mobile-header">
+                    <span class="nav-brand">OMúsicoCatólico</span>
+                    <button class="nav-mobile-close" aria-label="Fechar menu">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <ul class="nav-mobile-list">
+                    <li class="nav-mobile-item">
+                        <a href="/inicio" class="nav-mobile-link" data-nav="inicio">
+                            <i class="fas fa-home nav-icon"></i>
+                            Início
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-dropdown">
+                        <button class="nav-mobile-dropdown-toggle" data-nav="repertorios">
+                            <div class="flex items-center gap-3">
+                                <i class="fas fa-list nav-icon"></i>
+                                Repertórios
+                            </div>
+                            <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
+                        </button>
+                        <div class="nav-mobile-dropdown-menu">
+                            <a href="/repertorios" class="nav-mobile-dropdown-item" data-nav="repertorios">
+                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
+                                Meus Repertórios
+                            </a>
+                            <a href="/repertorios-comunidade" class="nav-mobile-dropdown-item" data-nav="repertorios-comunidade">
+                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
+                                Repertórios da Comunidade
+                            </a>
+                        </div>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/favoritas" class="nav-mobile-link active" data-nav="favoritas">
+                            <i class="fas fa-heart nav-icon"></i>
+                            Favoritas
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/minhas-cifras" class="nav-mobile-link" data-nav="minhas-cifras">
+                            <i class="fas fa-music nav-icon"></i>
+                            Minhas Cifras
+                        </a>
+                    </li>
+                    
+                    <li class="nav-mobile-item">
+                        <a href="/categorias" class="nav-mobile-link" data-nav="categorias">
+                            <i class="fas fa-tags nav-icon"></i>
+                            Categorias
+                        </a>
+                    </li>
+
+                    <!-- Mobile User Menu -->
+                    <li class="nav-mobile-item nav-mobile-user">
+                        <div id="notLoggedInMobile" class="hidden">
+                            <a href="login.html" class="nav-mobile-link">
+                                <i class="fas fa-sign-in-alt nav-icon"></i>
+                                Entrar
+                            </a>
+                        </div>
+                        <div id="loggedInMobile" class="hidden">
+                            <div class="nav-mobile-user-info">
+                                <div class="nav-mobile-user-avatar" id="userInitialsMobile">U</div>
+                                <span id="userNameMobile">Usuário</span>
+                            </div>
+                            <a href="/perfil" class="nav-mobile-link">
+                                <i class="fas fa-user nav-icon"></i>
+                                Meu Perfil
+                            </a>
+                            <a href="/repertorios" class="nav-mobile-link">
+                                <i class="fas fa-list nav-icon"></i>
+                                Meus Repertórios
+                            </a>
+                            <div id="masterLinkMobile" class="hidden">
+                                <a href="master-dashboard.html" class="nav-mobile-link">
+                                    <i class="fas fa-crown nav-icon"></i>
+                                    Painel Master
+                                </a>
+                            </div>
+                            <button onclick="logout()" class="nav-mobile-link nav-mobile-logout">
+                                <i class="fas fa-sign-out-alt nav-icon"></i>
+                                Sair
+                            </button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Minhas Favoritas</h1>
+            <p class="text-gray-600 mt-2">Cifras que você marcou como favoritas</p>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="text-center py-12">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Carregando suas favoritas...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-16">
+            <div class="bg-red-50 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-heart text-red-600 text-3xl"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Nenhuma cifra favorita ainda</h3>
+            <p class="text-gray-600 mb-8 max-w-md mx-auto">
+                Explore nossas cifras e clique no coração para adicioná-las aos seus favoritos.
+            </p>
+                            <a href="/inicio" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-search mr-2"></i>
+                Explorar Cifras
+            </a>
+        </div>
+
+        <!-- Cifras Grid -->
+        <div id="cifrasGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Cifras serão preenchidas via JavaScript -->
+        </div>
+    </main>
+
+    <!-- Modais -->
+    <div id="modals"></div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Variáveis específicas da página
+        let favoritasCifras = [];
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            carregarFavoritas();
+        });
+
+        // Carregar cifras favoritas
+        async function carregarFavoritas() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                if (!user) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                const response = await fetchWithAuth(apiUrl('/api/cifras/favoritas'));
+                const data = await response.json();
+                
+                favoritasCifras = data.cifras || [];
+                renderFavoritas();
+                
+            } catch (error) {
+                console.error('Erro ao carregar favoritas:', error);
+                showEmptyState();
+                showToast('Erro ao carregar suas favoritas', 'error');
+            }
+        }
+
+        // Renderizar cifras favoritas
+        function renderFavoritas() {
+            const loadingState = document.getElementById('loadingState');
+            const emptyState = document.getElementById('emptyState');
+            const cifrasGrid = document.getElementById('cifrasGrid');
+            
+            loadingState.classList.add('hidden');
+            
+            if (favoritasCifras.length === 0) {
+                emptyState.classList.remove('hidden');
+                cifrasGrid.classList.add('hidden');
+                return;
+            }
+            
+            emptyState.classList.add('hidden');
+            cifrasGrid.classList.remove('hidden');
+            
+            cifrasGrid.innerHTML = favoritasCifras.map(cifra => createCifraCard(cifra)).join('');
+            setupCardEventListeners();
+        }
+
+        // Mostrar estado vazio
+        function showEmptyState() {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('emptyState').classList.remove('hidden');
+            document.getElementById('cifrasGrid').classList.add('hidden');
+        }
+
+        // Funções de navegação
+        function filtrarFavoritas() {
+            // Já estamos na página, não faz nada
+            return;
+        }
+
+        function filtrarMinhasCifras() {
+            window.location.href = 'minhas-cifras.html';
+        }
+    </script>
+</body>
+</html> 

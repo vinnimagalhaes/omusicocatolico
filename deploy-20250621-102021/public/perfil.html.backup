@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="estilo.css" rel="stylesheet">
+    <link href="css/responsive.css" rel="stylesheet">
+    <title>Meu Perfil - OMúsicoCatólico</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* Estilos para navegação principal */
+        .nav-item:hover { 
+            background-color: white; 
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .nav-item.active {
+            background-color: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Principal -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo e Título -->
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold text-blue-600">OMúsicoCatólico</h1>
+                    </div>
+                </div>
+
+                <!-- Busca Central -->
+                <div class="flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input 
+                            type="text" 
+                            placeholder="Buscar cifras..."
+                            class="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        >
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
+                    </div>
+                </div>
+
+                <!-- Ações e User Menu -->
+                <div class="flex items-center space-x-4">
+                    <div id="userInfo" class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
+                            <span id="userInitials" class="text-white text-sm font-medium"></span>
+                        </div>
+                        <span id="userName" class="text-gray-700 font-medium"></span>
+                    </div>
+                    
+                    <!-- User Menu -->
+                    <div class="relative" id="userMenu">
+                        <button onclick="toggleUserMenu()" class="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-user text-white text-sm"></i>
+                        </button>
+                        
+                        <!-- Dropdown -->
+                        <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div class="py-1">
+                                <a href="perfil.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-user mr-2"></i>Meu Perfil
+                                </a>
+                                <a href="repertorios.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-list mr-2"></i>Meus Repertórios
+                                </a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-cog mr-2"></i>Configurações
+                                </a>
+                                <hr class="my-1">
+                                <button onclick="logout()" class="w-full text-left block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Sair
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navegação Principal -->
+    <nav class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 overflow-x-auto py-4">
+                <a href="/inicio" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-home w-4 h-4 mr-2 text-gray-500"></i>
+                    Início
+                </a>
+                <a href="/repertorios" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-list w-4 h-4 mr-2 text-gray-500"></i>
+                    Meus Repertórios
+                </a>
+                <a href="/favoritas" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-heart w-4 h-4 mr-2 text-gray-500"></i>
+                    Favoritas
+                </a>
+                <a href="/minhas-cifras" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-music w-4 h-4 mr-2 text-gray-500"></i>
+                    Minhas Cifras
+                </a>
+                <a href="/categorias" class="nav-item flex items-center px-3 py-2 text-sm text-gray-700 rounded-lg hover:bg-white hover:shadow-sm whitespace-nowrap">
+                    <i class="fas fa-tags w-4 h-4 mr-2 text-gray-500"></i>
+                    Categorias
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Profile Header -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex items-center space-x-6">
+                        <div class="relative">
+                            <div class="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center">
+                                <span id="profileInitials" class="text-white text-2xl font-bold"></span>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <h2 id="profileName" class="text-2xl font-bold text-gray-900"></h2>
+                            <p id="profileEmail" class="text-gray-600"></p>
+                            <p class="text-sm text-gray-500 mt-1">Membro desde <span id="memberSince">2024</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-music text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Cifras Criadas</p>
+                                <p id="statsCreateCifras" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-heart text-red-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Favoritos</p>
+                                <p id="statsFavoritos" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-list text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-gray-600">Repertórios</p>
+                                <p id="statsRepertorios" class="text-2xl font-bold text-gray-900">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Data Form -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-6">Dados Pessoais</h3>
+                    <form id="profileForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                                <input type="text" id="inputNome" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" id="inputEmail" class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50" disabled>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Bio</label>
+                            <textarea id="inputBio" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Conte um pouco sobre você..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Localização</label>
+                            <input type="text" id="inputLocalizacao" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Cidade, Estado">
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-save mr-2"></i>Salvar Alterações
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Change Password -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mt-6">
+                    <h3 class="text-lg font-medium text-gray-900 mb-6">Alterar Senha</h3>
+                    <form id="passwordForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Senha Atual</label>
+                                <input type="password" id="currentPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Nova Senha</label>
+                                <input type="password" id="newPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" minlength="6" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Confirmar Nova Senha</label>
+                                <input type="password" id="confirmNewPassword" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
+                            </div>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                                <i class="fas fa-key mr-2"></i>Alterar Senha
+                            </button>
+                        </div>
+                    </form>
+                </div>
+    </main>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-50"></div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        // Função para toggle do user menu
+        function toggleUserMenu() {
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Fechar dropdown quando clicar fora
+        document.addEventListener('click', function(event) {
+            const userMenu = document.getElementById('userMenu');
+            const dropdown = document.getElementById('userDropdown');
+            
+            if (userMenu && !userMenu.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+    </script>
+    <script>
+        let userData = {};
+
+        // Carregar dados do usuário
+        async function loadUserData() {
+            try {
+                const user = JSON.parse(localStorage.getItem('user'));
+                userData = user;
+                
+                // Atualizar interface
+                document.getElementById('userName').textContent = user.nome;
+                document.getElementById('userInitials').textContent = getInitials(user.nome);
+                document.getElementById('profileName').textContent = user.nome;
+                document.getElementById('profileEmail').textContent = user.email;
+                document.getElementById('profileInitials').textContent = getInitials(user.nome);
+                
+                // Preencher formulário
+                document.getElementById('inputNome').value = user.nome;
+                document.getElementById('inputEmail').value = user.email;
+                document.getElementById('inputBio').value = user.bio || '';
+                document.getElementById('inputLocalizacao').value = user.localizacao || '';
+                
+                // Carregar estatísticas
+                await loadStats();
+                
+            } catch (error) {
+                console.error('Erro ao carregar dados do usuário:', error);
+                showToast('Erro ao carregar dados do perfil', 'error');
+            }
+        }
+
+        // Carregar estatísticas
+        async function loadStats() {
+            try {
+                // Simulação - implementar chamadas reais para a API
+                document.getElementById('statsCreateCifras').textContent = '0';
+                document.getElementById('statsFavoritos').textContent = '0';
+                document.getElementById('statsRepertorios').textContent = '0';
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+            }
+        }
+
+        // Obter iniciais do nome
+        function getInitials(name) {
+            return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+        }
+
+        // Salvar perfil
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const nome = document.getElementById('inputNome').value.trim();
+            const bio = document.getElementById('inputBio').value.trim();
+            const localizacao = document.getElementById('inputLocalizacao').value.trim();
+            
+            try {
+                const response = await fetchWithAuth(apiUrl('/api/auth/profile'), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nome, bio, localizacao })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast('Perfil atualizado com sucesso!', 'success');
+                    
+                    // Atualizar dados locais
+                    userData = data.user;
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    
+                    // Atualizar interface
+                    document.getElementById('userName').textContent = nome;
+                    document.getElementById('userInitials').textContent = getInitials(nome);
+                    document.getElementById('profileName').textContent = nome;
+                    document.getElementById('profileInitials').textContent = getInitials(nome);
+                } else {
+                    showToast(data.message || 'Erro ao salvar perfil', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao salvar perfil:', error);
+                showToast('Erro ao salvar perfil', 'error');
+            }
+        });
+
+        // Alterar senha
+        document.getElementById('passwordForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+            
+            if (newPassword !== confirmNewPassword) {
+                showToast('As novas senhas não coincidem', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showToast('A nova senha deve ter pelo menos 6 caracteres', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetchWithAuth(apiUrl('/api/auth/change-password'), {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast('Senha alterada com sucesso!', 'success');
+                    
+                    // Limpar campos
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmNewPassword').value = '';
+                } else {
+                    showToast(data.message || 'Erro ao alterar senha', 'error');
+                }
+                
+            } catch (error) {
+                console.error('Erro ao alterar senha:', error);
+                showToast('Erro ao alterar senha', 'error');
+            }
+        });
+
+        // Sistema de Toast
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            
+            const toast = document.createElement('div');
+            toast.className = `
+                bg-white border-l-4 border-${type === 'success' ? 'green' : type === 'error' ? 'red' : 'blue'}-500 
+                p-4 rounded-lg shadow-lg mb-4 max-w-sm transform transition-all duration-300 
+                translate-x-full opacity-0
+            `;
+            
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-${type === 'success' ? 'check-circle text-green-500' : 
+                                         type === 'error' ? 'times-circle text-red-500' : 
+                                         'info-circle text-blue-500'}"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">${message}</p>
+                    </div>
+                    <div class="ml-auto pl-3">
+                        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                                class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full', 'opacity-0');
+            }, 100);
+            
+            setTimeout(() => {
+                toast.classList.add('translate-x-full', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+        }
+
+        // Inicializar página
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+        });
+    </script>
+</body>
+</html> 
