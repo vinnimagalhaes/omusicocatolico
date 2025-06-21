@@ -12,6 +12,7 @@ import FavoritasPage from './pages/FavoritasPage'
 import PerfilPage from './pages/PerfilPage'
 import RepertoriosPage from './pages/RepertoriosPage'
 import CategoriasPage from './pages/CategoriasPage'
+import RepertoriosComunidadePage from './pages/RepertoriosComunidadePage'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/minhas-cifras" element={<MinhasCifrasPage />} />
           <Route path="/favoritas" element={<FavoritasPage />} />
           <Route path="/repertorios" element={<RepertoriosPage />} />
+          <Route path="/repertorios-comunidade" element={<RepertoriosComunidadePage />} />
           <Route path="/categorias" element={<CategoriasPage />} />
           <Route path="/perfil" element={<PerfilPage />} />
         </Routes>
