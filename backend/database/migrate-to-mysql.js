@@ -6,8 +6,8 @@ require('dotenv').config();
 // Configuração do MySQL
 const mysqlConfig = {
     host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'omusicocatolico',
-    password: process.env.DB_PASS || 'OMusicoCatolico2025p*',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
     database: process.env.DB_NAME || 'omusicocatolico'
 };
 

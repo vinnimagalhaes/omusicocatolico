@@ -77,6 +77,44 @@ apiRouter.use('/banners', require('./routes/banners'));
 apiRouter.use('/carrosseis', require('./routes/carrosseis'));
 apiRouter.use('/master', require('./routes/master'));
 
+// Rota de teste para debug
+apiRouter.get('/test-cifras', async (req, res) => {
+    console.log('🔥 ROTA DE TESTE EXECUTADA!');
+    try {
+        const { Cifra } = require('./models');
+        
+        // Buscar todas as cifras
+        const todasCifras = await Cifra.findAll();
+        console.log(`📊 Total de cifras: ${todasCifras.length}`);
+        
+        // Buscar cifras aprovadas
+        const cifrasAprovadas = await Cifra.findAll({
+            where: {
+                ativo: true,
+                status_analise: 'aprovada'
+            }
+        });
+        console.log(`✅ Cifras aprovadas: ${cifrasAprovadas.length}`);
+        
+        res.json({
+            success: true,
+            total_cifras: todasCifras.length,
+            cifras_aprovadas: cifrasAprovadas.length,
+            cifras: cifrasAprovadas.map(c => ({
+                id: c.id,
+                titulo: c.titulo,
+                artista: c.artista,
+                status_analise: c.status_analise,
+                ativo: c.ativo
+            }))
+        });
+        
+    } catch (error) {
+        console.error('❌ Erro na rota de teste:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.use('/api', apiRouter);
 
 // Rotas para páginas com URLs limpas

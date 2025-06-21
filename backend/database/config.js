@@ -1,44 +1,30 @@
 const { Sequelize } = require('sequelize');
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../.env') });
 
 // Configuração do banco de dados
 const isDevelopment = process.env.NODE_ENV !== 'production';
-const dialect = process.env.DB_DIALECT || 'mysql';
+const dialect = 'mysql'; // Forçar MySQL
 
-let sequelize;
-
-if (dialect === 'sqlite') {
-    // Configuração para SQLite (desenvolvimento)
-    sequelize = new Sequelize({
-        dialect: 'sqlite',
-        storage: process.env.DB_PATH || './backend/database.sqlite',
-        logging: false,
-        define: {
-            timestamps: true,
-            underscored: true,
-        }
-    });
-} else {
-    // Configuração para MySQL (produção)
-    sequelize = new Sequelize({
-        dialect: 'mysql',
-        host: process.env.DB_HOST || 'localhost',
-        username: process.env.DB_USER || 'omusicocatolico',
-        password: process.env.DB_PASS || 'OMusicoCatolico2025p*',
-        database: process.env.DB_NAME || 'omusicocatolico',
-        logging: false,
-        define: {
-            timestamps: true,
-            underscored: true,
-        },
-        pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
-        }
-    });
-}
+// Forçar configuração MySQL
+const sequelize = new Sequelize({
+    dialect: 'mysql',
+    host: process.env.DB_HOST || 'localhost',
+    username: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'omusicocatolico',
+    logging: false,
+    define: {
+        timestamps: true,
+        underscored: true,
+    },
+    pool: {
+        max: 5,
+        min: 0,
+        acquire: 30000,
+        idle: 10000
+    }
+});
 
 // Testar conexão
 sequelize.authenticate()

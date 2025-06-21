@@ -92,10 +92,7 @@ router.get('/', async (req, res) => {
         });
         
         // Formatar resultado
-        const cifrasFormatadas = cifras.map(cifra => ({
-            ...cifra.toJSON(),
-            views: cifra.getViewsFormatadas()
-        }));
+        const cifrasFormatadas = cifras.map(cifra => cifra.toJSON());
         
         res.json({
             cifras: cifrasFormatadas,
