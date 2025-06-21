@@ -79,5 +79,8 @@
   "bugs": {
     "url": "https://github.com/viniciusmagalhaes/catcifras/issues"
   },
-  "homepage": "https://github.com/viniciusmagalhaes/catcifras#readme"
+  "homepage": "https://github.com/viniciusmagalhaes/catcifras#readme",
+  "dependencies": {
+    "google-auth-library": "^10.1.0"
+  }
 }

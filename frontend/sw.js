@@ -1,60 +1,61 @@
-// 🚨 SERVICE WORKER DE EMERGÊNCIA - FORÇA LIMPEZA TOTAL E SE AUTO-DESABILITA
-console.log('🚨 [SW EMERGÊNCIA] Iniciando limpeza total...');
+// Service Worker Normal - Versão de produção
+const CACHE_NAME = 'omusicocatolico-v1';
+const urlsToCache = [
+  '/',
+  '/css/main.css',
+  '/css/components.css',
+  '/js/app.js',
+  '/js/auth.js'
+];
 
-// Instalação - limpa tudo
+console.log('✅ [SW] Service Worker normal carregado!');
+
 self.addEventListener('install', event => {
-  console.log('🚨 [SW EMERGÊNCIA] Instalando e limpando TUDO...');
-  
+  console.log('✅ [SW] Instalando service worker...');
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => {
+        console.log('✅ [SW] Cache aberto');
+        return cache.addAll(urlsToCache);
+      })
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener('activate', event => {
+  console.log('✅ [SW] Ativando service worker...');
   event.waitUntil(
     caches.keys().then(cacheNames => {
-      console.log('🚨 [SW EMERGÊNCIA] Caches encontrados:', cacheNames);
       return Promise.all(
         cacheNames.map(cacheName => {
-          console.log('🚨 [SW EMERGÊNCIA] DELETANDO cache:', cacheName);
-          return caches.delete(cacheName);
+          if (cacheName !== CACHE_NAME) {
+            console.log('✅ [SW] Removendo cache antigo:', cacheName);
+            return caches.delete(cacheName);
+          }
         })
       );
-    }).then(() => {
-      console.log('🚨 [SW EMERGÊNCIA] Todos os caches deletados! Forçando ativação...');
-      return self.skipWaiting();
-    })
+    }).then(() => self.clients.claim())
   );
 });
 
-// Ativação - assume controle e força reload
-self.addEventListener('activate', event => {
-  console.log('🚨 [SW EMERGÊNCIA] Ativado! Assumindo controle...');
-  
-  event.waitUntil(
-    self.clients.claim().then(() => {
-      console.log('🚨 [SW EMERGÊNCIA] Controle assumido! Forçando reload de todas as páginas...');
-      
-      // Força reload de todas as páginas abertas
-      return self.clients.matchAll().then(clients => {
-        clients.forEach(client => {
-          console.log('🚨 [SW EMERGÊNCIA] Forçando reload da página:', client.url);
-          client.postMessage({
-            type: 'FORCE_RELOAD',
-            message: 'Service Worker de emergência ativado - forçando reload'
-          });
-        });
-      });
-    })
-  );
-});
-
-// NÃO INTERCEPTA NADA - deixa tudo passar
 self.addEventListener('fetch', event => {
-  console.log('🚨 [SW EMERGÊNCIA] NÃO interceptando:', event.request.url);
-  // Não faz nada - deixa a requisição passar normalmente
-});
-
-// Escuta mensagens dos clientes
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    console.log('🚨 [SW EMERGÊNCIA] Recebido SKIP_WAITING');
-    self.skipWaiting();
-  }
-});
-
-console.log('🚨 [SW EMERGÊNCIA] Service Worker de emergência carregado!'); 
+  // Estratégia: Network first, fallback para cache
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        // Se a resposta é válida, clona e armazena no cache
+        if (response.status === 200) {
+          const responseClone = response.clone();
+          caches.open(CACHE_NAME)
+            .then(cache => {
+              cache.put(event.request, responseClone);
+            });
+        }
+        return response;
+      })
+      .catch(() => {
+        // Se falhar, tenta buscar no cache
+        return caches.match(event.request);
+      })
+  );
+}); 
