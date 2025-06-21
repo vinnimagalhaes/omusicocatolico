@@ -42,133 +42,8 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- Navegação Principal Unificada -->
-    <nav class="main-navigation" id="mainNavigation">
-        <div class="nav-container">
-            <!-- Desktop Navigation -->
-            <div class="nav-desktop">
-                <a href="/" class="nav-brand">OMúsicoCatólico</a>
-                
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="/inicio" data-nav="inicio" class="nav-link">
-                            <i class="fas fa-home nav-icon"></i>
-                            Início
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item nav-dropdown">
-                        <div class="nav-link nav-dropdown-toggle active">
-                            <i class="fas fa-list nav-icon"></i>
-                            Repertórios
-                            <i class="fas fa-chevron-down nav-dropdown-icon"></i>
-                        </div>
-                        <div class="nav-dropdown-menu">
-                            <a href="/repertorios" data-nav="repertorios" class="nav-dropdown-item active">
-                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
-                                Meus Repertórios
-                            </a>
-                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-dropdown-item">
-                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
-                                Repertórios da Comunidade
-                            </a>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a href="/favoritas" data-nav="favoritas" class="nav-link">
-                            <i class="fas fa-heart nav-icon"></i>
-                            Favoritas
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-link">
-                            <i class="fas fa-music nav-icon"></i>
-                            Minhas Cifras
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a href="/categorias" data-nav="categorias" class="nav-link">
-                            <i class="fas fa-tags nav-icon"></i>
-                            Categorias
-                        </a>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Mobile Navigation -->
-            <div class="nav-mobile">
-                <a href="/" class="nav-brand">OMúsicoCatólico</a>
-                <button class="nav-toggle" aria-label="Abrir menu">
-                    <i class="fas fa-bars nav-toggle-icon"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Mobile Menu -->
-        <div class="nav-mobile-menu">
-            <div class="nav-mobile-content">
-                <div class="nav-mobile-header">
-                    <span class="nav-brand">OMúsicoCatólico</span>
-                    <button class="nav-mobile-close" aria-label="Fechar menu">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                
-                <ul class="nav-mobile-list">
-                    <li class="nav-mobile-item">
-                        <a href="/inicio" data-nav="inicio" class="nav-mobile-link">
-                            <i class="fas fa-home nav-icon"></i>
-                            Início
-                        </a>
-                    </li>
-                    
-                    <li class="nav-mobile-dropdown">
-                        <button class="nav-mobile-dropdown-toggle active">
-                            <div class="flex items-center gap-3">
-                                <i class="fas fa-list nav-icon"></i>
-                                Repertórios
-                            </div>
-                            <i class="fas fa-chevron-down nav-mobile-dropdown-icon"></i>
-                        </button>
-                        <div class="nav-mobile-dropdown-menu">
-                            <a href="/repertorios" data-nav="repertorios" class="nav-mobile-dropdown-item active">
-                                <i class="fas fa-user nav-icon" style="color: var(--color-primary-600);"></i>
-                                Meus Repertórios
-                            </a>
-                            <a href="/repertorios-comunidade" data-nav="repertorios-comunidade" class="nav-mobile-dropdown-item">
-                                <i class="fas fa-users nav-icon" style="color: var(--color-secondary-600);"></i>
-                                Repertórios da Comunidade
-                            </a>
-                        </div>
-                    </li>
-                    
-                    <li class="nav-mobile-item">
-                        <a href="/favoritas" data-nav="favoritas" class="nav-mobile-link">
-                            <i class="fas fa-heart nav-icon"></i>
-                            Favoritas
-                        </a>
-                    </li>
-                    
-                    <li class="nav-mobile-item">
-                        <a href="/minhas-cifras" data-nav="minhas-cifras" class="nav-mobile-link">
-                            <i class="fas fa-music nav-icon"></i>
-                            Minhas Cifras
-                        </a>
-                    </li>
-                    
-                    <li class="nav-mobile-item">
-                        <a href="/categorias" data-nav="categorias" class="nav-mobile-link">
-                            <i class="fas fa-tags nav-icon"></i>
-                            Categorias
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <!-- Navigation placeholder - will be filled by navigation.js -->
+    <nav id="mainNavigation"></nav>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -1274,7 +1149,7 @@
         
         // Variáveis globais para estrutura da missa
         let repertorioMissaAtual = null;
-        let cifrasCarregadas = [];
+        let cifrasRepertorio = [];
         let partesAtivas = new Set();
 
         // Abrir modal da estrutura da missa
@@ -1307,10 +1182,10 @@
                 partesAtivas.add(parte);
                 
                 // Se ainda não carregou as cifras para esta parte, carregar
-                if (!cifrasCarregadas.length) {
+                if (!cifrasRepertorio.length) {
                     carregarCifrasParaEstrutura();
                 } else {
-                    renderizarCifrasParaParte(parte, cifrasCarregadas);
+                    renderizarCifrasParaParte(parte, cifrasRepertorio);
                 }
             }
         }
@@ -1320,11 +1195,11 @@
             try {
                 const response = await fetchWithAuth(apiUrl('/api/cifras/para-repertorios'));
                 const data = await response.json();
-                cifrasCarregadas = data.cifras || [];
+                cifrasRepertorio = data.cifras || [];
                 
                 // Renderizar para todas as partes ativas
                 partesAtivas.forEach(parte => {
-                    renderizarCifrasParaParte(parte, cifrasCarregadas);
+                    renderizarCifrasParaParte(parte, cifrasRepertorio);
                 });
                 
             } catch (error) {
@@ -1366,12 +1241,12 @@
         // Buscar cifras para uma parte específica
         function buscarCifrasParaParte(parte, termo) {
             if (!termo || termo.trim() === '') {
-                renderizarCifrasParaParte(parte, cifrasCarregadas);
+                renderizarCifrasParaParte(parte, cifrasRepertorio);
                 return;
             }
             
             const termoBusca = termo.toLowerCase();
-            const cifrasFiltradas = cifrasCarregadas.filter(cifra => 
+            const cifrasFiltradas = cifrasRepertorio.filter(cifra => 
                 cifra.titulo.toLowerCase().includes(termoBusca) ||
                 cifra.artista.toLowerCase().includes(termoBusca) ||
                 (cifra.categoria && cifra.categoria.toLowerCase().includes(termoBusca))
@@ -1423,7 +1298,7 @@
         // Adicionar cifra visualmente na lista da parte
         function adicionarCifraVisualmenteParte(parte, cifraId) {
             // Encontrar a cifra nas cifras carregadas
-            const cifra = cifrasCarregadas.find(c => c.id === cifraId);
+            const cifra = cifrasRepertorio.find(c => c.id === cifraId);
             if (!cifra) return;
             
             // Container da lista de cifras da parte
@@ -1468,10 +1343,10 @@
         // Remover cifra da lista de disponíveis de uma parte após adicionar
         function removerCifraDaListaParte(parte, cifraId) {
             // Remover das cifras carregadas
-            cifrasCarregadas = cifrasCarregadas.filter(c => c.id !== cifraId);
+            cifrasRepertorio = cifrasRepertorio.filter(c => c.id !== cifraId);
             
             // Re-renderizar a lista da parte
-            renderizarCifrasParaParte(parte, cifrasCarregadas);
+            renderizarCifrasParaParte(parte, cifrasRepertorio);
         }
         
         // Remover cifra da lista de disponíveis após adicionar
