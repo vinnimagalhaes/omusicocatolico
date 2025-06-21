@@ -107,19 +107,19 @@ class NavigationManager {
             // Atualizar nome do usuário
             const userNameElements = document.querySelectorAll('#userName, #userNameDropdown, #userNameMobile');
             userNameElements.forEach(el => {
-                el.textContent = userData.name || userData.email || 'Usuário';
+                el.textContent = userData.nome || userData.name || userData.email || 'Usuário';
             });
 
             // Atualizar iniciais
             const userInitialsElements = document.querySelectorAll('#userInitials, #userInitialsMobile');
             userInitialsElements.forEach(el => {
-                el.textContent = this.getUserInitials(userData.name || userData.email);
+                el.textContent = this.getUserInitials(userData.nome || userData.name || userData.email);
             });
 
             // Mostrar/esconder link master se necessário
             const masterLinks = document.querySelectorAll('#masterLink, #masterLinkMobile');
             masterLinks.forEach(el => {
-                if (userData.isMaster) {
+                if (userData.isMaster || userData.tipo === 'master') {
                     el.classList.remove('hidden');
                 } else {
                     el.classList.add('hidden');
@@ -130,7 +130,8 @@ class NavigationManager {
 
     getUserData() {
         try {
-            const userData = localStorage.getItem('userData');
+            // Tentar primeiro 'user' (formato atual) depois 'userData' (formato antigo)
+            const userData = localStorage.getItem('user') || localStorage.getItem('userData');
             return userData ? JSON.parse(userData) : null;
         } catch (error) {
             console.error('Erro ao obter dados do usuário:', error);
@@ -372,5 +373,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.navigationManager = new NavigationManager();
 });
 
+// Função global para atualizar UI de autenticação
+function updateAuthUI() {
+    if (window.navigationManager) {
+        window.navigationManager.updateUserMenuState();
+    }
+}
+
 // Exportar para uso global
-window.NavigationUtils = NavigationUtils; 
+window.NavigationUtils = NavigationUtils;
+window.updateAuthUI = updateAuthUI; 
