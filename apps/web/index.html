@@ -16,17 +16,33 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
     <!-- CSS Components para modais e outros componentes -->
-    <link href="/public/css/components.css" rel="stylesheet">
-    <link href="/public/css/design-system.css" rel="stylesheet">
+    <link href="/css/components.css" rel="stylesheet">
+    <link href="/css/design-system.css" rel="stylesheet">
+    
+    <!-- Scripts JavaScript carregados ANTES do React -->
+    <script src="/js/auth.js"></script>
+    <script src="/js/app.js"></script>
+    
+    <!-- Debug: Verificar se as funções foram carregadas -->
+    <script>
+      console.log('🔍 [HTML] Verificando funções após carregamento dos scripts...');
+      console.log('🔍 [HTML] showAddCifraModal:', typeof window.showAddCifraModal);
+      console.log('🔍 [HTML] openCifraEditor:', typeof window.openCifraEditor);
+      
+      // Garantir que as funções estejam disponíveis globalmente
+      window.reactAppReady = function() {
+        console.log('🚀 [HTML] React App pronto, funções disponíveis:');
+        console.log('🔍 [HTML] showAddCifraModal:', typeof window.showAddCifraModal);
+        console.log('🔍 [HTML] openCifraEditor:', typeof window.openCifraEditor);
+        console.log('🔍 [HTML] openUrlImportModal:', typeof window.openUrlImportModal);
+        console.log('🔍 [HTML] openCifraUploader:', typeof window.openCifraUploader);
+      };
+    </script>
   </head>
   <body class="bg-gray-50">
     <div id="root"></div>
     
-    <!-- Scripts JavaScript necessários para modais e funcionalidades -->
-    <script src="/public/js/auth.js"></script>
-    <script src="/public/js/app.js"></script>
-    
-    <!-- React App -->
+    <!-- React App carregado por último -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

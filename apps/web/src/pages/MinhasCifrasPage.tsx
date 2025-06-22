@@ -7,53 +7,90 @@ declare global {
     openCifraEditor: () => void;
     openUrlImportModal: () => void;
     openCifraUploader: () => void;
+    reactAppReady: () => void;
   }
 }
 
 const MinhasCifrasPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cifras, _setCifras] = useState([]);
+  const [scriptsReady, setScriptsReady] = useState(false);
 
   useEffect(() => {
-    // Simular carregamento
+    console.log('🚀 [REACT] MinhasCifrasPage montado!');
+    
+    // Verificar se as funções estão disponíveis imediatamente
+    const checkFunctions = () => {
+      console.log('🔍 [REACT] Verificando funções JavaScript...');
+      console.log('🔍 [REACT] showAddCifraModal:', typeof window.showAddCifraModal);
+      console.log('🔍 [REACT] openCifraEditor:', typeof window.openCifraEditor);
+      console.log('🔍 [REACT] openUrlImportModal:', typeof window.openUrlImportModal);
+      console.log('🔍 [REACT] openCifraUploader:', typeof window.openCifraUploader);
+      
+      const functionsAvailable = 
+        typeof window.showAddCifraModal === 'function' &&
+        typeof window.openCifraEditor === 'function';
+      
+      if (functionsAvailable) {
+        console.log('✅ [REACT] Todas as funções estão disponíveis!');
+        setScriptsReady(true);
+      } else {
+        console.log('⚠️ [REACT] Algumas funções não estão disponíveis ainda...');
+      }
+      
+      return functionsAvailable;
+    };
+
+    // Verificar imediatamente
+    if (!checkFunctions()) {
+      // Se não estão disponíveis, tentar novamente em intervalos
+      let attempts = 0;
+      const maxAttempts = 10;
+      
+      const interval = setInterval(() => {
+        attempts++;
+        console.log(`🔄 [REACT] Tentativa ${attempts}/${maxAttempts} de verificar funções...`);
+        
+        if (checkFunctions() || attempts >= maxAttempts) {
+          clearInterval(interval);
+          if (attempts >= maxAttempts) {
+            console.error('❌ [REACT] Não foi possível carregar as funções JavaScript!');
+          }
+        }
+      }, 500);
+    }
+
+    // Chamar função de callback se disponível
+    if (typeof window.reactAppReady === 'function') {
+      window.reactAppReady();
+    }
+
+    // Simular carregamento das cifras
     setTimeout(() => {
       setLoading(false);
     }, 1000);
-    
-    // Verificar se as funções JavaScript estão disponíveis
-    console.log('🔍 [REACT] Verificando funções JavaScript...');
-    console.log('🔍 [REACT] showAddCifraModal:', typeof window.showAddCifraModal);
-    console.log('🔍 [REACT] openCifraEditor:', typeof window.openCifraEditor);
-    console.log('🔍 [REACT] openUrlImportModal:', typeof window.openUrlImportModal);
-    console.log('🔍 [REACT] openCifraUploader:', typeof window.openCifraUploader);
-    
-    // Tentar carregar as funções se não estiverem disponíveis
-    if (!window.showAddCifraModal) {
-      console.warn('⚠️ [REACT] Funções JavaScript não carregadas, tentando novamente em 2s...');
-      setTimeout(() => {
-        console.log('🔄 [REACT] Verificando novamente...');
-        console.log('🔍 [REACT] showAddCifraModal:', typeof window.showAddCifraModal);
-      }, 2000);
-    }
   }, []);
 
   // Handlers para chamar as funções JavaScript
   const handleNovaCifra = () => {
     console.log('🎵 [REACT] Botão Nova Cifra clicado!');
+    console.log('🔍 [REACT] Scripts prontos:', scriptsReady);
     console.log('🔍 [REACT] showAddCifraModal disponível:', typeof window.showAddCifraModal);
     
-    if (window.showAddCifraModal) {
+    if (window.showAddCifraModal && typeof window.showAddCifraModal === 'function') {
       console.log('✅ [REACT] Chamando showAddCifraModal...');
-      window.showAddCifraModal();
+      try {
+        window.showAddCifraModal();
+      } catch (error) {
+        console.error('❌ [REACT] Erro ao chamar showAddCifraModal:', error);
+      }
     } else {
       console.error('❌ [REACT] showAddCifraModal não está disponível');
-      // Fallback: tentar chamar diretamente se estiver no objeto global
-      if (typeof (window as any).showAddCifraModal === 'function') {
-        console.log('🔄 [REACT] Tentando fallback...');
-        (window as any).showAddCifraModal();
-      } else {
-        alert('Erro: Função showAddCifraModal não carregada. Recarregue a página.');
-      }
+      
+      // Debug: listar todas as propriedades do window
+      console.log('🔍 [REACT] Propriedades do window:', Object.keys(window).filter(key => key.includes('show') || key.includes('open')));
+      
+      alert('⚠️ Scripts não carregados ainda. Aguarde ou recarregue a página.');
     }
   };
 
@@ -64,6 +101,21 @@ const MinhasCifrasPage: React.FC = () => {
 
   return (
     <div className="bg-gray-50 font-sans">
+      {/* Status de carregamento dos scripts */}
+      {!scriptsReady && (
+        <div className="fixed top-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-2 rounded z-50">
+          <i className="fas fa-spinner fa-spin mr-2"></i>
+          Aguardando scripts JavaScript...
+        </div>
+      )}
+      
+      {scriptsReady && (
+        <div className="fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded z-50">
+          <i className="fas fa-check mr-2"></i>
+          Scripts carregados!
+        </div>
+      )}
+      
       {/* Navegação Principal Unificada */}
       <nav className="main-navigation" id="mainNavigation">
         <div className="nav-container">

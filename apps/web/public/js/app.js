@@ -5106,3 +5106,25 @@ function distribuirBlocosEmColunas(blocos, numeroColunas) {
 }
 
 // Visualizar cifra no formato da Tela da Missa (função de preview para criação)
+
+// ===== EXPORTAÇÕES GLOBAIS PARA REACT =====
+// Anexar funções principais ao objeto window para que React possa acessá-las
+window.showAddCifraModal = showAddCifraModal;
+window.openCifraEditor = openCifraEditor;
+window.openUrlImportModal = openUrlImportModal;
+window.openCifraUploader = openCifraUploader;
+window.showCreateRepertorioModal = showCreateRepertorioModal;
+window.showBannerManagerModal = showBannerManagerModal;
+window.closeModal = closeModal;
+window.viewCifra = viewCifra;
+window.toggleFavorite = toggleFavorite;
+window.addToRepertorio = addToRepertorio;
+
+// Debug: Confirmar que as funções foram exportadas
+console.log('✅ [APP.JS] Funções exportadas globalmente:');
+console.log('✅ [APP.JS] showAddCifraModal:', typeof window.showAddCifraModal);
+console.log('✅ [APP.JS] openCifraEditor:', typeof window.openCifraEditor);
+console.log('✅ [APP.JS] openUrlImportModal:', typeof window.openUrlImportModal);
+console.log('✅ [APP.JS] openCifraUploader:', typeof window.openCifraUploader);
+console.log('✅ [APP.JS] showCreateRepertorioModal:', typeof window.showCreateRepertorioModal);
+console.log('✅ [APP.JS] showBannerManagerModal:', typeof window.showBannerManagerModal);
