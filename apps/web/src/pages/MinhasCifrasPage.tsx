@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 
+// Declarar as funções JavaScript globais para TypeScript
+declare global {
+  interface Window {
+    showAddCifraModal: () => void;
+    openCifraEditor: () => void;
+    openUrlImportModal: () => void;
+    openCifraUploader: () => void;
+  }
+}
+
 const MinhasCifrasPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [cifras, _setCifras] = useState([]);
@@ -9,7 +19,48 @@ const MinhasCifrasPage: React.FC = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+    
+    // Verificar se as funções JavaScript estão disponíveis
+    console.log('🔍 [REACT] Verificando funções JavaScript...');
+    console.log('🔍 [REACT] showAddCifraModal:', typeof window.showAddCifraModal);
+    console.log('🔍 [REACT] openCifraEditor:', typeof window.openCifraEditor);
+    console.log('🔍 [REACT] openUrlImportModal:', typeof window.openUrlImportModal);
+    console.log('🔍 [REACT] openCifraUploader:', typeof window.openCifraUploader);
+    
+    // Tentar carregar as funções se não estiverem disponíveis
+    if (!window.showAddCifraModal) {
+      console.warn('⚠️ [REACT] Funções JavaScript não carregadas, tentando novamente em 2s...');
+      setTimeout(() => {
+        console.log('🔄 [REACT] Verificando novamente...');
+        console.log('🔍 [REACT] showAddCifraModal:', typeof window.showAddCifraModal);
+      }, 2000);
+    }
   }, []);
+
+  // Handlers para chamar as funções JavaScript
+  const handleNovaCifra = () => {
+    console.log('🎵 [REACT] Botão Nova Cifra clicado!');
+    console.log('🔍 [REACT] showAddCifraModal disponível:', typeof window.showAddCifraModal);
+    
+    if (window.showAddCifraModal) {
+      console.log('✅ [REACT] Chamando showAddCifraModal...');
+      window.showAddCifraModal();
+    } else {
+      console.error('❌ [REACT] showAddCifraModal não está disponível');
+      // Fallback: tentar chamar diretamente se estiver no objeto global
+      if (typeof (window as any).showAddCifraModal === 'function') {
+        console.log('🔄 [REACT] Tentando fallback...');
+        (window as any).showAddCifraModal();
+      } else {
+        alert('Erro: Função showAddCifraModal não carregada. Recarregue a página.');
+      }
+    }
+  };
+
+  const handleCriarPrimeiraCifra = () => {
+    console.log('🎵 [REACT] Botão Criar Primeira Cifra clicado!');
+    handleNovaCifra(); // Reutilizar a mesma lógica
+  };
 
   return (
     <div className="bg-gray-50 font-sans">
@@ -200,7 +251,7 @@ const MinhasCifrasPage: React.FC = () => {
 
         {/* Action Buttons */}
         <div className="mb-6 flex flex-wrap gap-4">
-          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors" onClick={handleNovaCifra}>
             <i className="fas fa-plus mr-2"></i>
             Nova Cifra
           </button>
@@ -228,7 +279,7 @@ const MinhasCifrasPage: React.FC = () => {
             <i className="fas fa-music text-6xl text-gray-300 mb-4"></i>
             <h3 className="text-xl font-medium text-gray-900 mb-2">Nenhuma cifra encontrada</h3>
             <p className="text-gray-600 mb-6">Crie sua primeira cifra para começar!</p>
-            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors" onClick={handleCriarPrimeiraCifra}>
               <i className="fas fa-plus mr-2"></i>
               Criar Primeira Cifra
             </button>
