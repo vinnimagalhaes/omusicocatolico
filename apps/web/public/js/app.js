@@ -1088,18 +1088,7 @@ async function adicionarCifraAoRepertorio(cifraId, repertorioId) {
 
 // Modal para exibir cifra (versão geral)
 function showCifraModal(cifra) {
-    // Esconder COMPLETAMENTE todos os dropdowns
-    document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
-        dropdown.style.display = 'none';
-    });
-    
-    // Adicionar classe que desabilita TODOS os dropdowns
-    document.body.classList.add('modal-open');
-    
-    // Criar modal dinamicamente
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4';
-    modal.innerHTML = `
+    const content = `
         <div class="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] min-h-[400px] flex flex-col overflow-hidden">
             <!-- Header fixo -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-4 md:p-6 border-b flex-shrink-0">
@@ -1158,27 +1147,13 @@ function showCifraModal(cifra) {
         </div>
     `;
     
+    const modal = createModal(content, { maxWidth: 'max-w-6xl', zIndex: 'z-[9999]' });
     document.body.appendChild(modal);
-    
-    // Fechar modal clicando fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
 }
 
 // Modal para exibir cifra em "Minhas Cifras" (com opções de editar, excluir e enviar para comunidade)
 function showMinhaCifraModal(cifra) {
     console.log('Mostrando modal da cifra:', cifra); // Debug
-    
-    // Esconder COMPLETAMENTE todos os dropdowns
-    document.querySelectorAll('.nav-item-dropdown').forEach(dropdown => {
-        dropdown.style.display = 'none';
-    });
-    
-    // Adicionar classe que desabilita TODOS os dropdowns
-    document.body.classList.add('modal-open');
     
     // Determinar status da cifra
     const statusTexto = {
@@ -1212,9 +1187,7 @@ function showMinhaCifraModal(cifra) {
     }
     
     // Criar modal dinamicamente
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4';
-    modal.innerHTML = `
+    const content = `
         <div class="bg-white rounded-lg max-w-6xl w-full max-h-[85vh] flex flex-col" style="max-height:85vh; min-height:400px;">
             <!-- Header fixo -->
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-4 md:p-6 border-b flex-shrink-0">
@@ -1269,14 +1242,8 @@ function showMinhaCifraModal(cifra) {
         </div>
     `;
     
+    const modal = createModal(content, { maxWidth: 'max-w-6xl', zIndex: 'z-[9999]' });
     document.body.appendChild(modal);
-    
-    // Fechar modal clicando fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
 }
 
 // Função para escapar HTML (evita XSS e mantém formatação)
@@ -1500,9 +1467,7 @@ function toggleTabs() {
 
 // Modal Criar Repertório (como mostrado no print)
 function showCreateRepertorioModal() {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-    modal.innerHTML = `
+    const content = `
         <div class="bg-white rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-4 md:p-6 border-b">
                 <h3 class="text-lg font-semibold text-gray-900">Criar Novo Repertório</h3>
@@ -1564,19 +1529,13 @@ function showCreateRepertorioModal() {
         </div>
     `;
     
+    const modal = createModal(content, { maxWidth: 'max-w-lg', zIndex: 'z-50' });
     document.body.appendChild(modal);
     
     // Focar no campo nome
     setTimeout(() => {
         document.getElementById('repertorioNome').focus();
     }, 100);
-    
-    // Fechar modal clicando fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
 }
 
 function createRepertorio() {
@@ -4176,9 +4135,7 @@ function openBannerManager() {
 
 // Modal de gerenciamento de banners
 function showBannerManagerModal() {
-    const modal = document.createElement('div');
-    modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4';
-    modal.innerHTML = `
+    const content = `
         <div class="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center p-6 border-b">
                 <h3 class="text-xl font-bold text-gray-900">Gerenciar Banners</h3>
@@ -4214,6 +4171,7 @@ function showBannerManagerModal() {
         </div>
     `;
     
+    const modal = createModal(content, { maxWidth: 'max-w-4xl', zIndex: 'z-50' });
     document.body.appendChild(modal);
     
     // Setup event listeners
@@ -4224,13 +4182,6 @@ function showBannerManagerModal() {
     
     // Carregar lista de banners
     refreshBannersList();
-    
-    // Fechar modal clicando fora
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
 }
 
 // Listar banners ativos no modal
@@ -4928,11 +4879,8 @@ function enviarParaComunidade(cifraId) {
 }
 
 function closeConfirmModal() {
-    console.log('Fechando modal de confirmação'); // Debug
-    const modal = document.querySelector('.z-\\[10000\\]');
-    if (modal) {
-        modal.remove();
-    }
+    console.log('Fechando modal de confirmação');
+    closeModal();
 }
 
 async function confirmarEnvioParaComunidade(cifraId) {
@@ -4990,10 +4938,7 @@ async function confirmarEnvioParaComunidade(cifraId) {
 }
 
 function closeSuccessModal() {
-    const modal = document.querySelector('.z-\\[10000\\]');
-    if (modal) {
-        modal.remove();
-    }
+    closeModal();
 }
 
 // Verificar se usuário é master e mostrar link do painel
