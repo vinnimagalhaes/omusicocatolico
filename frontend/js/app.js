@@ -718,6 +718,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Salvar observer globalmente para debug se necessário
     window.modalObserver = modalObserver;
+    
+    // Função global para forçar aplicação de handlers (útil para debug)
+    window.forceApplyModalHandlers = function() {
+        console.log('🔧 [FORCE] Aplicando handlers manualmente a todos os modais...');
+        const allModals = document.querySelectorAll('.fixed.inset-0, [id*="modal"], .modal, dialog');
+        console.log('🔍 [FORCE] Encontrados', allModals.length, 'modais');
+        allModals.forEach((modal, index) => {
+            console.log(`🎯 [FORCE] Processando modal ${index + 1}:`, modal.id || modal.className);
+            applyAutoHandlersToModal(modal);
+        });
+        console.log('✅ [FORCE] Handlers aplicados manualmente!');
+    };
 });
 
 // Configurar event listeners

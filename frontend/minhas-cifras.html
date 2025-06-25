@@ -348,12 +348,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[MINHAS CIFRAS] Página carregada, iniciando...');
             
-            // Configurar delegação global de eventos para modais PRIMEIRO
+            // Configurar sistema automático de modais PRIMEIRO
+            if (typeof setupAutoModalDetection === 'function') {
+                window.modalObserver = setupAutoModalDetection();
+                console.log('[MINHAS CIFRAS] ✅ Sistema automático de modais configurado!');
+            } else {
+                console.warn('[MINHAS CIFRAS] ⚠️ setupAutoModalDetection não encontrada, tentando aguardar...');
+                
+                // Tentar novamente após um delay
+                setTimeout(() => {
+                    if (typeof setupAutoModalDetection === 'function') {
+                        window.modalObserver = setupAutoModalDetection();
+                        console.log('[MINHAS CIFRAS] ✅ Sistema automático de modais configurado (retry)!');
+                    } else {
+                        console.error('[MINHAS CIFRAS] ❌ Sistema automático de modais não encontrado mesmo após retry');
+                    }
+                }, 200);
+            }
+            
+            // Manter delegação global como backup
             if (typeof setupGlobalModalEventDelegation === 'function') {
                 setupGlobalModalEventDelegation();
-                console.log('[MINHAS CIFRAS] ✅ Delegação global de eventos configurada!');
-            } else {
-                console.warn('[MINHAS CIFRAS] ⚠️ setupGlobalModalEventDelegation não encontrada');
+                console.log('[MINHAS CIFRAS] ✅ Delegação global de eventos configurada como backup!');
             }
             
             // AGUARDAR SCRIPTS CARREGAREM - FIX PARA RACE CONDITION
@@ -362,6 +378,17 @@
                 console.log('[MINHAS CIFRAS] openCifraEditor existe?', typeof openCifraEditor);
                 console.log('[MINHAS CIFRAS] openUrlImportModal existe?', typeof openUrlImportModal);
                 console.log('[MINHAS CIFRAS] openCifraUploader existe?', typeof openCifraUploader);
+                
+                // VERIFICAÇÃO ADICIONAL: Aplicar handlers automáticos a modais existentes
+                if (typeof applyAutoHandlersToModal === 'function') {
+                    const existingModals = document.querySelectorAll('.fixed.inset-0, [id*="modal"], .modal, dialog');
+                    if (existingModals.length > 0) {
+                        console.log('[MINHAS CIFRAS] 🔧 Aplicando handlers a', existingModals.length, 'modais existentes');
+                        existingModals.forEach(modal => {
+                            applyAutoHandlersToModal(modal);
+                        });
+                    }
+                }
                 
                 const token = localStorage.getItem('token') || localStorage.getItem('authToken');
                 const user = localStorage.getItem('user');
