@@ -71,7 +71,228 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// ========== SISTEMA AUTOMÁTICO DE DETECÇÃO DE MODAIS ==========
+// MutationObserver para detectar modais criados dinamicamente e aplicar handlers automaticamente
+function setupAutoModalDetection() {
+    console.log('🔍 [AUTO MODAL] Configurando detecção automática de modais...');
+    
+    // Criar observer para detectar novos elementos no DOM
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                // Verificar se é um elemento HTML (não texto)
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Detectar se é um modal ou contém um modal
+                    const modals = [];
+                    
+                    // Verificar se o próprio node é um modal
+                    if (isModalElement(node)) {
+                        modals.push(node);
+                    }
+                    
+                    // Buscar modais dentro do node
+                    const innerModals = node.querySelectorAll?.('.fixed.inset-0, [id*="modal"], .modal, dialog');
+                    if (innerModals) {
+                        modals.push(...Array.from(innerModals));
+                    }
+                    
+                    // Aplicar handlers para cada modal encontrado
+                    modals.forEach(modal => {
+                        console.log('🎯 [AUTO MODAL] Modal detectado automaticamente:', modal.id || modal.className);
+                        applyAutoHandlersToModal(modal);
+                    });
+                }
+            });
+        });
+    });
+    
+    // Iniciar observação do DOM
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+    
+    console.log('✅ [AUTO MODAL] Detecção automática configurada!');
+    return observer;
+}
+
+// Verificar se um elemento é um modal
+function isModalElement(element) {
+    if (!element.classList) return false;
+    
+    // Verificar classes típicas de modal
+    const modalClasses = ['fixed', 'modal', 'inset-0'];
+    const hasModalClass = modalClasses.some(cls => element.classList.contains(cls));
+    
+    // Verificar se é um dialog
+    const isDialog = element.tagName === 'DIALOG';
+    
+    // Verificar se tem ID de modal
+    const hasModalId = element.id && element.id.includes('modal');
+    
+    // Verificar se tem z-index alto (típico de modais)
+    const hasHighZIndex = element.style.zIndex && parseInt(element.style.zIndex) >= 50;
+    
+    return hasModalClass || isDialog || hasModalId || hasHighZIndex;
+}
+
+// Aplicar handlers automaticamente a um modal detectado
+function applyAutoHandlersToModal(modal) {
+    console.log('🔧 [AUTO MODAL] Aplicando handlers automáticos ao modal...');
+    
+    // Aguardar um pouco para garantir que o modal está totalmente renderizado
+    setTimeout(() => {
+        // Buscar todos os botões dentro do modal
+        const buttons = modal.querySelectorAll('button, [role="button"], [data-action]');
+        
+        buttons.forEach(button => {
+            // Verificar se o botão já tem event listeners (evitar duplicatas)
+            if (button.dataset.autoHandlerApplied) return;
+            
+            // Marcar como processado
+            button.dataset.autoHandlerApplied = 'true';
+            
+            console.log('🎯 [AUTO MODAL] Processando botão:', {
+                id: button.id,
+                text: button.textContent?.trim(),
+                classes: button.className
+            });
+            
+            // Aplicar handler baseado na função do botão
+            const handler = determineButtonHandler(button, modal);
+            if (handler) {
+                button.addEventListener('click', handler);
+                console.log('✅ [AUTO MODAL] Handler aplicado:', button.id || button.textContent?.trim());
+            }
+        });
+        
+        // Aplicar handlers para formulários
+        const forms = modal.querySelectorAll('form');
+        forms.forEach(form => {
+            if (form.dataset.autoHandlerApplied) return;
+            form.dataset.autoHandlerApplied = 'true';
+            
+            const submitHandler = determineFormHandler(form, modal);
+            if (submitHandler) {
+                form.addEventListener('submit', submitHandler);
+                console.log('✅ [AUTO MODAL] Form handler aplicado:', form.id);
+            }
+        });
+        
+    }, 100); // 100ms para garantir renderização completa
+}
+
+// Determinar qual handler aplicar baseado no botão
+function determineButtonHandler(button, modal) {
+    const buttonId = button.id;
+    const buttonText = button.textContent?.toLowerCase() || '';
+    const dataAction = button.getAttribute('data-action');
+    
+    // Handlers específicos por ID
+    const idHandlers = {
+        'close-modal-btn': () => closeModal(),
+        'cancel-modal-btn': () => closeModal(),
+        'close-main-modal-btn': () => closeModal(),
+        'close-editor-modal-btn': () => closeModal(),
+        'close-upload-modal-btn': () => closeModal(),
+        'check-url-btn-simple': () => handleCheckUrlButton(),
+        'import-url-btn-simple': () => handleImportUrlButton(),
+        'btn-escrever-cifra-modal': () => { closeModal(); setTimeout(() => openCifraEditor(), 100); },
+        'btn-link-cifra-modal': () => { closeModal(); setTimeout(() => openUrlImportModal(), 100); },
+        'btn-upload-cifra-modal': () => { closeModal(); setTimeout(() => openCifraUploader(), 100); },
+        'btn-save-cifra': () => saveCifra(),
+        'btn-cancel-editor': () => closeModal(),
+        'btn-cancel-upload': () => closeModal(),
+        'btn-process-files': () => processUploadedFiles(),
+        'btn-select-files': () => {
+            const fileInput = document.getElementById('fileInput') || document.getElementById('cifra-files');
+            if (fileInput) fileInput.click();
+        },
+        'btn-preview-cifra': () => previewCifra(),
+        'btn-insert-verso': () => insertText('\n\nVerso:\n'),
+        'btn-insert-refrao': () => insertText('\n\nRefrão:\n'),
+        'btn-insert-ponte': () => insertText('\n\nPonte:\n'),
+        'btn-insert-final': () => insertText('\n\nFinal:\n')
+    };
+    
+    // Verificar handler específico por ID
+    if (idHandlers[buttonId]) {
+        return idHandlers[buttonId];
+    }
+    
+    // Handlers por data-action
+    if (dataAction) {
+        const actionHandlers = {
+            'close': () => closeModal(),
+            'save': () => saveCifra(),
+            'process': () => processUploadedFiles(),
+            'select-files': () => {
+                const fileInput = document.getElementById('fileInput') || document.getElementById('cifra-files');
+                if (fileInput) fileInput.click();
+            },
+            'import': () => handleImportUrlButton(),
+            'check': () => handleCheckUrlButton()
+        };
+        
+        if (actionHandlers[dataAction]) {
+            return actionHandlers[dataAction];
+        }
+    }
+    
+    // Handlers inteligentes baseados no texto/ícones
+    const hasCloseIcon = button.querySelector('.fa-times, .fa-close');
+    if (hasCloseIcon || buttonText.includes('cancelar') || buttonText.includes('fechar')) {
+        return () => closeModal();
+    }
+    
+    if (buttonText.includes('salvar') || buttonText.includes('save')) {
+        return () => saveCifra();
+    }
+    
+    if (buttonText.includes('verificar') || buttonText.includes('check')) {
+        return () => handleCheckUrlButton();
+    }
+    
+    if (buttonText.includes('importar') || buttonText.includes('import')) {
+        return () => handleImportUrlButton();
+    }
+    
+    if (buttonText.includes('processar') || buttonText.includes('upload')) {
+        return () => processUploadedFiles();
+    }
+    
+    if (buttonText.includes('selecionar') || buttonText.includes('arquivos')) {
+        return () => {
+            const fileInput = document.getElementById('fileInput') || document.getElementById('cifra-files');
+            if (fileInput) fileInput.click();
+        };
+    }
+    
+    // Se não encontrou handler específico, retornar null
+    return null;
+}
+
+// Determinar handler para formulários
+function determineFormHandler(form, modal) {
+    const formId = form.id;
+    
+    const formHandlers = {
+        'url-import-form-simple': (e) => {
+            e.preventDefault();
+            handleImportUrlButton();
+        },
+        'cifraEditorForm': (e) => {
+            e.preventDefault();
+            saveCifra();
+        }
+    };
+    
+    return formHandlers[formId] || null;
+}
+
 // ========== DELEGAÇÃO GLOBAL DE EVENTOS PARA MODAIS ==========
+
+// ========== DELEGAÇÃO GLOBAL DE EVENTOS (MANTIDA COMO BACKUP) ==========
 // Sistema para garantir que todos os botões dos modais funcionem corretamente
 function setupGlobalModalEventDelegation() {
     console.log('🔧 [MODAL DELEGATION] Configurando delegação global de eventos...');
@@ -465,11 +686,17 @@ async function carregarFavoritos() {
     }
 }
 
-// Inicialização
+// Inicialização ATUALIZADA - Sistema automático de modais
 document.addEventListener('DOMContentLoaded', function() {
-    // Configurar delegação global de eventos para modais (deve ser configurado primeiro)
+    console.log('🌟 [INIT] DOM carregado, iniciando sistema automático de modais...');
+    
+    // PRIORIDADE 1: Configurar detecção automática de modais (NOVO SISTEMA INTELIGENTE)
+    const modalObserver = setupAutoModalDetection();
+    
+    // PRIORIDADE 2: Manter delegação global como backup de segurança
     setupGlobalModalEventDelegation();
     
+    // PRIORIDADE 3: Demais inicializações do app
     carregarCifras();
     setupEventListeners();
     setupMobileNavigation();
@@ -486,6 +713,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Verificar se usuário é master
     checkMasterAccess();
+    
+    console.log('✅ [INIT] Sistema automático de modais inicializado com sucesso!');
+    
+    // Salvar observer globalmente para debug se necessário
+    window.modalObserver = modalObserver;
 });
 
 // Configurar event listeners
