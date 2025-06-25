@@ -71,6 +71,268 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// ========== DELEGAÇÃO GLOBAL DE EVENTOS PARA MODAIS ==========
+// Sistema para garantir que todos os botões dos modais funcionem corretamente
+function setupGlobalModalEventDelegation() {
+    console.log('🔧 [MODAL DELEGATION] Configurando delegação global de eventos...');
+    
+    // Event listener global no document.body para capturar todos os cliques
+    document.body.addEventListener('click', function(event) {
+        const target = event.target;
+        const button = target.closest('button') || target.closest('[role="button"]') || target.closest('[data-action]');
+        
+        if (!button) return;
+        
+        // Verificar se o clique foi dentro de um modal
+        const modal = button.closest('.fixed.inset-0') || button.closest('[id*="modal"]') || button.closest('.modal');
+        
+        if (!modal) return;
+        
+        console.log('🎯 [MODAL DELEGATION] Clique detectado em modal:', {
+            buttonId: button.id,
+            buttonClass: button.className,
+            buttonText: button.textContent?.trim(),
+            modalId: modal.id
+        });
+        
+        // Evitar propagação dupla
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Identificar ação baseada no ID ou atributos do botão
+        const buttonId = button.id;
+        const dataAction = button.getAttribute('data-action');
+        
+        // Botões de fechar modal
+        if (buttonId === 'close-modal-btn' || 
+            buttonId === 'cancel-modal-btn' || 
+            buttonId === 'close-main-modal-btn' ||
+            dataAction === 'close' ||
+            button.querySelector('.fa-times') ||
+            button.classList.contains('close-modal')) {
+            console.log('✅ [MODAL DELEGATION] Executando ação: fechar modal');
+            closeModal();
+            return;
+        }
+        
+        // Botão de verificar URL
+        if (buttonId === 'check-url-btn-simple') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: verificar URL');
+            handleCheckUrlButton();
+            return;
+        }
+        
+        // Botão de importar URL
+        if (buttonId === 'import-url-btn-simple') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: importar URL');
+            handleImportUrlButton();
+            return;
+        }
+        
+        // Botões do modal principal de adicionar cifra
+        if (buttonId === 'btn-escrever-cifra-modal') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: abrir editor');
+            closeModal();
+            setTimeout(() => openCifraEditor(), 100);
+            return;
+        }
+        
+        if (buttonId === 'btn-link-cifra-modal') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: importar por link');
+            closeModal();
+            setTimeout(() => openUrlImportModal(), 100);
+            return;
+        }
+        
+        if (buttonId === 'btn-upload-cifra-modal') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: upload arquivo');
+            closeModal();
+            setTimeout(() => openCifraUploader(), 100);
+            return;
+        }
+        
+        // Botões do modal de upload de arquivo
+        if (buttonId === 'select-files-btn') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: selecionar arquivos');
+            const fileInput = document.getElementById('cifra-files');
+            if (fileInput) fileInput.click();
+            return;
+        }
+        
+        if (buttonId === 'process-files-btn') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: processar arquivos');
+            processUploadedFiles();
+            return;
+        }
+        
+        // Botões do modal de editor de cifra
+        if (buttonId === 'save-cifra-btn') {
+            console.log('✅ [MODAL DELEGATION] Executando ação: salvar cifra');
+            saveCifra();
+            return;
+        }
+        
+        // Botões genéricos com data-action
+        if (dataAction) {
+            console.log(`✅ [MODAL DELEGATION] Executando ação genérica: ${dataAction}`);
+            
+            switch (dataAction) {
+                case 'save':
+                    saveCifra();
+                    break;
+                case 'process':
+                    processUploadedFiles();
+                    break;
+                case 'select-files':
+                    const fileInput = document.getElementById('cifra-files');
+                    if (fileInput) fileInput.click();
+                    break;
+                case 'import':
+                    handleImportUrlButton();
+                    break;
+                case 'check':
+                    handleCheckUrlButton();
+                    break;
+                default:
+                    console.warn('⚠️ [MODAL DELEGATION] Ação não reconhecida:', dataAction);
+            }
+            return;
+        }
+        
+        console.log('⚠️ [MODAL DELEGATION] Botão não reconhecido, aplicando handlers dinâmicos...');
+        
+        // Fallback: tentar aplicar handlers baseado no contexto
+        applyDynamicHandlers(button, modal);
+    });
+    
+    // Event listener para formulários em modais
+    document.body.addEventListener('submit', function(event) {
+        const form = event.target;
+        const modal = form.closest('.fixed.inset-0') || form.closest('[id*="modal"]') || form.closest('.modal');
+        
+        if (!modal) return;
+        
+        console.log('📝 [MODAL DELEGATION] Submit detectado em modal:', form.id);
+        
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Handle form submission baseado no ID
+        if (form.id === 'url-import-form-simple') {
+            console.log('✅ [MODAL DELEGATION] Executando: submit do formulário de import URL');
+            handleImportUrlButton();
+        } else if (form.id === 'cifra-editor-form') {
+            console.log('✅ [MODAL DELEGATION] Executando: submit do formulário de editor');
+            saveCifra();
+        }
+    });
+    
+    console.log('✅ [MODAL DELEGATION] Delegação global configurada com sucesso!');
+}
+
+// Handlers específicos para ações dos modais
+async function handleCheckUrlButton() {
+    const urlInput = document.getElementById('cifra-url-simple');
+    const checkBtn = document.getElementById('check-url-btn-simple');
+    
+    if (!urlInput || !checkBtn) {
+        console.error('❌ [MODAL DELEGATION] Elementos não encontrados para verificar URL');
+        return;
+    }
+    
+    const url = urlInput.value.trim();
+    
+    if (!url) {
+        showValidationFeedbackSimple('Por favor, insira uma URL.', 'error');
+        return;
+    }
+    
+    checkBtn.disabled = true;
+    checkBtn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Verificando...';
+    
+    try {
+        const result = await checkUrlSupport(url);
+        handleUrlCheckResultSimple(result);
+    } catch (error) {
+        console.error('Erro ao verificar URL:', error);
+        showValidationFeedbackSimple(`Erro: ${error.message}`, 'error');
+    } finally {
+        checkBtn.disabled = false;
+        checkBtn.innerHTML = '<i class="fas fa-search mr-2"></i>Verificar URL';
+    }
+}
+
+async function handleImportUrlButton() {
+    const urlInput = document.getElementById('cifra-url-simple');
+    const importBtn = document.getElementById('import-url-btn-simple');
+    
+    if (!urlInput || !importBtn) {
+        console.error('❌ [MODAL DELEGATION] Elementos não encontrados para importar URL');
+        return;
+    }
+    
+    const url = urlInput.value.trim();
+    
+    if (!url) {
+        showValidationFeedbackSimple('Por favor, insira uma URL.', 'error');
+        return;
+    }
+    
+    importBtn.disabled = true;
+    importBtn.innerHTML = '<span class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></span>Importando...';
+    
+    try {
+        const result = await importCifraFromUrlModal(url);
+        handleImportResultSimple(result);
+    } catch (error) {
+        console.error('Erro na importação:', error);
+        showValidationFeedbackSimple(`Erro na importação: ${error.message}`, 'error');
+    } finally {
+        importBtn.disabled = false;
+        importBtn.innerHTML = '<i class="fas fa-download mr-2"></i>Importar Cifra';
+    }
+}
+
+// Aplicar handlers dinâmicos como fallback
+function applyDynamicHandlers(button, modal) {
+    const buttonText = button.textContent?.toLowerCase() || '';
+    const hasCloseIcon = button.querySelector('.fa-times, .fa-close');
+    
+    if (hasCloseIcon || buttonText.includes('cancelar') || buttonText.includes('fechar')) {
+        console.log('🔄 [MODAL DELEGATION] Aplicando handler dinâmico: fechar modal');
+        closeModal();
+        return;
+    }
+    
+    if (buttonText.includes('verificar') || buttonText.includes('check')) {
+        console.log('🔄 [MODAL DELEGATION] Aplicando handler dinâmico: verificar URL');
+        handleCheckUrlButton();
+        return;
+    }
+    
+    if (buttonText.includes('importar') || buttonText.includes('import')) {
+        console.log('🔄 [MODAL DELEGATION] Aplicando handler dinâmico: importar');
+        handleImportUrlButton();
+        return;
+    }
+    
+    if (buttonText.includes('salvar') || buttonText.includes('save')) {
+        console.log('🔄 [MODAL DELEGATION] Aplicando handler dinâmico: salvar');
+        saveCifra();
+        return;
+    }
+    
+    if (buttonText.includes('processar') || buttonText.includes('upload')) {
+        console.log('🔄 [MODAL DELEGATION] Aplicando handler dinâmico: processar arquivos');
+        processUploadedFiles();
+        return;
+    }
+    
+    console.log('⚠️ [MODAL DELEGATION] Nenhum handler dinâmico aplicável encontrado para:', buttonText);
+}
+
+// ========== FIM DA DELEGAÇÃO GLOBAL ==========
+
 // Modal Adicionar Cifra com 3 opções
 function showAddCifraModal() {
     const content = `
@@ -132,16 +394,8 @@ function showAddCifraModal() {
     const modal = createModal(content, { maxWidth: 'max-w-md', zIndex: 'z-50' });
     document.body.appendChild(modal);
     
-    // Event listeners para os botões do modal
-    const closeBtn = document.getElementById('close-main-modal-btn');
-    const escreverBtn = document.getElementById('btn-escrever-cifra-modal');
-    const linkBtn = document.getElementById('btn-link-cifra-modal');
-    const uploadBtn = document.getElementById('btn-upload-cifra-modal');
-    
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (escreverBtn) escreverBtn.addEventListener('click', openCifraEditor);
-    if (linkBtn) linkBtn.addEventListener('click', openUrlImportModal);
-    if (uploadBtn) uploadBtn.addEventListener('click', openCifraUploader);
+    // Event listeners são gerenciados pela delegação global de eventos
+    console.log('🔗 [MODAL] Event listeners gerenciados pela delegação global');
 }
 
 // Carregar cifras da API
@@ -205,6 +459,12 @@ async function carregarFavoritos() {
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
+    // Configurar delegação global de eventos para modais (deve ser configurado primeiro)
+    if (typeof setupGlobalModalEventDelegation === 'function') {
+        setupGlobalModalEventDelegation();
+        console.log('✅ [INIT] Delegação global de eventos configurada!');
+    }
+    
     carregarCifras();
     setupEventListeners();
     setupMobileNavigation();
@@ -3796,8 +4056,8 @@ function openUrlImportModal(prefilledUrl = '') {
     console.log('🔗 [DEBUG] Body children count:', document.body.children.length);
     console.log('🔗 [DEBUG] Modal computed style:', window.getComputedStyle(modal));
     
-    // Configurar event listeners
-    setupSimpleModalEventListeners();
+    // Event listeners são gerenciados pela delegação global
+    console.log('🔗 [DEBUG] Event listeners gerenciados pela delegação global de eventos');
     
     // Fechar modal clicando fora
     modal.addEventListener('click', function(e) {

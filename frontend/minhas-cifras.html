@@ -348,6 +348,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('[MINHAS CIFRAS] Página carregada, iniciando...');
             
+            // Configurar delegação global de eventos para modais PRIMEIRO
+            if (typeof setupGlobalModalEventDelegation === 'function') {
+                setupGlobalModalEventDelegation();
+                console.log('[MINHAS CIFRAS] ✅ Delegação global de eventos configurada!');
+            } else {
+                console.warn('[MINHAS CIFRAS] ⚠️ setupGlobalModalEventDelegation não encontrada');
+            }
+            
             // AGUARDAR SCRIPTS CARREGAREM - FIX PARA RACE CONDITION
             setTimeout(function() {
                 console.log('[MINHAS CIFRAS] Timeout executado - verificando funções...');
@@ -370,7 +378,7 @@
                 
                 console.log('[MINHAS CIFRAS] Após updateAuthUI - iniciando carregamento...');
                 
-                // Configurar event listeners
+                // Configurar event listeners (agora apenas para os elementos da página, não modais)
                 setupEventListeners();
                 
                 carregarMinhasCifras();
