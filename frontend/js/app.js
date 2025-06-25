@@ -4024,20 +4024,40 @@ async function checkUrlSupport(url) {
 
 // Importar cifra da URL (versão para modal)
 async function importCifraFromUrlModal(url) {
-    const response = await fetch(apiUrl('/api/cifras/import-url-public'), {
+    console.log('🔗 [IMPORT] Iniciando importação da URL:', url);
+    
+    // Obter token de autenticação
+    const token = localStorage.getItem('token') || localStorage.getItem('authToken');
+    console.log('🔑 [IMPORT] Token disponível:', !!token);
+    
+    if (!token) {
+        throw new Error('Você precisa estar logado para importar cifras');
+    }
+    
+    const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+    };
+    
+    console.log('📤 [IMPORT] Enviando requisição para /api/cifras/import-url');
+    
+    const response = await fetch(apiUrl('/api/cifras/import-url'), {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: headers,
         body: JSON.stringify({ url })
     });
     
+    console.log('📥 [IMPORT] Response status:', response.status);
+    
     if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ [IMPORT] Erro na resposta:', errorData);
         throw new Error(errorData.message || 'Erro ao importar cifra');
     }
     
-    return await response.json();
+    const result = await response.json();
+    console.log('✅ [IMPORT] Importação bem-sucedida:', result);
+    return result;
 }
 
 // Lidar com resultado da verificação de URL
