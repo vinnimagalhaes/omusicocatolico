@@ -1804,9 +1804,36 @@ function escapeHtml(text) {
 }
 
 function closeModal() {
-    const modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50');
+    console.log('🔒 [CLOSE MODAL] Tentando fechar modal...');
+    
+    // Buscar modal de forma mais flexível
+    let modal = document.querySelector('.fixed.inset-0.bg-black.bg-opacity-50'); // Seletor original
+    
+    if (!modal) {
+        // Seletor mais flexível para diferentes tipos de modal
+        modal = document.querySelector('.fixed.inset-0');
+        console.log('🔍 [CLOSE MODAL] Modal encontrado com seletor flexível:', !!modal);
+    }
+    
+    if (!modal) {
+        // Buscar por ID de modal
+        modal = document.querySelector('[id*="modal"]');
+        console.log('🔍 [CLOSE MODAL] Modal encontrado por ID:', !!modal);
+    }
+    
     if (modal) {
+        console.log('✅ [CLOSE MODAL] Modal encontrado, removendo...', modal.id || modal.className);
         modal.remove();
+        console.log('✅ [CLOSE MODAL] Modal removido com sucesso!');
+    } else {
+        console.warn('⚠️ [CLOSE MODAL] Nenhum modal encontrado para fechar');
+        
+        // Debug: Listar todos os elementos com fixed
+        const allFixed = document.querySelectorAll('.fixed');
+        console.log('🔍 [CLOSE MODAL] Elementos com .fixed encontrados:', allFixed.length);
+        allFixed.forEach((el, i) => {
+            console.log(`  ${i + 1}:`, el.className, el.id);
+        });
     }
     
     // Mostrar dropdowns novamente
