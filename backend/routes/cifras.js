@@ -463,13 +463,26 @@ router.post('/import-url', authenticateToken, async (req, res) => {
 
         // Salvar no banco de dados
         const cifraData = importResult.data;
+        
+        // Corrigir categoria para enum válido
+        let categoria = cifraData.categoria;
+        if (categoria === 'geral') {
+            categoria = 'outras'; // Mapeamento para enum válido
+        }
+        
+        // Corrigir tags para array se for string
+        let tags = cifraData.tags;
+        if (typeof tags === 'string') {
+            tags = tags.split(',').map(tag => tag.trim());
+        }
+        
         const novaCifra = await Cifra.create({
             titulo: cifraData.titulo,
             artista: cifraData.artista,
             tom: cifraData.tom,
-            categoria: cifraData.categoria,
+            categoria: categoria,
             letra: cifraData.letra,
-            tags: cifraData.tags,
+            tags: tags,
             dificuldade: 'medio', // Default
             ativo: true,
             user_id: userId,
@@ -497,9 +510,17 @@ router.post('/import-url', authenticateToken, async (req, res) => {
 
     } catch (error) {
         console.error('❌ Erro ao importar cifra:', error);
+        
+        // Log detalhado do erro
+        if (error.name === 'SequelizeValidationError') {
+            console.error('🔍 Erros de validação:', error.errors);
+        }
+        console.error('📍 Stack trace:', error.stack);
+        
         res.status(500).json({
             success: false,
-            message: 'Erro interno do servidor ao importar cifra'
+            message: 'Erro interno do servidor ao importar cifra',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
